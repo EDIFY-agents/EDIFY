@@ -667,6 +667,61 @@
     }
   }
 
+  /* ---------- films: header loops and page films ----------
+     Loops carry no autoplay attribute, so without this file, under reduced motion
+     or with save-data on, the poster is what shows. Otherwise a loop plays muted
+     only while it is on screen and the tab is visible. */
+
+  function setupFilms() {
+    var conn = navigator.connection;
+    var still = reduced || !!(conn && conn.saveData);
+    var loops = $$('video[data-loop]');
+    var play = function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+    loops.forEach(function (v) {
+      v.muted = true;
+      v.loop = true;
+      v.playsInline = true;
+      if (still) return;
+      if (!('IntersectionObserver' in window)) { v.dataset.on = '1'; play(v); return; }
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          v.dataset.on = e.isIntersecting ? '1' : '';
+          if (e.isIntersecting && !doc.hidden) play(v); else v.pause();
+        });
+      }, { threshold: 0.05 }).observe(v);
+    });
+    if (!still && loops.length) doc.addEventListener('visibilitychange', function () {
+      loops.forEach(function (v) {
+        if (doc.hidden) v.pause();
+        else if (v.dataset.on === '1') play(v);
+      });
+    });
+
+    $$('[data-film]').forEach(function (fig) {
+      var v = $('video', fig);
+      var btns = $$('[data-seek]', fig);
+      if (!v || !btns.length) return;
+      var marks = btns.map(function (b) { return parseFloat(b.dataset.seek) || 0; });
+      var mark = function () {
+        var t = v.currentTime, cur = 0;
+        for (var i = 0; i < marks.length; i++) if (t + 0.05 >= marks[i]) cur = i;
+        btns.forEach(function (b, i) {
+          if (i === cur && (t > 0 || !v.paused)) b.setAttribute('aria-current', 'true');
+          else b.removeAttribute('aria-current');
+        });
+      };
+      btns.forEach(function (b, i) {
+        b.addEventListener('click', function () {
+          var go = function () { v.currentTime = marks[i]; play(v); mark(); };
+          if (v.readyState >= 1) go();
+          else { v.preload = 'auto'; v.addEventListener('loadedmetadata', go, { once: true }); v.load(); }
+        });
+      });
+      v.addEventListener('timeupdate', mark);
+      v.addEventListener('seeked', mark);
+    });
+  }
+
   /* ---------- start ---------- */
 
   function start() {
@@ -677,6 +732,7 @@
     setupFaq();
     setupField();
     setupGallery();
+    setupFilms();
     measure();
     setupReveal();
     doc.addEventListener('visibilitychange', function () { S.hidden = doc.hidden; });

@@ -6,20 +6,20 @@
 <title>How it works — EDIFY</title>
 <meta name="description" content="Brief, spec, plan, tasks, build, verify: think hard once, then build without thinking. A codebase graph extracted from your code, and verification anyone can re-run.">
 <meta name="theme-color" content="#07090C">
-<link rel="canonical" href="https://edify-agents.github.io/super-claude-skills/how-it-works.html">
+<link rel="canonical" href="https://edify-agents.github.io/claude-skills/how-it-works.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="How it works — EDIFY">
 <meta property="og:description" content="Brief, spec, plan, tasks, build, verify: think hard once, then build without thinking. A codebase graph extracted from your code, and verification anyone can re-run.">
-<meta property="og:url" content="https://edify-agents.github.io/super-claude-skills/how-it-works.html">
-<meta property="og:image" content="https://edify-agents.github.io/super-claude-skills/assets/img/plates/P1-the-fold-hero.jpg">
+<meta property="og:url" content="https://edify-agents.github.io/claude-skills/how-it-works.html">
+<meta property="og:image" content="https://edify-agents.github.io/claude-skills/assets/img/plates/P1-the-fold-hero.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=20260926">
 <script>(function(){try{if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&!sessionStorage.getItem('ed:boot')){var h=document.documentElement;h.setAttribute('data-boot','');window.__edBootFallback=setTimeout(function(){h.removeAttribute('data-boot')},4000)}}catch(e){}})()</script>
-<script src="assets/js/site.js" defer></script>
+<script src="assets/js/site.js?v=20260926" defer></script>
 </head>
 <body>
 <div id="ed-boot" aria-hidden="true">
@@ -57,8 +57,9 @@
       <a href="how-it-works.html" aria-current="page">How it works</a>
       <a href="benchmarks.html">Benchmarks</a>
       <a href="docs.html">Docs</a>
+      <a href="teams.html">Teams</a>
       <a href="pricing.html">Pricing</a>
-      <a class="gh" href="https://github.com/EDIFY-agents/super-claude-skills" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
+      <a class="gh" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
       <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY</a>
     </nav>
     <button class="burger" data-menu-toggle aria-label="Menu" aria-expanded="false" aria-controls="ed-menu"><span></span><span></span></button>
@@ -71,14 +72,16 @@
     <a href="how-it-works.html">How it works</a>
     <a href="benchmarks.html">Benchmarks</a>
     <a href="docs.html">Docs</a>
+    <a href="teams.html">Teams</a>
     <a href="pricing.html">Pricing</a>
     <a href="about.html">About</a>
-    <a href="https://github.com/EDIFY-agents/super-claude-skills" target="_blank" rel="noopener">GitHub &#8599;</a>
+    <a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a class="cta" href="docs.html#install">Install EDIFY</a>
   </nav>
 </div>
 <main id="main">
-<section class="page-hero">
+<section class="page-hero has-loop">
+  <video class="hero-loop" data-loop muted loop playsinline preload="none" poster="assets/film/how-it-works/poster.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/how-it-works/loop.mp4" type="video/mp4"></video>
   <div class="band">
     <div class="eyebrow bare">How it works</div>
     <h1 class="h-display w18" data-rv="claim">
@@ -89,6 +92,28 @@
     <p class="lead" data-rv="card" data-i="0" style="margin-top:30px">Each step is written twice below: once in plain language, once in the mechanism. A filled square means EDIFY does it today. A hollow amber square means it works, degraded, and says so. A dashed square means it is not claimed.</p>
     <div class="legend" data-rv="card" data-i="1"><span><i class="sq"></i>does this today</span><span><i class="sq amber"></i>degraded, and says so</span><span><i class="sq off"></i>not claimed</span></div>
   </div>
+</section>
+
+<section class="band film-band" aria-labelledby="film-h">
+  <div class="film-head">
+    <div>
+      <div class="eyebrow">The film &middot; 45 s</div>
+      <h2 id="film-h" class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Forty-five seconds, no sound.</span></span></h2>
+    </div>
+    <p class="small" data-rv="card" data-i="0">Every line on screen is this page's own copy, with its source file in the corner. Pick a chapter to jump to it.</p>
+  </div>
+  <figure class="film" data-film data-rv="card" data-i="1">
+    <video controls preload="none" playsinline poster="assets/film/how-it-works/film-poster.jpg" aria-label="EDIFY how it works film, 45 seconds, no audio"><source src="assets/film/how-it-works/film.mp4" type="video/mp4"></video>
+    <ol class="film-chapters" style="--n:6">
+      <li><button type="button" data-seek="0"><span class="n">01</span><span class="t">Think hard once</span><span class="s">0:00</span></button></li>
+      <li><button type="button" data-seek="8.4"><span class="n">02</span><span class="t">The map</span><span class="s">0:08</span></button></li>
+      <li><button type="button" data-seek="16"><span class="n">03</span><span class="t">Build</span><span class="s">0:16</span></button></li>
+      <li><button type="button" data-seek="24.2"><span class="n">04</span><span class="t">Verify</span><span class="s">0:24</span></button></li>
+      <li><button type="button" data-seek="31.5"><span class="n">05</span><span class="t">Six commands</span><span class="s">0:31</span></button></li>
+      <li><button type="button" data-seek="37"><span class="n">06</span><span class="t">Limits, first</span><span class="s">0:37</span></button></li>
+    </ol>
+    <figcaption class="film-cap"><span>edify-how-it-works-film &middot; 45 s &middot; 1600&times;900 &middot; no audio track</span><span>source: site/how-it-works.html</span></figcaption>
+  </figure>
 </section>
 
 <section class="band">
@@ -105,7 +130,7 @@
         <div class="row"><i class="sq"></i><span class="n">Tasks anchored to files and line ranges</span><span class="s">tasks.md</span></div>
         <div class="row"><i class="sq"></i><span class="n">Documents checked against their format</span><span class="s">edify check</span></div>
       </div>
-      <div class="src"><a href="https://github.com/EDIFY-agents/super-claude-skills/tree/main/examples" target="_blank" rel="noopener">examples/worked-documents</a></div>
+      <div class="src"><a href="https://github.com/EDIFY-agents/claude-skills/tree/main/examples" target="_blank" rel="noopener">examples/worked-documents</a></div>
     </div>
     <div class="plate-frame">
       <div class="media" data-rv="media" data-i="0" style="aspect-ratio:4/3"><img src="assets/img/plates/P2-context.jpg" alt="" loading="lazy"><div data-field-grid style="position:absolute;inset:0;pointer-events:none"></div></div>
@@ -134,7 +159,7 @@
         <div class="row"><i class="sq amber"></i><span class="n">Other languages, without Ctags</span><span class="s">line scanner</span></div>
         <div class="row"><i class="sq off"></i><span class="n">Any node written by a model</span><span class="s">never</span></div>
       </div>
-      <div class="src"><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/docs/graph.md" target="_blank" rel="noopener">docs/graph.md</a></div>
+      <div class="src"><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/graph.md" target="_blank" rel="noopener">docs/graph.md</a></div>
     </div>
     <div data-order class="panel" style="order:1">
       <div class="panel-head"><span class="label">edify doctor</span><span class="label" style="color:var(--ed-text-4)">real output</span></div>
@@ -170,7 +195,7 @@
         <div class="cell" style="padding:16px 14px;gap:8px"><span class="id">Phases 3–6</span><span class="t sm" style="font-size:14px">Red to green</span><span class="src" style="margin:0;font-size:11px">in order, each checked</span></div>
         <div class="cell" style="padding:16px 14px;gap:8px"><span class="id">Phase 7</span><span class="t sm" style="font-size:14px">/verify</span><span class="src" style="margin:0;font-size:11px">in a fresh agent</span></div>
       </div>
-      <div class="src"><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/docs/verification.md" target="_blank" rel="noopener">docs/verification.md</a></div>
+      <div class="src"><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/verification.md" target="_blank" rel="noopener">docs/verification.md</a></div>
     </div>
     <div class="plate-frame">
       <div class="media" data-rv="media" data-i="0" style="aspect-ratio:4/3"><img src="assets/img/plates/P4-execution.jpg" alt="" loading="lazy"><div data-field-grid style="position:absolute;inset:0;pointer-events:none"></div></div>
@@ -228,7 +253,7 @@
     <div class="cell panel" data-rv="card" data-i="4"><span class="cmd">edify governance</span><span class="b">Every installed file with its origin, licence and hash, and whether it changed since.</span></div>
     <div class="cell panel" data-rv="card" data-i="5"><span class="cmd">edify feedback</span><span class="b">Writes a file on your machine and prints the command you run to send it. Nothing leaves on its own.</span></div>
   </div>
-  <div class="src"><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">docs/cli.md: every command, with real output</a></div>
+  <div class="src"><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">docs/cli.md: every command, with real output</a></div>
 </section>
 
 <section class="band">
@@ -291,13 +316,13 @@
       <p class="foot-tag">The reliability layer for AI coding agents working on large, real-world codebases.</p>
       <div class="btn-row" style="margin-top:26px">
         <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY <span class="m">&#8594;</span></a>
-        <a class="btn btn-line btn-sm" href="https://github.com/EDIFY-agents/super-claude-skills" target="_blank" rel="noopener">View on GitHub <span class="m">&#8599;</span></a>
+        <a class="btn btn-line btn-sm" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">View on GitHub <span class="m">&#8599;</span></a>
       </div>
     </div>
     <div class="foot-cols">
-      <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a></div>
-      <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
-      <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/super-claude-skills" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/super-claude-skills/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/super-claude-skills/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
+      <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="teams.html">Teams</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a></div>
+      <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
+      <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/claude-skills/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
     </div>
   </div>
   <div class="foot-art" data-field-grid aria-hidden="true">
@@ -311,7 +336,7 @@
     </div>
     <div class="foot-word" data-rv="media" data-i="0"><span>EDIFY</span></div>
   </div>
-  <div class="foot-line"><span>EDIFY / local-first / no telemetry / files, not conversations</span><span><a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/LICENSE" target="_blank" rel="noopener">FSL-1.1-Apache-2.0</a> · <a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/TRADEMARK.md" target="_blank" rel="noopener">Trademark</a> · <a href="https://github.com/EDIFY-agents/super-claude-skills/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></span></div>
+  <div class="foot-line"><span>EDIFY / local-first / no telemetry / files, not conversations</span><span><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/LICENSE" target="_blank" rel="noopener">FSL-1.1-Apache-2.0</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/TRADEMARK.md" target="_blank" rel="noopener">Trademark</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></span></div>
 </footer>
 </body>
 </html>

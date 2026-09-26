@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teams — EDIFY</title>
+<meta name="description" content="EDIFY for teams: one repository, one goal, many hands. The goal, the task board, a journal of how each person and agent did the work, and admitted playbooks, as plain files synced by git. Specified, not built yet.">
+<meta name="theme-color" content="#07090C">
+<link rel="canonical" href="https://edify-agents.github.io/claude-skills/teams.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Teams — EDIFY">
+<meta property="og:description" content="EDIFY for teams: one repository, one goal, many hands. The goal, the task board, a journal of how each person and agent did the work, and admitted playbooks, as plain files synced by git. Specified, not built yet.">
+<meta property="og:url" content="https://edify-agents.github.io/claude-skills/teams.html">
+<meta property="og:image" content="https://edify-agents.github.io/claude-skills/assets/film/teams/poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="assets/css/site.css?v=20260926">
+<script>(function(){try{if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&!sessionStorage.getItem('ed:boot')){var h=document.documentElement;h.setAttribute('data-boot','');window.__edBootFallback=setTimeout(function(){h.removeAttribute('data-boot')},4000)}}catch(e){}})()</script>
+<script src="assets/js/site.js?v=20260926" defer></script>
+</head>
+<body>
+<div id="ed-boot" aria-hidden="true">
+  <div class="boot-bg"></div>
+  <div class="boot-grid" data-field-grid></div>
+  <div class="boot-stack">
+    <svg id="ed-boot-mark" viewBox="0 0 100 100" fill="none">
+      <path d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="rgba(232,236,242,0.09)" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="6"></path>
+      <path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="15"></path>
+      <path d="M44 6 L66 94" stroke="rgba(232,236,242,0.09)" stroke-width="9"></path>
+      <path data-boot-draw d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="#2C6FD6" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="6"></path>
+      <path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="15"></path>
+      <path data-boot-draw d="M44 6 L66 94" stroke="#2C6FD6" stroke-width="9"></path>
+    </svg>
+    <div class="boot-word">EDIFY</div>
+    <div class="boot-hide">
+      <div id="ed-boot-log"></div>
+      <div class="boot-skip">any key to skip</div>
+    </div>
+  </div>
+</div>
+<div class="grain" data-grain aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="lockup" href="./" aria-label="EDIFY home">
+      <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <path d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="#E8ECF2" stroke-width="11" stroke-linejoin="miter" stroke-miterlimit="6"></path>
+        <path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="18"></path>
+        <path data-nav-spine d="M44 6 L66 94" stroke="#E8ECF2" stroke-width="11"></path>
+      </svg>
+      <span>EDIFY</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html">Benchmarks</a>
+      <a href="docs.html">Docs</a>
+      <a href="teams.html" aria-current="page">Teams</a>
+      <a href="pricing.html">Pricing</a>
+      <a class="gh" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
+      <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY</a>
+    </nav>
+    <button class="burger" data-menu-toggle aria-label="Menu" aria-expanded="false" aria-controls="ed-menu"><span></span><span></span></button>
+  </div>
+</header>
+<div class="menu" id="ed-menu">
+  <div class="menu-top"><button data-menu-toggle aria-label="Close menu">X</button></div>
+  <nav class="menu-list" aria-label="Mobile">
+    <a href="./">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="docs.html">Docs</a>
+    <a href="teams.html">Teams</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub &#8599;</a>
+    <a class="cta" href="docs.html#install">Install EDIFY</a>
+  </nav>
+</div>
+<main id="main">
+<section class="page-hero has-loop">
+  <video class="hero-loop" data-loop muted loop playsinline preload="none" poster="assets/film/teams/poster.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/teams/loop.mp4" type="video/mp4"></video>
+  <div class="band">
+    <div class="eyebrow bare">Teams &middot; specified, not built yet</div>
+    <h1 class="h-display w18" data-rv="claim">
+      <span class="ln"><span>One repository,</span></span>
+      <span class="ln"><span>one goal.</span></span>
+      <span class="ln"><span class="blue">Many hands.</span></span>
+    </h1>
+    <p class="lead" data-rv="card" data-i="0" style="margin-top:30px">EDIFY will be the shared brain of a team. The goal, the task board, a journal of what each person and agent did and how, and the playbooks distilled from it, all as plain files in your repository, synced by git. Every agent will start where the team left off.</p>
+    <div class="legend" data-rv="card" data-i="1"><span><i class="sq"></i>enforced</span><span><i class="sq amber"></i>advisory</span><span><i class="sq red"></i>blocked</span><span><i class="sq off"></i>not built yet</span></div>
+  </div>
+</section>
+
+<section class="band film-band" aria-labelledby="film-h">
+  <div class="film-head">
+    <div>
+      <div class="eyebrow">The film &middot; 49 s</div>
+      <h2 id="film-h" class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Forty-nine seconds, no sound.</span></span></h2>
+    </div>
+    <p class="small" data-rv="card" data-i="0">Every line on screen comes from the update, with its source in the corner. The team brain is specified, not built, and the film labels its terminal output that way.</p>
+  </div>
+  <figure class="film" data-film data-rv="card" data-i="1">
+    <video controls preload="none" playsinline poster="assets/film/teams/film-poster.jpg" aria-label="EDIFY teams film, 49 seconds, no audio"><source src="assets/film/teams/film.mp4" type="video/mp4"></video>
+    <ol class="film-chapters" style="--n:7">
+      <li><button type="button" data-seek="0"><span class="n">01</span><span class="t">The boundary</span><span class="s">0:00</span></button></li>
+      <li><button type="button" data-seek="6.5"><span class="n">02</span><span class="t">Fragments</span><span class="s">0:06</span></button></li>
+      <li><button type="button" data-seek="12.5"><span class="n">03</span><span class="t">The shared brain</span><span class="s">0:12</span></button></li>
+      <li><button type="button" data-seek="19.8"><span class="n">04</span><span class="t">On disk</span><span class="s">0:19</span></button></li>
+      <li><button type="button" data-seek="27.4"><span class="n">05</span><span class="t">Status</span><span class="s">0:27</span></button></li>
+      <li><button type="button" data-seek="35.1"><span class="n">06</span><span class="t">The learning loop</span><span class="s">0:35</span></button></li>
+      <li><button type="button" data-seek="41"><span class="n">07</span><span class="t">No server</span><span class="s">0:41</span></button></li>
+    </ol>
+    <figcaption class="film-cap"><span>edify-teams-film &middot; 49 s &middot; 1600&times;900 &middot; no audio track</span><span>source: design/update/</span></figcaption>
+  </figure>
+</section>
+
+<section class="band" aria-labelledby="t1-h">
+  <div class="split s-8-12">
+    <div>
+      <div class="eyebrow">01 / The boundary</div>
+      <h2 id="t1-h" class="h-section-sm w20" data-rv="claim">
+        <span class="ln"><span>It fragments</span></span>
+        <span class="ln"><span class="blue">across people.</span></span>
+      </h2>
+      <p class="body" data-rv="card" data-i="0">EDIFY was designed for one developer and one agent: plan hard once, then build the whole feature in one run, so no session boundary could lose coherence. A team puts the boundary back.</p>
+      <div class="pains">
+        <div class="pain" data-rv="card" data-i="1"><div class="k">Perception</div><div class="v"><b>Runs Claude Code.</b> Cannot see what controls decided this morning.</div></div>
+        <div class="pain" data-rv="card" data-i="2"><div class="k">Controls</div><div class="v"><b>Runs Codex.</b> Claims the task perception claimed twenty minutes ago.</div></div>
+        <div class="pain" data-rv="card" data-i="3"><div class="k">Firmware</div><div class="v"><b>Flashes boards on a bench.</b> The fix for the CAN bus stays on the bench.</div></div>
+        <div class="pain" data-rv="card" data-i="4"><div class="k">Research</div><div class="v"><b>Rewrites the goal after every test day.</b> One session keeps working to the old one.</div></div>
+      </div>
+    </div>
+    <div class="panel" data-rv="card" data-i="1">
+      <div class="panel-head"><span class="label">Four questions every session asks</span><span class="label" style="color:var(--ed-text-4)">12-teams.md &sect;1</span></div>
+      <div class="rows" style="border:none">
+        <div class="row top"><i class="sq"></i><span class="n">What are we trying to do?</span><span class="s">goal.md</span></div>
+        <div class="row top"><i class="sq"></i><span class="n">What should I do next, and is anyone already on it?</span><span class="s">the board and claims</span></div>
+        <div class="row top"><i class="sq"></i><span class="n">What is everyone else doing right now?</span><span class="s">edify team status</span></div>
+        <div class="row top"><i class="sq"></i><span class="n">How has this been done before, here, on this system?</span><span class="s">journal, playbooks</span></div>
+      </div>
+      <div class="panel-foot">None of this is an intelligence problem, and the next model will not fix it. The missing information lives on someone else's machine, in someone else's head, or in a session that already ended.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="t2-h">
+  <div class="eyebrow">02 / On disk</div>
+  <h2 id="t2-h" class="h-section w24" data-rv="claim">
+    <span class="ln"><span>State is never stored,</span></span>
+    <span class="ln"><span class="blue">so state never conflicts.</span></span>
+  </h2>
+  <p class="lead" data-rv="card" data-i="0">Five kinds of file in one directory, committed with the code it describes. Everything that changes often is append-only, one file per event, at a path unique to its author and second. Claimed, contested, blocked, stale and done are computed from those files, never written down.</p>
+  <div class="split mt-34" style="gap:18px">
+    <div class="panel" data-rv="card" data-i="1">
+      <div class="panel-head"><span class="label">.edify/team/</span><span class="label" style="color:var(--ed-text-4)">specified layout &middot; not built yet</span></div>
+      <div class="term tree" data-term>
+        <div class="l cmd">tree .edify/team</div>
+        <div class="l"><span class="p">goal.md          </span><span class="d">the shared goal. humans edit it</span></div>
+        <div class="l"><span class="p">profile.md       </span><span class="d">the team questionnaire's answers</span></div>
+        <div class="l"><span class="p">tasks/&lt;id&gt;.md    </span><span class="d">the definition, never the state</span></div>
+        <div class="l"><span class="p">journal/&lt;who&gt;/   </span><span class="d">append-only. claims, progress, done, how</span></div>
+        <div class="l"><span class="p">playbooks/       </span><span class="d">how it is done here. a human admits each</span></div>
+        <div class="l"> </div>
+        <div class="l dim"># one file per event, so two machines never edit one file</div>
+        <div class="l ok"><span class="k">+</span> journal/sg/20260926T101100Z-T-sg-12-claim.md</div>
+        <div class="l ok"><span class="k">+</span> journal/mr/20260926T102847Z-T-mr-9-progress.md</div>
+        <div class="l ok"><span class="k">+</span> journal/cl/20260926T141502Z-T-cl-4-done.md</div>
+      </div>
+      <div class="term-cap"><span>architecture/01-team-folder.md &middot; 03-sync.md</span><span>Markdown, flat YAML, no JSON on disk</span></div>
+    </div>
+    <div class="g2 cells" style="gap:1px">
+      <div class="cell" data-rv="card" data-i="2"><span class="id">01</span><span class="t sm">Git is the sync</span><span class="b">Pull to see the team; push to be seen. No EDIFY process runs between teammates.</span></div>
+      <div class="cell" data-rv="card" data-i="3"><span class="id">02</span><span class="t sm">Any kind of task</span><span class="b">A task has a kind: code, experiment, hardware, research, review, ops. The journal records the rig, the parameters and the result, not only a diff.</span></div>
+      <div class="cell" data-rv="card" data-i="4"><span class="id">03</span><span class="t sm">The board and the build plan</span><span class="b">The board says where to go next. A code task links to <code class="c">specs/&lt;feature&gt;/</code>, and <code class="c">/build</code> still runs its tasks.md.</span></div>
+      <div class="cell" data-rv="card" data-i="5"><span class="id">04</span><span class="t sm">Readable by anyone</span><span class="b">Any agent that can read a file can read the brain, and so can any human.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="t3-h">
+  <div class="eyebrow">03 / Status</div>
+  <h2 id="t3-h" class="h-section w24" data-rv="claim">
+    <span class="ln"><span>A pure function over files.</span></span>
+    <span class="ln"><span class="blue">The same answer on every machine.</span></span>
+  </h2>
+  <div class="panel mt-34" data-rv="card" data-i="0">
+    <div class="panel-head"><span class="label">edify team status</span><span class="label" style="color:var(--ed-text-4)">specified output &middot; not built yet</span></div>
+    <div class="term" data-term>
+      <div class="l cmd">edify team status</div>
+      <div class="l ok"><span class="k">goal</span>  one unassisted lap of the Varsity track by 2027-03-15   <span class="dim">goal.md, edited 2d ago</span></div>
+      <div class="l"> </div>
+      <div class="l ok">in flight</div>
+      <div class="l">  T-sg-12  fuse lidar+camera in tracker   sg · claude-code   <span class="dim">progress 40m ago</span></div>
+      <div class="l">  T-cl-4   brake ECU CAN bring-up         cl · human         <span class="dim">progress 2h ago</span></div>
+      <div class="l">  T-mr-7   sim sweep: steering gains      mr · codex         <span class="a">no progress 5d · stale</span></div>
+      <div class="l ok">contested</div>
+      <div class="l">  T-sg-15  replay harness for bags        sg vs mr           <span class="a">both claimed · earliest: sg</span></div>
+      <div class="l ok">blocked</div>
+      <div class="l">  T-cl-6   HIL rig for brake controller   <span class="err">"waiting on harness from EE subteam"</span></div>
+      <div class="l ok">ready</div>
+      <div class="l">  T-mr-9   data-collection run, wet track   <span class="dim">experiment · perception</span></div>
+      <div class="l"> </div>
+      <div class="l ok"><span class="k">authors</span>  sg 40m ago · cl 2h ago · mr 5d ago   <span class="done">&#8592; git pull to refresh</span></div>
+    </div>
+    <div class="term-cap"><span>architecture/02-team-cli.md &middot; plain text on stdout, <code>--json</code> on every read</span><span>no model is called</span></div>
+  </div>
+  <div class="rows mt-18" data-rv="card" data-i="1">
+    <div class="row"><i class="sq"></i><span class="n"><code class="c">done</code> refuses without a How: how you did it is the part the next person needs.</span><span class="s">enforced</span></div>
+    <div class="row"><i class="sq amber"></i><span class="n"><code class="c">claim</code> warns and never refuses. Contested and stale are shown, not prevented.</span><span class="s">advisory</span></div>
+    <div class="row"><i class="sq red"></i><span class="n"><code class="c">block</code> needs a reason. A block with no reason is a status nobody can act on.</span><span class="s">blocked</span></div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="t4-h">
+  <div class="split">
+    <div>
+      <div class="eyebrow quiet">04 / The commands</div>
+      <h2 id="t4-h" class="h-section-sm w22">Each answers one question.</h2>
+      <p class="lead">Plain text on stdout, so any agent that can run a shell command can use them: Claude Code, Codex, Cursor, and whatever you run next. Stdlib only, offline.</p>
+      <div class="src">architecture/02-team-cli.md &middot; 05-agents.md</div>
+    </div>
+    <div class="rows" data-rv="card" data-i="0">
+      <div class="row"><i class="sq off"></i><span class="n">Set up the brain and ask the team questionnaire</span><span class="s">team init</span></div>
+      <div class="row"><i class="sq off"></i><span class="n">A new task on the board, from anyone, at any time</span><span class="s">team add</span></div>
+      <div class="row"><i class="sq off"></i><span class="n">I am on it, I am off it, it is done, it is stuck and why</span><span class="s">claim · release · done · block</span></div>
+      <div class="row"><i class="sq off"></i><span class="n">Who, person and agent, is on what; what is ready, blocked or stale</span><span class="s">team status</span></div>
+      <div class="row"><i class="sq off"></i><span class="n">How I did it: commands, rig, parameters, dead ends, friction</span><span class="s">team log</span></div>
+      <div class="row"><i class="sq off"></i><span class="n">Everything a fresh agent session needs, on one page</span><span class="s">team brief</span></div>
+      <div class="row"><i class="sq off"></i><span class="n">Turn journal entries into a proposed playbook; a human admits it</span><span class="s">team learn · admit</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="t5-h">
+  <div class="eyebrow">05 / The learning loop</div>
+  <h2 id="t5-h" class="h-section w22" data-rv="claim">
+    <span class="ln"><span>Agents propose.</span></span>
+    <span class="ln"><span class="blue">A human admits.</span></span>
+  </h2>
+  <p class="lead" data-rv="card" data-i="0">A wrong journal entry misleads one person once. A wrong playbook misleads every agent until someone notices. So the one step that makes something trusted context is the step where a person reads it.</p>
+  <div class="flow" data-rv="card" data-i="1">
+    <div><span class="k">journal &middot; How</span><span class="t">Done entries</span><span class="m">cl/&hellip;T-cl-4-done.md</span></div>
+    <div><span class="k">learn</span><span class="t">Evidence and a skeleton</span><span class="m">_proposed/can-bench-bringup.md</span></div>
+    <div class="human"><span class="k">the door</span><span class="t">A human reads it</span><span class="m">admit, or reject with a reason</span></div>
+    <div><span class="k">trusted context</span><span class="t">An admitted playbook</span><span class="m">playbooks/can-bench-bringup.md</span></div>
+  </div>
+  <div class="src">architecture/04-learning-loop.md &middot; the same door as harvest. The CLI never writes prose; an agent fills the skeleton.</div>
+</section>
+
+<section class="band" aria-labelledby="t6-h">
+  <div class="eyebrow quiet">06 / What we took, and from whom</div>
+  <h2 id="t6-h" class="h-section-sm w24">Coordination is a file an agent reads, never a protocol agents negotiate.</h2>
+  <div class="panel mt-34 bench-wrap" data-rv="card" data-i="0">
+    <table class="took">
+      <thead><tr><th scope="col">From</th><th scope="col">We took</th><th scope="col">We refused</th></tr></thead>
+      <tbody>
+        <tr><td>Ruflo</td><td>Agents claim tasks; agents record how they worked; successful work distils into reusable guidance.</td><td>The runtime, 300+ MCP tools, swarm topologies, consensus protocols, vector memory, federation.</td></tr>
+        <tr><td>Claude Code Agent Teams</td><td>The pending, in-progress, completed lifecycle and dependency markers.</td><td>The assumption of one lead session on one machine.</td></tr>
+        <tr><td>EDIFY's own harvest</td><td>Propose, a human admits, then persistent trusted context.</td><td>Nothing. The learning loop reuses its door.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="src">design/update/12-teams.md &sect;5 &middot; decision D-3</div>
+</section>
+
+<section class="paper" aria-labelledby="t7-h">
+  <div class="band split">
+    <div>
+      <div class="eyebrow">07 / No server</div>
+      <h2 id="t7-h" class="h-section-sm" data-rv="claim">
+        <span class="ln"><span>Git is</span></span>
+        <span class="ln"><span>the server.</span></span>
+      </h2>
+      <p class="lead" data-rv="card" data-i="0" style="max-width:46ch">Every refusal below either breaks a standing commitment or is impressive rather than essential. Each can be reopened by evidence, never by enthusiasm.</p>
+      <div class="paper-list" data-rv="card" data-i="1">
+        <div><i></i>The team brain is plain files, synced by the git you already use.</div>
+        <div><i></i>No telemetry, and no per-agent metering.</div>
+        <div><i></i>Journal lines that match the secret screen are refused.</div>
+      </div>
+    </div>
+    <div class="struck" aria-label="Not built, on purpose: a server, a sync service, a database, embeddings, consensus, telemetry">
+      <span>A server.</span><span>A sync service.</span><span>A database.</span><span>Embeddings.</span><span>Consensus.</span><span>Telemetry.</span>
+      <div class="src" style="margin-top:22px">design/update/12-teams.md &sect;8 &middot; principle P9</div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="partners" aria-labelledby="t8-h">
+  <div class="eyebrow">08 / Who it is for</div>
+  <h2 id="t8-h" class="h-section w24" data-rv="claim">
+    <span class="ln"><span>Design partners improve it.</span></span>
+    <span class="ln"><span class="blue">Startups pay for it.</span></span>
+  </h2>
+  <div class="g3 mt-34">
+    <div class="ed-card feature" data-rv="card" data-i="0">
+      <div class="top"><div class="label">U of T design teams and labs</div><div class="name">Design partner</div><div class="price"><b>$0</b><span>12-month team token</span></div></div>
+      <div class="lines">
+        <div class="li"><i class="sq"></i><span>Rocketry, solar car, self-driving, robotics, hardware and software research</span></div>
+        <div class="li"><i class="sq"></i><span>Onboarded in person, at least one hardware-heavy team first</span></div>
+        <div class="li no"><i class="sq off"></i><span>What we ask: a weekly friction review, and permission to cite you</span></div>
+      </div>
+      <div class="bot"><a class="btn btn-fill" href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Apply in Discussions <span class="m">&#8599;</span></a></div>
+    </div>
+    <div class="ed-card" data-rv="card" data-i="1">
+      <div class="top"><div class="label">Startups in the U of T ecosystem</div><div class="name">Team</div><div class="price"><b>$99</b><span>usd / team / month, flat &middot; proposed</span></div></div>
+      <div class="lines">
+        <div class="li"><i class="sq"></i><span>Up to 10 humans, unlimited agents, unlimited projects</span></div>
+        <div class="li"><i class="sq"></i><span>Everything the paid gates unlock</span></div>
+        <div class="li no"><i class="sq off"></i><span>A starting guess. It moves after ten paying teams</span></div>
+      </div>
+      <div class="bot"><a class="btn btn-line" href="pricing.html">See pricing</a></div>
+    </div>
+    <div class="ed-card" data-rv="card" data-i="2">
+      <div class="top"><div class="label">Banks and larger organisations</div><div class="name">Enterprise</div><div class="price"><b>Contract</b></div></div>
+      <div class="lines">
+        <div class="li"><i class="sq"></i><span>Offline, auditable, no telemetry, by construction</span></div>
+        <div class="li"><i class="sq"></i><span>Site licence, customer-held key</span></div>
+        <div class="li no"><i class="sq off"></i><span>Nothing is built for a bank before one asks</span></div>
+      </div>
+      <div class="bot"><a class="btn btn-line" href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Start a discussion <span class="m">&#8599;</span></a></div>
+    </div>
+  </div>
+  <div class="src">design/update/12-teams.md &sect;2, &sect;7 &middot; decisions D-2, D-4</div>
+</section>
+
+<section class="cta-band" aria-labelledby="t9-h">
+  <img src="assets/film/teams/poster.jpg" alt="" loading="lazy">
+  <div class="band split end">
+    <div>
+      <div class="eyebrow">09 / The first milestone</div>
+      <h2 id="t9-h" class="h-section w22" data-rv="claim">
+        <span class="ln"><span>Two machines.</span></span>
+        <span class="ln"><span class="blue">No server.</span></span>
+      </h2>
+      <p class="body" data-rv="card" data-i="0">Two people on two machines, one using Claude Code and one using Codex, share a repository. After <code class="c">git pull</code>, each runs <code class="c">edify team status</code> and sees the other's claimed task and last journal entry. That is the check the first week has to pass.</p>
+    </div>
+    <div data-rv="card" data-i="1">
+      <div class="rows">
+        <div class="row"><i class="sq"></i><span class="n">The design and the amendments</span><span class="s">ratified 2026-09-26</span></div>
+        <div class="row"><i class="sq off"></i><span class="n"><code class="c">edify team</code>, the CLI</span><span class="s">specified &middot; the build is next</span></div>
+        <div class="row"><i class="sq off"></i><span class="n">The team plan and design-partner tokens</span><span class="s">specified</span></div>
+      </div>
+      <div class="btn-row mt-18">
+        <a class="btn btn-fill" href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Become a design partner <span class="m">&#8599;</span></a>
+        <a class="btn btn-line" href="docs.html#install">Install EDIFY today <span class="m">&#8594;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="foot-top">
+    <div>
+      <div class="foot-brand">
+        <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="#E8ECF2" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="6"></path><path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="16"></path><path d="M44 6 L66 94" stroke="#E8ECF2" stroke-width="10"></path></svg>
+        <span>EDIFY</span>
+      </div>
+      <p class="foot-tag">The reliability layer for AI coding agents working on large, real-world codebases.</p>
+      <div class="btn-row" style="margin-top:26px">
+        <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY <span class="m">&#8594;</span></a>
+        <a class="btn btn-line btn-sm" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">View on GitHub <span class="m">&#8599;</span></a>
+      </div>
+    </div>
+    <div class="foot-cols">
+      <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="teams.html">Teams</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a></div>
+      <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
+      <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/claude-skills/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
+    </div>
+  </div>
+  <div class="foot-art" data-field-grid aria-hidden="true">
+    <div class="boxes">
+      <div style="left:3.2%;top:22%;width:14%;height:56%"></div>
+      <div style="left:3.2%;top:44%;width:23%;height:12%"></div>
+      <div style="left:3.2%;top:70%;width:23%;height:12%"></div>
+      <div style="left:47%;top:22%;width:11%;height:56%"></div>
+      <div style="left:56%;top:44%;width:15%;height:12%"></div>
+      <div style="left:70%;top:22%;width:1px;height:56%;border:none;background:rgba(232,236,242,0.055)"></div>
+    </div>
+    <div class="foot-word" data-rv="media" data-i="0"><span>EDIFY</span></div>
+  </div>
+  <div class="foot-line"><span>EDIFY / local-first / no telemetry / files, not conversations</span><span><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/LICENSE" target="_blank" rel="noopener">FSL-1.1-Apache-2.0</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/TRADEMARK.md" target="_blank" rel="noopener">Trademark</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></span></div>
+</footer>
+</body>
+</html>

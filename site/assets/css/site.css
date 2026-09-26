@@ -286,6 +286,48 @@ code.c{font-size:0.9em;color:var(--ed-text-1);background:var(--ed-plate);padding
 .page-hero.tall{min-height:78vh;display:flex;align-items:flex-end}
 .page-hero.tall .band{width:100%;padding-top:170px}
 
+/* ---------- films (assets/film/): one hairline film per page ----------
+   The header loop sits behind the hero with the left 45% clear for the DOM type.
+   It never autoplays from HTML: site.js starts it muted when it is on screen, and
+   under reduced motion, save-data or no JS the poster is what shows. */
+.hero-loop{position:absolute;left:0;right:0;top:0;width:100%;height:100svh;max-height:100%;object-fit:cover;object-position:30% 50%;pointer-events:none;background:var(--ed-void);-webkit-mask-image:linear-gradient(180deg,#000 78%,transparent);mask-image:linear-gradient(180deg,#000 78%,transparent)}
+.page-hero .hero-loop{height:100%}
+.page-hero.has-loop{min-height:82vh;display:flex;align-items:flex-end}
+.page-hero.has-loop .band{width:100%;padding-top:170px}
+.page-hero.has-loop .lead,.hero .hero-lead{max-width:38ch}
+.film-band .film-head{display:flex;align-items:flex-end;justify-content:space-between;gap:26px;flex-wrap:wrap}
+.film-band .film-head .small{max-width:44ch;color:var(--ed-text-3)}
+.film{margin:34px 0 0;border:1px solid var(--ed-line-3);background:var(--ed-well)}
+.film video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--ed-void)}
+.film-chapters{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(var(--n,6),minmax(0,1fr));gap:1px;background:var(--ed-line-3);border-top:1px solid var(--ed-line-3)}
+.film-chapters li{display:flex;background:var(--ed-panel)}
+.film-chapters button{flex:1;display:flex;flex-direction:column;gap:6px;text-align:left;background:transparent;border:none;box-shadow:inset 0 1px 0 transparent;padding:14px 16px 16px;cursor:pointer;color:var(--ed-text-3);font:inherit;transition:color var(--d-micro) var(--e-edify),background var(--d-micro) var(--e-edify),box-shadow var(--d-micro) var(--e-edify)}
+.film-chapters button:hover{color:var(--ed-text-1);background:var(--ed-plate)}
+.film-chapters button[aria-current="true"]{color:var(--ed-text-1);box-shadow:inset 0 1px 0 var(--ed-blue)}
+.film-chapters .n{font-family:var(--ed-font-mono);font-size:10.5px;letter-spacing:0.16em;color:var(--ed-blue-bright)}
+.film-chapters .t{font-size:14px;line-height:1.3;letter-spacing:-0.01em}
+.film-chapters .s{font-family:var(--ed-font-mono);font-size:10.5px;color:var(--ed-text-4)}
+.film-cap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--ed-font-mono);font-size:11px;color:var(--ed-text-4);padding:12px 18px;border-top:1px solid var(--ed-line-3)}
+
+/* ---------- teams ---------- */
+.tree .p{color:var(--ed-text-1)}
+.tree .d{color:var(--ed-text-4)}
+.struck{margin-top:30px;display:flex;flex-direction:column}
+.struck span{display:block;font-size:clamp(30px,4.4vw,60px);font-weight:700;letter-spacing:var(--ed-track-section);line-height:1.08;color:var(--ed-ink-3);text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--ed-oxide)}
+.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--ed-line-3);border:1px solid var(--ed-line-3);margin-top:34px}
+.flow > div{background:var(--ed-panel);padding:22px;display:flex;flex-direction:column;gap:10px}
+.flow .k{font-family:var(--ed-font-mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ed-text-4)}
+.flow .t{font-size:18px;font-weight:600;letter-spacing:-0.015em;line-height:1.25}
+.flow .m{font-family:var(--ed-font-mono);font-size:11.5px;color:var(--ed-blue-bright);word-break:break-all}
+.flow .human{box-shadow:inset 0 1px 0 var(--ed-blue)}
+.took{width:100%;border-collapse:collapse;font-size:var(--ed-size-body-sm)}
+.took th,.took td{text-align:left;vertical-align:top;padding:16px 18px;border-bottom:1px solid var(--ed-line-1);line-height:1.55}
+.took thead th{font-family:var(--ed-font-mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ed-text-3);font-weight:500;border-bottom:1px solid var(--ed-line-3)}
+.took td{color:var(--ed-text-2)}
+.took td:first-child{color:var(--ed-text-1);font-weight:600;white-space:nowrap}
+.took tbody tr:last-child td{border-bottom:none}
+.plan-note{margin-top:26px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+
 /* ---------- meter (home 01): where the work lives ---------- */
 #ed-meter-card{padding:30px}
 .meter-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:20px;border-bottom:1px solid var(--ed-line-1)}
@@ -478,6 +520,10 @@ code.c{font-size:0.9em;color:var(--ed-text-1);background:var(--ed-plate);padding
   .burger{display:flex}
   .foot-top{grid-template-columns:minmax(0,1fr)}
   .nums{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-loop{opacity:0.4;object-position:78% 50%}
+  .film-chapters{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .film-chapters li:last-child:nth-child(odd){grid-column:1/-1}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:720px){
   .band{padding-top:64px;padding-bottom:64px}
@@ -497,6 +543,8 @@ code.c{font-size:0.9em;color:var(--ed-text-1);background:var(--ed-plate);padding
   .faq summary{grid-template-columns:36px minmax(0,1fr) 20px;font-size:17px}
   .faq .ans{padding-left:58px}
   .step{grid-template-columns:minmax(0,1fr);gap:14px}
+  .flow,.plan-note{grid-template-columns:minmax(0,1fr)}
+  .took td:first-child{white-space:normal}
 }
 @media(max-width:560px){.frame{flex-basis:80vw}.term{font-size:11.5px;padding:18px}}
 @media (prefers-reduced-motion:reduce){
