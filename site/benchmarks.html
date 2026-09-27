@@ -11,15 +11,17 @@
 <meta property="og:title" content="Benchmarks — EDIFY">
 <meta property="og:description" content="Same model, same repo, same task: agent alone vs Spec Kit vs EDIFY. Methodology and results will be public, including the runs where EDIFY loses.">
 <meta property="og:url" content="https://edify-agents.github.io/claude-skills/benchmarks.html">
-<meta property="og:image" content="https://edify-agents.github.io/claude-skills/assets/img/plates/P1-the-fold-hero.jpg">
+<meta property="og:image" content="https://edify-agents.github.io/claude-skills/assets/film/home/stage-poster.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
-<link rel="stylesheet" href="assets/css/site.css?v=20260926">
+<link rel="stylesheet" href="assets/css/site.css?v=20260927e">
 <script>(function(){try{if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&!sessionStorage.getItem('ed:boot')){var h=document.documentElement;h.setAttribute('data-boot','');window.__edBootFallback=setTimeout(function(){h.removeAttribute('data-boot')},4000)}}catch(e){}})()</script>
-<script src="assets/js/site.js?v=20260926" defer></script>
+<script src="assets/js/reel.js?v=20260927e" defer></script>
+<script src="assets/js/reels.js?v=20260927e" defer></script>
+<script src="assets/js/site.js?v=20260927e" defer></script>
 </head>
 <body>
 <div id="ed-boot" aria-hidden="true">
@@ -59,6 +61,7 @@
       <a href="docs.html">Docs</a>
       <a href="teams.html">Teams</a>
       <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
       <a class="gh" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
       <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY</a>
     </nav>
@@ -75,105 +78,77 @@
     <a href="teams.html">Teams</a>
     <a href="pricing.html">Pricing</a>
     <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
     <a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a class="cta" href="docs.html#install">Install EDIFY</a>
   </nav>
 </div>
 <main id="main">
-<section class="page-hero has-loop">
-  <video class="hero-loop" data-loop muted loop playsinline preload="none" poster="assets/film/benchmarks/poster.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/benchmarks/loop.mp4" type="video/mp4"></video>
-  <div class="band">
-    <div class="eyebrow bare">Benchmarks</div>
-    <h1 class="h-display w18" data-rv="claim">
-      <span class="ln"><span>Same model.</span></span>
-      <span class="ln"><span>Same repo.</span></span>
-      <span class="ln"><span class="blue">Same task.</span></span>
-    </h1>
-    <p class="lead" data-rv="card" data-i="0" style="margin-top:30px">The comparison that matters is not against a strawman. It is against a modern, well-configured agent with a good prompt, and against a free alternative people actually use.</p>
+<section class="reel" data-reel="benchmarks" data-from="0" data-to="29.1" data-intro="2.8" data-pace="15" aria-label="Benchmarks, a film that plays as you scroll">
+  <a class="reel-skip" href="#after-reel">Skip past the film</a>
+  <div class="reel-pin"><div class="reel-paper"></div><div class="reel-frame"><canvas class="reel-cv" aria-hidden="true"></canvas></div></div>
+  <div class="reel-ui">
+      <div class="rc" data-ch="0">
+        <h1 class="f-a f-h1" style="left:80px;top:188px" data-ti="0.7" data-to="7.2" data-fx="ladder">
+            <span class="ln"><span>Same model.</span></span>
+            <span class="ln"><span>Same repo.</span></span>
+            <span class="ln"><span class="f-t3">Same task.</span></span>
+          </h1>
+        <div class="f-a f-lead" style="left:80px;top:500px;width:680px;font-size:20px" data-ti="1.5" data-to="7.2" data-fx="fade">The comparison that matters is not against a strawman. It is against a modern, well-configured agent with a good prompt, and against a free alternative people actually use.</div>
+        <div class="f-arm" style="left:910px" data-ti="2.0" data-to="7.2" data-fx="fade"><div class="f-lbl">A &middot; agent alone</div><div class="f-m">auto mode, a good prompt</div></div>
+        <div class="f-arm" style="left:1230px" data-ti="2.1" data-to="7.2" data-fx="fade"><div class="f-lbl">B &middot; spec kit</div><div class="f-m">the closest free alternative</div></div>
+        <div class="f-arm" style="left:1550px" data-ti="2.2" data-to="7.2" data-fx="fade"><div class="f-lbl">C &middot; EDIFY</div><div class="f-m">/spec to /verify, with the graph</div></div>
+        <div class="f-a f-mono f-t3" style="left:910px;top:820px;width:940px;text-align:center;font-size:13px" data-ti="2.8" data-to="7.2" data-fx="fade">same model version &middot; same opening prompt &middot; same limits</div>
+      </div>
+      <div class="rc pp" data-ch="1">
+        <div class="f-a f-giant" style="left:52px;top:196px" data-ti="8.3" data-to="14.3" data-fx="ladder"><span class="ln"><span>Published</span></span></div>
+        <div class="f-a" style="left:1300px;top:236px;font-size:40px;letter-spacing:-0.03em;line-height:1.1" data-ti="8.9" data-to="14.3" data-fx="ladder">
+            <span class="ln"><span class="f-ink1">on purpose.</span></span>
+          </div>
+        <div class="f-a f-giant" style="left:52px;top:530px" data-ti="8.62" data-to="14.35" data-fx="ladder"><span class="ln"><span>empty.</span></span></div>
+        <div class="f-a" style="left:80px;top:160px;font-size:16px;line-height:1.5" data-ti="8.1" data-to="14.2" data-fx="fade">
+            <div class="f-ink1" style="font-weight:500">Benchmarks</div><div class="f-ink3">Agent alone, Spec Kit, and EDIFY, on real open-source repositories.</div>
+          </div>
+        <div class="f-a f-mono" style="right:80px;top:160px;font-size:12px;line-height:1.75;text-align:right;color:var(--ed-ink-2)" data-ti="8.2" data-to="14.2" data-fx="fade">BENCHMARK IN PROGRESS<br>NO NUMBER UNTIL IT IS REPRODUCIBLE</div>
+        <div class="f-a" style="left:80px;top:884px;font-size:19px;line-height:1.45" data-ti="9.8" data-to="14.2" data-fx="ladder">
+            <span class="ln"><span class="f-ink1">Methodology and results will be public,</span></span>
+            <span class="ln"><span class="f-ink1">including the runs where EDIFY loses.</span></span>
+          </div>
+        <div class="f-a f-mono" style="right:80px;top:930px;font-size:12px;color:var(--ed-ink-3)" data-ti="10.2" data-to="14.2" data-fx="fade">benchmarks/ &middot; docs/benchmarks.md</div>
+      </div>
+      <div class="rc" data-ch="2">
+        <div class="f-a f-lbl f-t2" style="left:80px;top:196px" data-ti="15.2" data-to="22.6" data-fx="fade"><i class="f-sq f-o"></i>benchmark in progress &middot; not covered yet</div>
+        <h2 class="f-a f-h3" style="left:80px;top:226px;font-size:44px" data-ti="15.4" data-to="22.6" data-fx="ladder">
+            <span class="ln"><span>Until real, reproducible numbers exist, every cell stays a dash.</span></span>
+          </h2>
+        <div class="f-tbl" id="r-tbl"></div>
+        <div class="f-a f-lead" style="left:80px;top:790px;width:980px;font-size:19px;color:var(--ed-text-3)" data-ti="19.2" data-to="22.6" data-fx="fade">A benchmark filled in before the benchmark ran is the fastest way to lose a technical audience.</div>
+      </div>
+      <div class="rc" data-ch="3">
+        <h2 class="f-a f-h3" style="left:80px;top:180px" data-ti="23.4" data-to="29.2" data-fx="ladder">
+            <span class="ln"><span>What has to be true</span></span>
+            <span class="ln"><span class="f-t3">before a number goes up.</span></span>
+          </h2>
+        <div class="f-a f-lead" style="left:980px;top:196px;width:760px;font-size:19px" data-ti="23.8" data-to="29.2" data-fx="fade">Seven conditions. Every one is checkable in the public repository when the runs land.</div>
+        <div class="f-cr" style="top:400px" data-ti="24.2" data-to="29.2" data-fx="blur">
+            <div><span class="f-n">01</span><span><i class="f-sq f-o"></i>2 to 3 non-trivial open-source repositories, more than one language</span></div>
+            <div><span class="f-n">02</span><span><i class="f-sq f-o"></i>10 to 20 varied tasks, including a bug with a wrong first hypothesis</span></div>
+            <div><span class="f-n">03</span><span><i class="f-sq f-o"></i>The same model version, opening prompt and limits in every arm</span></div>
+            <div><span class="f-n">04</span><span><i class="f-sq f-o"></i>Success, tests, interventions, retries, tokens, cost, wall-clock time</span></div>
+            <div><span class="f-n">05</span><span><i class="f-sq f-o"></i>Scripts, prompts and raw transcripts published in benchmarks/</span></div>
+            <div><span class="f-n">06</span><span><i class="f-sq f-o"></i>A short video of a visible failure case</span></div>
+            <div><span class="f-n">07</span><span><i class="f-sq f-o"></i>Case studies from design partners come after, not instead</span></div>
+          </div>
+        <div class="f-a f-lbl f-t3" style="left:80px;top:780px" data-ti="25.0" data-to="29.2" data-fx="fade"><i class="f-sq f-o"></i>not met yet &middot; each one becomes filled when it is true and checkable</div>
+      </div>
   </div>
 </section>
 
-<section class="band film-band" aria-labelledby="film-h">
-  <div class="film-head">
-    <div>
-      <div class="eyebrow">The film &middot; 37 s</div>
-      <h2 id="film-h" class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Thirty-seven seconds, no sound.</span></span></h2>
-    </div>
-    <p class="small" data-rv="card" data-i="0">Every line on screen is this page's own copy, with its source file in the corner. Pick a chapter to jump to it.</p>
-  </div>
-  <figure class="film" data-film data-rv="card" data-i="1">
-    <video controls preload="none" playsinline poster="assets/film/benchmarks/film-poster.jpg" aria-label="EDIFY benchmarks film, 37 seconds, no audio"><source src="assets/film/benchmarks/film.mp4" type="video/mp4"></video>
-    <ol class="film-chapters" style="--n:5">
-      <li><button type="button" data-seek="0"><span class="n">01</span><span class="t">Same model</span><span class="s">0:00</span></button></li>
-      <li><button type="button" data-seek="7.5"><span class="n">02</span><span class="t">Status</span><span class="s">0:07</span></button></li>
-      <li><button type="button" data-seek="15"><span class="n">03</span><span class="t">The three arms</span><span class="s">0:15</span></button></li>
-      <li><button type="button" data-seek="23.2"><span class="n">04</span><span class="t">The minimum credible package</span><span class="s">0:23</span></button></li>
-      <li><button type="button" data-seek="29.6"><span class="n">05</span><span class="t">Help run it</span><span class="s">0:29</span></button></li>
-    </ol>
-    <figcaption class="film-cap"><span>edify-benchmarks-film &middot; 37 s &middot; 1600&times;900 &middot; no audio track</span><span>source: site/benchmarks.html</span></figcaption>
-  </figure>
-</section>
-
-<section class="band">
-  <div class="split end">
-    <div>
-      <div class="eyebrow">01 / Status</div>
-      <h2 class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Published empty,</span></span><span class="ln"><span class="blue">on purpose.</span></span></h2>
-    </div>
-    <p class="body" data-rv="card" data-i="0">Methodology and results will be public, including the runs where EDIFY loses. Until real, reproducible numbers exist, every cell below stays a dash. A benchmark filled in before the benchmark ran is the fastest way to lose a technical audience.</p>
-  </div>
-  <div class="panel mt-34" data-rv="card" data-i="1">
-    <div class="panel-head"><span class="status"><i></i>Benchmark in progress</span><span class="label" style="color:var(--ed-text-4)">no number until it is reproducible</span></div>
-    <div class="bench-wrap">
-      <table class="bench">
-        <thead><tr><th scope="col">Metric</th><th scope="col">Agent alone</th><th scope="col">Spec Kit</th><th scope="col" class="us">EDIFY</th></tr></thead>
-        <tbody>
-          <tr><td>Tasks passed</td><td class="d">—</td><td class="d">—</td><td class="d">—</td></tr>
-          <tr><td>Tests passing</td><td class="d">—</td><td class="d">—</td><td class="d">—</td></tr>
-          <tr><td>Human interventions</td><td class="d">—</td><td class="d">—</td><td class="d">—</td></tr>
-          <tr><td>Retries</td><td class="d">—</td><td class="d">—</td><td class="d">—</td></tr>
-          <tr><td>Tokens / cost</td><td class="d">—</td><td class="d">—</td><td class="d">—</td></tr>
-          <tr><td>Total time</td><td class="d">—</td><td class="d">—</td><td class="d">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="eyebrow">02 / The three arms</div>
-  <h2 class="h-section-sm w24">What each column means.</h2>
-  <div class="g3 cells mt-34" style="gap:1px">
-    <div class="cell" data-rv="card" data-i="0"><span class="id">A</span><span class="t">Agent alone</span><span class="b">The same model, in auto mode, with a good prompt and no harness. The baseline that matters, because it is what you are doing today.</span></div>
-    <div class="cell" data-rv="card" data-i="1"><span class="id">B</span><span class="t">Spec Kit</span><span class="b">The closest free alternative in the same shape. A good tool, and the honest comparison.</span></div>
-    <div class="cell" data-rv="card" data-i="2"><span class="id">C</span><span class="t">EDIFY</span><span class="b"><code class="c">/spec</code> &#8594; <code class="c">/plan</code> &#8594; <code class="c">/tasks</code> &#8594; <code class="c">/build</code> &#8594; <code class="c">/verify</code>, with the graph. If this does not beat arm A, the product has no reason to exist, and the page will say so.</span></div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="split">
-    <div>
-      <div class="eyebrow">03 / The minimum credible package</div>
-      <h2 class="h-section-sm w22">What has to be true before a number goes up.</h2>
-      <p class="lead">Seven conditions. Every one of them is checkable in the public repository when the runs land.</p>
-    </div>
-    <div class="rows">
-      <div class="row two top" data-rv="card" data-i="0" data-step="tight"><i class="sq"></i><span class="n">2–3 non-trivial open-source repositories, with real history and more than one language.</span></div>
-      <div class="row two top" data-rv="card" data-i="1" data-step="tight"><i class="sq"></i><span class="n">10–20 varied tasks: features, a refactor, a bug with a wrong first hypothesis, a migration.</span></div>
-      <div class="row two top" data-rv="card" data-i="2" data-step="tight"><i class="sq"></i><span class="n">The same model version, opening prompt and limits across all three arms.</span></div>
-      <div class="row two top" data-rv="card" data-i="3" data-step="tight"><i class="sq"></i><span class="n">Measured: task success, tests, human interventions, retries, tokens and cost, wall-clock time.</span></div>
-      <div class="row two top" data-rv="card" data-i="4" data-step="tight"><i class="sq"></i><span class="n">Scripts, prompts and raw transcripts published in <code class="c">benchmarks/</code>.</span></div>
-      <div class="row two top" data-rv="card" data-i="5" data-step="tight"><i class="sq"></i><span class="n">A short video of a visible failure case.</span></div>
-      <div class="row two top" data-rv="card" data-i="6" data-step="tight"><i class="sq off"></i><span class="n">Case studies from design partners come after, not instead.</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="cta-band">
-  <img src="assets/img/plates/P6-the-long-bench.jpg" alt="" loading="lazy">
+<section class="cta-band" id="after-reel">
+  <video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/empty.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/empty.mp4" type="video/mp4"></video>
   <div class="band split end">
     <div>
-      <div class="eyebrow">04 / Help run it</div>
+      <div class="eyebrow">Help run it</div>
       <h2 class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Reproduce it,</span></span><span class="ln"><span class="blue">or break it.</span></span></h2>
       <p class="body">Propose a repository, a task, or a flaw in the method. A reproduction report is worth more than a star.</p>
     </div>
@@ -198,7 +173,7 @@
       </div>
     </div>
     <div class="foot-cols">
-      <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="teams.html">Teams</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a></div>
+      <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="teams.html">Teams</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="contact.html">Contact</a></div>
       <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
       <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/claude-skills/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
     </div>

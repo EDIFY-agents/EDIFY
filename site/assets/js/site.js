@@ -79,9 +79,10 @@
   function prep(el) {
     var kind = el.dataset.rv;
     if (kind === 'card') el.style.opacity = '0';
+    else if (kind === 'eye') { el.style.setProperty('--ew', '0px'); el.style.opacity = '0'; }
     else if (kind === 'media') el.style.clipPath = 'inset(0 0 100% 0)';
     else if (kind === 'rule') { el.style.transform = 'scaleX(0)'; el.style.transformOrigin = 'center'; }
-    else if (kind === 'claim') $$('.ln > span', el).forEach(function (s) { s.style.transform = 'translate3d(0,110%,0)'; });
+    else if (kind === 'claim') $$('.ln > span', el).forEach(function (s) { s.style.transformOrigin = '0 100%'; s.style.transform = 'translate3d(0,115%,0) rotate(3deg)'; });
     else if (kind === 'num') {
       el.dataset.text = el.textContent;
       el.textContent = (el.dataset.prefix || '') + '0' + (el.dataset.suffix || '');
@@ -97,7 +98,12 @@
     var step = el.dataset.step === 'tight' ? 40 : 60;
     var d = Math.min(parseInt(el.dataset.i || '0', 10), 12) * step;
     var clear = function () { el.style.willChange = ''; };
-    if (kind === 'card') {
+    if (kind === 'eye') {
+      el.style.transition = 'opacity var(--d-el) var(--e-edify) 120ms';
+      void el.offsetWidth;
+      el.style.opacity = '1';
+      el.style.setProperty('--ew', '22px');
+    } else if (kind === 'card') {
       el.style.willChange = 'opacity, filter, transform';
       el.style.animation = (small ? 'blurFadeUpSm' : 'blurFadeUp') + ' var(--d-section) var(--e-out) ' + d + 'ms both';
       el.addEventListener('animationend', function () { clear(); el.style.opacity = '1'; }, { once: true });
@@ -107,6 +113,9 @@
       void el.offsetWidth;
       el.style.clipPath = 'inset(0 0 0% 0)';
       el.addEventListener('transitionend', clear, { once: true });
+      // the picture inside settles as the frame opens: from a little large to exactly whole
+      var pic = el.querySelector('video,img');
+      if (pic && el.animate) pic.animate([{ transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 1400, delay: d, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'backwards' });
     } else if (kind === 'rule') {
       el.style.willChange = 'transform';
       el.style.transition = 'transform var(--d-section) var(--e-out)';
@@ -118,8 +127,8 @@
       void el.offsetWidth;
       lines.forEach(function (s, n) {
         s.style.willChange = 'transform';
-        s.style.transition = 'transform var(--d-section) var(--e-out) ' + (n * 110) + 'ms';
-        s.style.transform = 'translate3d(0,0,0)';
+        s.style.transition = 'transform 1100ms var(--e-out) ' + (n * 95) + 'ms';
+        s.style.transform = 'translate3d(0,0,0) rotate(0deg)';
         s.addEventListener('transitionend', function () { s.style.willChange = ''; }, { once: true });
       });
     } else if (kind === 'num') {
@@ -134,6 +143,8 @@
   }
 
   function setupReveal() {
+    // eyebrows draw their hairline in as they arrive
+    $$('.eyebrow:not(.bare):not([data-rv])').forEach(function (e) { e.setAttribute('data-rv', 'eye'); });
     var els = $$('[data-rv]');
     if (reduced) { S.pending = []; return; }
     els.forEach(prep);
@@ -340,7 +351,7 @@
     track.addEventListener('scroll', sync, { passive: true });
     sync();
     frames.forEach(function (f) {
-      var img = f.querySelector('img');
+      var img = f.querySelector('img,video');
       var on = function () { if (img) img.style.filter = 'grayscale(0)'; };
       var off = function () { if (img) img.style.filter = 'grayscale(1)'; };
       f.addEventListener('focus', function () {
@@ -589,6 +600,14 @@
     }
   }
 
+  // the hairline under the header fills as the page is read
+  function progress(y) {
+    if (!S.header) S.header = $('.site-header');
+    var max = doc.documentElement.scrollHeight - window.innerHeight;
+    var k = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    if (S.header && Math.abs(k - (S.pk == null ? -1 : S.pk)) > 0.001) { S.pk = k; S.header.style.setProperty('--sp', k.toFixed(4)); }
+  }
+
   function noRaf() {
     S.rafDead = true;
     if (S.canvas) drawField(0, 0);
@@ -613,6 +632,7 @@
       }
     }
     var y = window.scrollY, raw = y - S.lastY;
+    progress(y);
     S.lastY = y;
     S.vel += (Math.max(-60, Math.min(60, raw)) - S.vel) * 0.12;
     var v = S.vel;
@@ -672,53 +692,374 @@
      or with save-data on, the poster is what shows. Otherwise a loop plays muted
      only while it is on screen and the tab is visible. */
 
+  var play = function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+  var stillMotion = function () { var conn = navigator.connection; return reduced || !!(conn && conn.saveData); };
+
+  // a loop (header loop or clip) plays muted, from the first frame it is on screen, and
+  // repeats; it pauses when it scrolls away or the tab hides
+  function watchLoop(v) {
+    v.muted = true;
+    v.loop = true;
+    v.playsInline = true;
+    if (stillMotion() || v.dataset.watched) return;
+    v.dataset.watched = '1';
+    if (!('IntersectionObserver' in window)) { v.dataset.on = '1'; play(v); return; }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        v.dataset.on = e.isIntersecting ? '1' : '';
+        if (e.isIntersecting && !doc.hidden) play(v); else v.pause();
+      });
+    }, { threshold: 0.05, rootMargin: '120px 0px' }).observe(v);
+  }
+
   function setupFilms() {
-    var conn = navigator.connection;
-    var still = reduced || !!(conn && conn.saveData);
     var loops = $$('video[data-loop]');
-    var play = function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
-    loops.forEach(function (v) {
-      v.muted = true;
-      v.loop = true;
-      v.playsInline = true;
-      if (still) return;
-      if (!('IntersectionObserver' in window)) { v.dataset.on = '1'; play(v); return; }
-      new IntersectionObserver(function (es) {
-        es.forEach(function (e) {
-          v.dataset.on = e.isIntersecting ? '1' : '';
-          if (e.isIntersecting && !doc.hidden) play(v); else v.pause();
-        });
-      }, { threshold: 0.05 }).observe(v);
-    });
-    if (!still && loops.length) doc.addEventListener('visibilitychange', function () {
-      loops.forEach(function (v) {
+    loops.forEach(watchLoop);
+    if (!stillMotion() && loops.length) doc.addEventListener('visibilitychange', function () {
+      $$('video[data-loop]').forEach(function (v) {
         if (doc.hidden) v.pause();
         else if (v.dataset.on === '1') play(v);
       });
     });
 
-    $$('[data-film]').forEach(function (fig) {
-      var v = $('video', fig);
-      var btns = $$('[data-seek]', fig);
-      if (!v || !btns.length) return;
-      var marks = btns.map(function (b) { return parseFloat(b.dataset.seek) || 0; });
-      var mark = function () {
-        var t = v.currentTime, cur = 0;
-        for (var i = 0; i < marks.length; i++) if (t + 0.05 >= marks[i]) cur = i;
-        btns.forEach(function (b, i) {
-          if (i === cur && (t > 0 || !v.paused)) b.setAttribute('aria-current', 'true');
-          else b.removeAttribute('aria-current');
-        });
-      };
-      btns.forEach(function (b, i) {
-        b.addEventListener('click', function () {
-          var go = function () { v.currentTime = marks[i]; play(v); mark(); };
-          if (v.readyState >= 1) go();
-          else { v.preload = 'auto'; v.addEventListener('loadedmetadata', go, { once: true }); v.load(); }
-        });
+    $$('[data-film]').forEach(setupFilm);
+  }
+
+  var esc = function (x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+  /* a page film. It waits until its section has arrived (most of the frame on screen),
+     opens its frame and shows its details, then rolls from the first frame and repeats
+     for as long as it stays there. Leaving resets it, so every arrival starts at 0:00.
+     There is no player chrome; a click, Enter or Space pauses and resumes it. */
+  function setupFilm(fig) {
+    var v = $('video', fig);
+    if (!v) return;
+    var pad = function (n) { return ('0' + n).slice(-2); };
+    var clock = function (t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + pad(t % 60); };
+    var dur = parseFloat(fig.dataset.dur) || 0;
+    var ch = [];
+    try { ch = JSON.parse(fig.dataset.chapters || '[]'); } catch (e) {}
+    if (!ch.length) ch = [[0, fig.dataset.name || 'Film']];
+    var marks = ch.map(function (c) { return +c[0]; });
+
+    // the frame holds the video and, for the arrival, the title card over it
+    var frame = doc.createElement('div');
+    frame.className = 'film-frame';
+    v.parentNode.insertBefore(frame, v);
+    frame.appendChild(v);
+    var card = doc.createElement('div');
+    card.className = 'film-card';
+    card.setAttribute('aria-hidden', 'true');
+    card.innerHTML = '<span class="k">EDIFY / Film ' + esc(fig.dataset.no || '') + ' &middot; ' + esc(fig.dataset.name || '') +
+      ' &middot; ' + dur + ' s &middot; no sound &middot; loops</span><span class="t">' + esc(ch[0][1]) + '</span><ol>' +
+      ch.map(function (c, i) { return '<li style="--i:' + i + '"><b>' + pad(i + 1) + '</b><span>' + esc(c[1]) + '</span><em>' + clock(c[0]) + '</em></li>'; }).join('') + '</ol>';
+    frame.appendChild(card);
+
+    // the readout under the frame: which chapter, how far through each, the time
+    var ro = doc.createElement('div');
+    ro.className = 'film-ro';
+    ro.innerHTML = '<span class="n"></span><span class="c"></span><span class="tk">' + ch.map(function (c, i) {
+      var end = i + 1 < ch.length ? ch[i + 1][0] : dur;
+      return '<button type="button" style="flex:' + Math.max(0.5, end - c[0]).toFixed(2) + '" aria-label="Chapter ' + (i + 1) + ', ' + esc(c[1]) + ', at ' + clock(c[0]) + '"><i></i></button>';
+    }).join('') + '</span><span class="tc"></span>';
+    frame.insertAdjacentElement('afterend', ro);
+    var segs = $$('.tk button', ro), nEl = $('.n', ro), cEl = $('.c', ro), tc = $('.tc', ro), cur = -1;
+
+    function update() {
+      var t = v.currentTime || 0, D = isFinite(v.duration) && v.duration ? v.duration : dur, i = 0;
+      for (var k = 0; k < marks.length; k++) if (t + 0.05 >= marks[k]) i = k;
+      segs.forEach(function (sg, k) {
+        var a = marks[k], z = k + 1 < marks.length ? marks[k + 1] : D;
+        sg.style.setProperty('--f', (t >= z ? 1 : t <= a ? 0 : (t - a) / (z - a)).toFixed(3));
+        if (k === i) sg.setAttribute('aria-current', 'true'); else sg.removeAttribute('aria-current');
       });
-      v.addEventListener('timeupdate', mark);
-      v.addEventListener('seeked', mark);
+      if (i !== cur) {
+        cur = i;
+        nEl.textContent = pad(i + 1) + ' / ' + pad(ch.length);
+        cEl.textContent = ch[i][1];
+        if (!reduced) { cEl.style.animation = 'none'; void cEl.offsetWidth; cEl.style.animation = 'edWipe var(--d-el) var(--e-edify) both'; }
+      }
+      tc.textContent = clock(t) + ' / ' + clock(D);
+    }
+    var raf = 0;
+    var spin = function () { update(); raf = v.paused ? 0 : requestAnimationFrame(spin); };
+    v.addEventListener('playing', function () { fig.setAttribute('data-playing', ''); if (!raf) raf = requestAnimationFrame(spin); });
+    v.addEventListener('seeked', update);
+    v.addEventListener('loadedmetadata', update);
+    update();
+
+    var arrived = false, timer = 0;
+    var toStart = function () { try { if (v.readyState >= 1 && v.currentTime) v.currentTime = 0; } catch (e) {} };
+    v.addEventListener('pause', function () {
+      fig.removeAttribute('data-playing');
+      if (!v._ours && arrived) { v._held = true; fig.setAttribute('data-held', ''); }   // the viewer paused it: leave it paused
+      v._ours = false;
+    });
+    // endless: loop is set, and if a server cannot seek, the end starts it over anyway
+    v.addEventListener('ended', function () {
+      if (v._held || !arrived) return;
+      if (v.seekable && v.seekable.length) { v.currentTime = 0; play(v); }
+      else { v.load(); play(v); }
+    });
+    var toggle = function () {
+      if (v.paused) { v._held = false; fig.removeAttribute('data-held'); fig.classList.add('rolling'); play(v); }
+      else v.pause();
+    };
+    v.addEventListener('click', toggle);
+    v.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    segs.forEach(function (sg, i) {
+      sg.addEventListener('click', function () {
+        var go = function () { v._held = false; fig.removeAttribute('data-held'); fig.classList.add('rolling'); v.currentTime = marks[i]; play(v); update(); };
+        if (v.readyState >= 1) go();
+        else { v.preload = 'auto'; v.addEventListener('loadedmetadata', go, { once: true }); v.load(); }
+      });
+    });
+
+    if (!v.hasAttribute('data-auto') || stillMotion() || !('IntersectionObserver' in window)) return;
+    v.muted = true;
+    fig.classList.add('waiting');
+
+    function arrive() {
+      if (arrived) return;
+      arrived = true;
+      toStart(); update();
+      fig.classList.remove('waiting');
+      fig.classList.add('arrive');
+      clearTimeout(timer);
+      // the details hold for a beat, then clear as the film rolls from 0:00
+      timer = setTimeout(function () {
+        fig.classList.add('rolling');
+        if (!v._held && !doc.hidden) { toStart(); play(v); }
+      }, 1700);
+    }
+    function depart() {
+      if (!arrived) return;
+      arrived = false;
+      clearTimeout(timer);
+      fig.classList.remove('arrive', 'rolling');
+      fig.classList.add('waiting');
+      v._held = false; fig.removeAttribute('data-held');
+      if (!v.paused) { v._ours = true; v.pause(); }
+      toStart(); update();
+    }
+    // load ahead, so the first frame is there when the section arrives
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting && v.preload !== 'auto') { v.preload = 'auto'; v.load(); }
+    }, { rootMargin: '700px 0px' }).observe(frame);
+    // once the film is here, show its own first frame rather than the poster (a frame from
+    // the middle), so what waits is exactly what will roll
+    v.addEventListener('loadeddata', function () { if (!v.currentTime) v.removeAttribute('poster'); }, { once: true });
+    new IntersectionObserver(function (es) {
+      var e = es[0], r = e.boundingClientRect, vh = window.innerHeight;
+      var here = e.isIntersecting && (e.intersectionRatio >= 0.72 || (r.top <= vh * 0.2 && r.bottom >= vh * 0.62));
+      if (here) arrive();
+      else if (!e.isIntersecting || e.intersectionRatio < 0.25) depart();
+    }, { threshold: [0, 0.1, 0.25, 0.4, 0.55, 0.62, 0.72, 0.85, 1] }).observe(frame);
+    doc.addEventListener('visibilitychange', function () {
+      if (doc.hidden && !v.paused) { v._ours = true; v.pause(); }
+      else if (!doc.hidden && arrived && fig.classList.contains('rolling') && !v._held) play(v);
+    });
+  }
+
+  /* ---------- the stage: live ink on the home hero ----------
+     ink.js draws the stage live when WebGL2 is there and motion is welcome, and the
+     pointer becomes one more drop of ink. If the GPU cannot hold the frame rate the
+     canvas steps down in resolution, then hands over to the rendered loop. */
+
+  function setupInk() {
+    var cv = $('canvas[data-ink]');
+    if (!cv) return;
+    var stage = cv.closest('[data-stage]') || cv.parentNode;
+    var vid = $('video.stage-media', stage);
+    if (stillMotion() || !window.EdInk || !EdInk.supported()) { cv.remove(); return; }
+    if (vid) vid.removeAttribute('data-loop');
+    var fallback = function () {
+      if (S.ink) { S.ink.dead = true; try { S.ink.p.destroy(); } catch (e) {} }
+      cv.remove();
+      stage.classList.remove('live');
+      if (vid) { vid.setAttribute('data-loop', ''); watchLoop(vid); }
+    };
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5), q = 1;
+    var size = function () {
+      var r = stage.getBoundingClientRect(), k = Math.min(dpr * q, 2560 / Math.max(1, r.width));
+      return [Math.max(2, Math.round(r.width * k)), Math.max(2, Math.round(r.height * k))];
+    };
+    var wh = size();
+    cv.width = wh[0]; cv.height = wh[1];
+    EdInk.create(cv, cv.dataset.ink, { live: true, intro: true }).then(function (p) {
+      var I = S.ink = { p: p, on: true, t0: performance.now(), times: [], waitBoot: true, dead: false, n: 0,
+        dial: $('[data-dial]', stage), ph: $('[data-ph]', stage), xy: $('[data-xy]', stage) };
+      var sgn = function (v) { return (v < 0 ? '\u2212' : '+') + Math.abs(v).toFixed(3); };
+      new IntersectionObserver(function (es) { I.on = es[0].isIntersecting; if (I.on) frame(performance.now()); }, { threshold: 0 }).observe(stage);
+      var toFrame = function (e) {
+        var r = stage.getBoundingClientRect();
+        return [(e.clientX - r.left - r.width / 2) / r.height, (e.clientY - r.top - r.height / 2) / r.height];
+      };
+      stage.addEventListener('pointermove', function (e) {
+        var f = toFrame(e);
+        p.pointer(f[0], f[1], true);
+        if (I.xy) I.xy.textContent = 'x ' + sgn(f[0]) + '  y ' + sgn(-f[1]);
+        if (!I.touched) { I.touched = true; setTimeout(function () { stage.classList.add('touched'); }, 1600); }
+      });
+      stage.addEventListener('pointerleave', function () { p.pointer(null, null, false); });
+      stage.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') p.pointer(null, null, false); });
+      window.addEventListener('resize', function () {
+        clearTimeout(I.rt);
+        I.rt = setTimeout(function () { var s2 = size(); p.resize(s2[0], s2[1]); }, 220);
+      });
+      var running = false;
+      function frame(now) {
+        if (I.dead || running) return;
+        running = true;
+        requestAnimationFrame(function step(t) {
+          if (I.dead || !I.on || doc.hidden) { running = false; I.last = 0; return; }
+          // the ink blooms once the boot overlay has handed over
+          if (I.waitBoot && !root.hasAttribute('data-boot')) { I.waitBoot = false; p.intro(t); }
+          p.renderAt((t - I.t0) / 1000, t);
+          if (I.dial) {
+            var ang = (((t - I.t0) / 1000) % p.T) / p.T * 360;
+            I.dial.setAttribute('transform', 'rotate(' + ang.toFixed(1) + ')');
+            if (I.n++ % 4 === 0) I.ph.textContent = '\u03b8 ' + ('00' + Math.floor(ang)).slice(-3) + '\u00b0';
+          }
+          // scroll: the stage falls behind the page a little and the ink stays put
+          var r = stage.getBoundingClientRect();
+          if (r.top <= 0) cv.style.transform = 'translate3d(0,' + (-r.top * 0.35).toFixed(1) + 'px,0) scale(' + (1 + Math.min(0.06, -r.top / r.height * 0.06)).toFixed(4) + ')';
+          else cv.style.transform = '';
+          // WebGL is asynchronous, so the GPU's cost shows as the gap between frames
+          if (I.last && I.times.length < 90) {
+            I.times.push(t - I.last);
+            if (I.times.length === 90) {
+              var sorted = I.times.slice(30).sort(function (x, y) { return x - y; }), med = sorted[sorted.length >> 1];
+              if (med > 24 && q > 0.6) { q *= 0.66; var s3 = size(); p.resize(s3[0], s3[1]); I.times = []; }
+              else if (med > 24) { fallback(); running = false; return; }
+            }
+          }
+          I.last = t;
+          if (!cv.classList.contains('on')) { cv.classList.add('on'); stage.classList.add('live'); }
+          requestAnimationFrame(step);
+        });
+      }
+      doc.addEventListener('visibilitychange', function () { if (!doc.hidden) frame(performance.now()); });
+      frame(performance.now());
+    }).catch(fallback);
+  }
+
+  /* ---------- the motion page: every scene, live, one at a time ---------- */
+
+  function setupPlayground() {
+    var box = $('[data-playground]');
+    if (!box) return;
+    var cv = $('canvas', box), chips = $$('[data-scene]', box), cap = $('[data-cap]', box);
+    if (stillMotion() || !window.EdInk || !EdInk.supported()) { box.classList.add('off'); return; }
+    var cur = null, on = true, t0 = performance.now(), pending = null;
+    var size = function () {
+      var r = cv.getBoundingClientRect(), k = Math.min(window.devicePixelRatio || 1, 1.5);
+      return [Math.max(2, Math.round(r.width * k)), Math.max(2, Math.round(r.height * k))];
+    };
+    function pick(i) {
+      var name = chips[i].dataset.scene;
+      chips.forEach(function (c, n) { c.setAttribute('aria-pressed', String(n === i)); });
+      if (cap) cap.textContent = chips[i].dataset.note || name;
+      // a fresh canvas per scene: a WebGL context cannot be handed to a new program cleanly
+      var fresh = cv.cloneNode(false);
+      cv.replaceWith(fresh); cv = fresh;
+      var wh = size(); cv.width = wh[0]; cv.height = wh[1];
+      if (cur) { try { cur.destroy(); } catch (e) {} cur = null; }
+      pending = name;
+      EdInk.create(cv, name, { live: true, intro: true }).then(function (p) {
+        if (pending !== name) { p.destroy(); return; }
+        cur = p; t0 = performance.now(); p.intro(t0);
+        cv.addEventListener('pointermove', function (e) { var r = cv.getBoundingClientRect(); p.pointer((e.clientX - r.left - r.width / 2) / r.height, (e.clientY - r.top - r.height / 2) / r.height, true); });
+        cv.addEventListener('pointerleave', function () { p.pointer(null, null, false); });
+      }).catch(function () { box.classList.add('off'); });
+    }
+    chips.forEach(function (c, i) { c.addEventListener('click', function () { pick(i); }); });
+    new IntersectionObserver(function (es) { on = es[0].isIntersecting; }, { threshold: 0 }).observe(box);
+    (function loop(t) {
+      if (cur && on && !doc.hidden) cur.renderAt((t - t0) / 1000, t);
+      requestAnimationFrame(loop);
+    })(performance.now());
+    pick(0);
+  }
+
+  /* ---------- contact: the form writes the message, the visitor picks where it goes ----------
+     The site has no backend. A discussion is prefilled on GitHub (public, so the email is left
+     out), an email opens the visitor's own mail app (only when the form carries data-email),
+     and the message can be copied. Nothing is sent from the page. */
+
+  var TOPICS = { partner: 'Design partner', team: 'Team plan', enterprise: 'Enterprise', question: 'Question', other: 'Hello' };
+
+  function setupContact() {
+    var form = $('[data-contact]');
+    if (!form) return;
+    var err = $('[data-cf-err]', form), state = $('[data-cf-state]', form), note = $('[data-cf-note]', form);
+    var mail = form.getAttribute('data-email') || '';
+    var emailBtn = $('[data-route="email"]', form);
+    if (mail && emailBtn) emailBtn.hidden = false;
+    var pick = function (topic) {
+      var r = $('input[name="topic"][value="' + topic + '"]', form);
+      if (r) r.checked = true;
+      $$('.chan[data-topic]').forEach(function (c) { c.classList.toggle('picked', c.dataset.topic === topic); });
+    };
+    try { var q = new URLSearchParams(location.search).get('topic'); if (q && TOPICS[q]) pick(q); } catch (e) {}
+    $$('input[name="topic"]', form).forEach(function (r) { r.addEventListener('change', function () { pick(r.value); }); });
+    $$('.chan[data-topic]').forEach(function (c) {
+      c.addEventListener('click', function (e) {
+        e.preventDefault();
+        pick(c.dataset.topic);
+        try { history.replaceState(null, '', '?topic=' + c.dataset.topic + '#write'); } catch (x) {}
+        var w = $('#write');
+        if (w) w.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+        setTimeout(function () { var n = form.elements.name; if (n) n.focus({ preventScroll: true }); }, reduced ? 0 : 700);
+      });
+    });
+    var route = 'discussion';
+    $$('button[type="submit"]', form).forEach(function (b) { b.addEventListener('click', function () { route = b.dataset.route; }); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = form.elements, topic = (form.querySelector('input[name="topic"]:checked') || {}).value || 'other';
+      var name = f.name.value.trim(), org = f.org.value.trim(), email = f.email.value.trim(), msg = f.message.value.trim();
+      var bad = [];
+      [['name', name], ['message', msg]].forEach(function (x) { var ok = !!x[1]; f[x[0]].parentNode.classList.toggle('bad', !ok); if (!ok) bad.push(x[0]); });
+      var mailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      f.email.parentNode.classList.toggle('bad', !mailOk);
+      if (!mailOk) bad.push('a valid email');
+      if (route === 'email' && !email) { f.email.parentNode.classList.add('bad'); bad.push('an email to reply to'); }
+      if (bad.length) { err.hidden = false; err.textContent = 'Missing: ' + bad.join(', ') + '.'; return; }
+      err.hidden = true;
+      var title = TOPICS[topic] + ': ' + (org || name);
+      var head = 'Topic: ' + TOPICS[topic] + '\nFrom: ' + name + (org ? ', ' + org : '');
+      var done = function (label) { form.classList.add('sent'); if (state) state.textContent = label; };
+      if (route === 'discussion') {
+        var cat = topic === 'question' ? 'q-a' : 'general';
+        var url = 'https://github.com/EDIFY-agents/claude-skills/discussions/new?category=' + cat +
+          '&title=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(head + '\n\n' + msg);
+        window.open(url, '_blank', 'noopener');
+        done('opened on GitHub');
+      } else if (route === 'email' && mail) {
+        location.href = 'mailto:' + mail + '?subject=' + encodeURIComponent('[EDIFY] ' + title) + '&body=' + encodeURIComponent(head + '\nReply to: ' + email + '\n\n' + msg);
+        done('handed to your mail app');
+      } else {
+        var text = head + (email ? '\nReply to: ' + email : '') + '\n\n' + msg;
+        var ok = function () { done('copied'); if (note) note.textContent = 'Copied. Paste it wherever suits you: a discussion, an issue, or an email.'; };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, function () {});
+        else { var t = doc.createElement('textarea'); t.value = text; doc.body.appendChild(t); t.select(); try { doc.execCommand('copy'); ok(); } catch (x) {} t.remove(); }
+      }
+    });
+  }
+
+  /* ---------- buttons lean toward the pointer, a few pixels ---------- */
+
+  function setupMagnet() {
+    if (reduced || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    $$('.btn').forEach(function (b) {
+      b.setAttribute('data-mag', '');
+      b.addEventListener('pointermove', function (e) {
+        var r = b.getBoundingClientRect();
+        var dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+        b.style.transform = 'translate3d(' + (dx * 8).toFixed(1) + 'px,' + (dy * 6).toFixed(1) + 'px,0)';
+      });
+      b.addEventListener('pointerleave', function () { b.style.transform = ''; });
     });
   }
 
@@ -732,7 +1073,11 @@
     setupFaq();
     setupField();
     setupGallery();
+    setupInk();
+    setupPlayground();
+    setupContact();
     setupFilms();
+    setupMagnet();
     measure();
     setupReveal();
     doc.addEventListener('visibilitychange', function () { S.hidden = doc.hidden; });
@@ -740,7 +1085,7 @@
       clearTimeout(S.rt);
       S.rt = setTimeout(function () { small = window.innerWidth < 560; sizeField(); measure(); }, 150);
     });
-    window.addEventListener('scroll', function () { sweep(); if (S.rafDead) staticScroll(); }, { passive: true });
+    window.addEventListener('scroll', function () { sweep(); if (S.rafDead) { staticScroll(); progress(window.scrollY); } }, { passive: true });
     if (!reduced) {
       var loop = function (t) { tick(t); requestAnimationFrame(loop); };
       requestAnimationFrame(loop);
