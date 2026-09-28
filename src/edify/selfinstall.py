@@ -20,6 +20,7 @@ not, which makes a mis-detection cost one flag rather than a broken install.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -110,8 +111,9 @@ def detect_manager(prefix: Path | str | None = None) -> str:
     is also the right default: pip installs into the environment it is run from,
     so a wrong guess there is a no-op rather than a shadowed second copy.
     """
-    prefix = Path(prefix if prefix is not None else sys.prefix)
-    parts = [p.lower() for p in prefix.parts]
+    # Split on both separators: `Path` on POSIX keeps `C:\Users\...` as one part.
+    raw = str(prefix if prefix is not None else sys.prefix)
+    parts = [p.lower() for p in re.split(r"[\\/]+", raw) if p]
     for i, part in enumerate(parts):
         nxt = parts[i + 1] if i + 1 < len(parts) else ""
         if part == "uv" and nxt == "tools":

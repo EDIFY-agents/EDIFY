@@ -123,6 +123,9 @@ def isolated_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         "EDIFY_NO_FEEDBACK",
         "EDIFY_NO_ANIM",
         "EDIFY_BUY_URL",
+        # GitHub Actions sets CI=true, which turns animation and prompts off; the
+        # tests that want either set it themselves, so CI and a laptop agree.
+        "CI",
     ):
         monkeypatch.delenv(name, raising=False)
     return home
