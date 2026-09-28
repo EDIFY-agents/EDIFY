@@ -34,6 +34,10 @@
     window.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && menu && menu.classList.contains('open')) $('[data-menu-toggle]').click();
     });
+    // back from the page a menu link opened: the cached page must not come back with the menu open
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted && menu && menu.classList.contains('open')) $('[data-menu-toggle]').click();
+    });
 
     $$('[data-copy]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -1013,7 +1017,7 @@
         setTimeout(function () { var n = form.elements.name; if (n) n.focus({ preventScroll: true }); }, reduced ? 0 : 700);
       });
     });
-    var route = 'discussion';
+    var route = mail ? 'email' : 'discussion';
     $$('button[type="submit"]', form).forEach(function (b) { b.addEventListener('click', function () { route = b.dataset.route; }); });
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -1039,6 +1043,7 @@
       } else if (route === 'email' && mail) {
         location.href = 'mailto:' + mail + '?subject=' + encodeURIComponent('[EDIFY] ' + title) + '&body=' + encodeURIComponent(head + '\nReply to: ' + email + '\n\n' + msg);
         done('handed to your mail app');
+        if (note) note.textContent = 'Your mail app should open with the message addressed to ' + mail + '. If nothing opened, copy the message and send it there.';
       } else {
         var text = head + (email ? '\nReply to: ' + email : '') + '\n\n' + msg;
         var ok = function () { done('copied'); if (note) note.textContent = 'Copied. Paste it wherever suits you: a discussion, an issue, or an email.'; };

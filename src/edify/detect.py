@@ -9,10 +9,10 @@ from __future__ import annotations
 
 import json
 import re
-import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from . import _toml as tomllib
 from .graph.ignore import IgnoreRules
 from .graph.langs import EXTENSIONS
 

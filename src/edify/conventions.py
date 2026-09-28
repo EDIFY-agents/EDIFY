@@ -15,9 +15,9 @@ from __future__ import annotations
 
 import json
 import re
-import tomllib
 from pathlib import Path
 
+from . import _toml as tomllib
 from .detect import Stack
 
 _LINTERS = {
