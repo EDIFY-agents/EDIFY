@@ -8,9 +8,9 @@
 <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
 </filter>
 </defs>
-<rect width="560" height="212" rx="10" fill="#0B0F17"/>
-<rect x="0.5" y="0.5" width="559" height="211" rx="10" fill="none" stroke="#1E2733" stroke-width="1"/>
-<g fill="#2E3E5C">
+<rect width="560" height="212" rx="2" fill="#04060A"/>
+<rect x="0.5" y="0.5" width="559" height="211" rx="2" fill="none" stroke="#1C1F24" stroke-width="1"/>
+<g fill="#4F5256">
 <circle cx="520" cy="100" r="1.9"/>
 <circle cx="520" cy="78" r="1.9"/>
 <circle cx="504" cy="78" r="1.9"/>
@@ -94,23 +94,23 @@
 <circle cx="520" cy="122" r="1.9"/>
 </g>
 <g class="motion">
-<g><circle r="1.40" fill="#4C8DFF" opacity="0.060"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.243s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="1.50" fill="#4C8DFF" opacity="0.068"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.227s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="1.60" fill="#4C8DFF" opacity="0.087"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.210s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="1.70" fill="#4C8DFF" opacity="0.113"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.194s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="1.80" fill="#4C8DFF" opacity="0.147"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.178s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="1.90" fill="#4C8DFF" opacity="0.187"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.162s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.00" fill="#4C8DFF" opacity="0.233"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.146s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.10" fill="#4C8DFF" opacity="0.284"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.130s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.20" fill="#4C8DFF" opacity="0.342"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.113s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.30" fill="#4C8DFF" opacity="0.404"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.097s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.40" fill="#4C8DFF" opacity="0.472"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.081s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.50" fill="#4C8DFF" opacity="0.544"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.065s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.60" fill="#4C8DFF" opacity="0.621"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.049s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.70" fill="#4C8DFF" opacity="0.703"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.032s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="2.80" fill="#4C8DFF" opacity="0.789"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.016s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
-<g><circle r="4.2" fill="#EEF3F8" filter="url(#glow)"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.000s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="1.40" fill="#2C6FD6" opacity="0.060"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.243s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="1.50" fill="#2C6FD6" opacity="0.068"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.227s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="1.60" fill="#2C6FD6" opacity="0.087"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.210s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="1.70" fill="#2C6FD6" opacity="0.113"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.194s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="1.80" fill="#2C6FD6" opacity="0.147"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.178s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="1.90" fill="#2C6FD6" opacity="0.187"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.162s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.00" fill="#2C6FD6" opacity="0.233"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.146s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.10" fill="#2C6FD6" opacity="0.284"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.130s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.20" fill="#2C6FD6" opacity="0.342"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.113s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.30" fill="#2C6FD6" opacity="0.404"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.097s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.40" fill="#2C6FD6" opacity="0.472"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.081s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.50" fill="#2C6FD6" opacity="0.544"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.065s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.60" fill="#2C6FD6" opacity="0.621"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.049s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.70" fill="#2C6FD6" opacity="0.703"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.032s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="2.80" fill="#2C6FD6" opacity="0.789"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.016s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
+<g><circle r="4.2" fill="#7ABDFF" filter="url(#glow)"/><animateMotion dur="3.43s" repeatCount="indefinite" begin="-0.000s" rotate="auto"><mpath href="#curve" xlink:href="#curve"/></animateMotion></g>
 </g>
-<g class="still"><circle cx="496.6" cy="151.3" r="1.40" fill="#4C8DFF" opacity="0.060"/><circle cx="499.6" cy="148.7" r="1.50" fill="#4C8DFF" opacity="0.068"/><circle cx="502.4" cy="146.0" r="1.60" fill="#4C8DFF" opacity="0.087"/><circle cx="504.9" cy="143.1" r="1.70" fill="#4C8DFF" opacity="0.113"/><circle cx="507.3" cy="140.1" r="1.80" fill="#4C8DFF" opacity="0.147"/><circle cx="509.5" cy="136.9" r="1.90" fill="#4C8DFF" opacity="0.187"/><circle cx="511.5" cy="133.6" r="2.00" fill="#4C8DFF" opacity="0.233"/><circle cx="513.3" cy="130.2" r="2.10" fill="#4C8DFF" opacity="0.284"/><circle cx="514.8" cy="126.6" r="2.20" fill="#4C8DFF" opacity="0.342"/><circle cx="516.2" cy="123.0" r="2.30" fill="#4C8DFF" opacity="0.404"/><circle cx="517.4" cy="119.3" r="2.40" fill="#4C8DFF" opacity="0.472"/><circle cx="518.3" cy="115.5" r="2.50" fill="#4C8DFF" opacity="0.544"/><circle cx="519.0" cy="111.7" r="2.60" fill="#4C8DFF" opacity="0.621"/><circle cx="519.6" cy="107.8" r="2.70" fill="#4C8DFF" opacity="0.703"/><circle cx="519.9" cy="103.9" r="2.80" fill="#4C8DFF" opacity="0.789"/><circle cx="520.0" cy="100.0" r="4.2" fill="#EEF3F8" filter="url(#glow)"/></g>
-<text x="280" y="194" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="11.5" fill="#5E6B7E" text-anchor="middle" letter-spacing="1.6">the infinite loop, made finite</text>
+<g class="still"><circle cx="496.6" cy="151.3" r="1.40" fill="#2C6FD6" opacity="0.060"/><circle cx="499.6" cy="148.7" r="1.50" fill="#2C6FD6" opacity="0.068"/><circle cx="502.4" cy="146.0" r="1.60" fill="#2C6FD6" opacity="0.087"/><circle cx="504.9" cy="143.1" r="1.70" fill="#2C6FD6" opacity="0.113"/><circle cx="507.3" cy="140.1" r="1.80" fill="#2C6FD6" opacity="0.147"/><circle cx="509.5" cy="136.9" r="1.90" fill="#2C6FD6" opacity="0.187"/><circle cx="511.5" cy="133.6" r="2.00" fill="#2C6FD6" opacity="0.233"/><circle cx="513.3" cy="130.2" r="2.10" fill="#2C6FD6" opacity="0.284"/><circle cx="514.8" cy="126.6" r="2.20" fill="#2C6FD6" opacity="0.342"/><circle cx="516.2" cy="123.0" r="2.30" fill="#2C6FD6" opacity="0.404"/><circle cx="517.4" cy="119.3" r="2.40" fill="#2C6FD6" opacity="0.472"/><circle cx="518.3" cy="115.5" r="2.50" fill="#2C6FD6" opacity="0.544"/><circle cx="519.0" cy="111.7" r="2.60" fill="#2C6FD6" opacity="0.621"/><circle cx="519.6" cy="107.8" r="2.70" fill="#2C6FD6" opacity="0.703"/><circle cx="519.9" cy="103.9" r="2.80" fill="#2C6FD6" opacity="0.789"/><circle cx="520.0" cy="100.0" r="4.2" fill="#7ABDFF" filter="url(#glow)"/></g>
+<text x="280" y="194" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="11.5" fill="#6A6D71" text-anchor="middle" letter-spacing="1.6">the infinite loop, made finite</text>
 </svg>

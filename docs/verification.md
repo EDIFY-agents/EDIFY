@@ -6,6 +6,10 @@
 
 ## The mechanism
 
+<p align="center">
+  <img src="../assets/motion/build.webp" width="400" alt="A grid of failing red squares turning to passing blue, one by one">
+</p>
+
 Phase 2 of every build turns each assertion in the spec into an executable test
 that **fails**, before any core logic exists. Everything after that is making red
 go green.

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/infinity.svg" width="560" alt="An infinity traced dot by dot — the animation the EDIFY CLI paints while it works">
+<img src="assets/motion/stage.webp" width="100%" alt="The EDIFY wordmark, flat white type with two pools of blue ink travelling through it">
 
 # EDIFY
 
@@ -42,6 +42,10 @@ to install on a build server. macOS, Linux, and Windows from the same artifact.
 ···  `pipx install edify-cli` · `edify init --yes`
 
 <img src="assets/hero.svg" alt="Installing EDIFY and running edify init" width="100%">
+
+<p align="center">
+  <img src="assets/infinity.svg" width="480" alt="An infinity traced dot by dot — the animation the EDIFY CLI paints while it works">
+</p>
 
 Then, in whichever agent you already use:
 
@@ -90,6 +94,17 @@ The first three are slow and expensive and end at a human reading them. The
 fourth is fast and cheap and ends at working software. `/verify` can be re-run by
 anyone, at any time, including six months later.
 
+<table>
+  <tr>
+    <td width="50%"><img src="assets/motion/spec.webp" alt="spec, plan, tasks, read one after another"></td>
+    <td width="50%"><img src="assets/motion/build.webp" alt="A grid of failing red squares turning to passing blue, one by one"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><code>/spec</code> · <code>/plan</code> · <code>/tasks</code> — three reads, one after another</sub></td>
+    <td align="center"><sub><code>/build</code> — red to green</sub></td>
+  </tr>
+</table>
+
 ---
 
 ## The codebase graph
@@ -137,6 +152,19 @@ metadata records which, so a scan is never mistaken for a parse.
 | **Gemini CLI** | agent-agnostic workflow |
 | **GitHub Copilot** | use the agent you already pay for |
 | **Windsurf** · **AGENTS.md** | broad compatibility |
+
+<table>
+  <tr>
+    <td><img src="assets/motion/rt-claude.webp" alt=".claude in ink"></td>
+    <td><img src="assets/motion/rt-codex.webp" alt=".codex in ink"></td>
+    <td><img src="assets/motion/rt-cursor.webp" alt=".cursor in ink"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/motion/rt-gemini.webp" alt=".gemini in latex"></td>
+    <td><img src="assets/motion/rt-github.webp" alt=".github in blue latex"></td>
+    <td><img src="assets/motion/rt-windsurf.webp" alt=".windsurf in ink"></td>
+  </tr>
+</table>
 
 ```bash
 edify init new .          # set a folder up for every runtime at once
@@ -256,6 +284,10 @@ specs/
 ---
 
 ## Pricing
+
+<p align="center">
+  <img src="assets/motion/free.webp" width="720" alt="$0, filling with blue ink">
+</p>
 
 **Free, forever, with no account.** Every command, every query, every check, the
 whole methodology tree. Not a trial, and it does not expire.

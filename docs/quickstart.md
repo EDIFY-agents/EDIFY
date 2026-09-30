@@ -16,6 +16,10 @@ Per-platform detail, PATH fixes, and where EDIFY keeps its files:
 
 ## 2 · Install the harness into a repository
 
+<p align="center">
+  <img src="../assets/motion/init.webp" width="640" alt="edify init, in flat grey type, filling with blue ink">
+</p>
+
 ```bash
 cd your-repository
 edify init

@@ -21,9 +21,11 @@ run to reproduce the image below it.
 ## Regenerating
 
 1. Run the command in a real repository and capture the output verbatim.
-2. Put it in `assets/specs/<name>.txt`. The first line is `#! <title>` — what
-   appears in the terminal title bar. Lines starting with `$ ` render as prompts;
-   lines starting with `#` render as dim comments.
+2. Put it in `assets/specs/<name>.txt`. The first line is `#! <title> — <caption>`,
+   which becomes the readout in the frame's two top corners. Lines starting with
+   `$ ` render as prompts; lines starting with `#` render as dim comments. A
+   transcript captured with colour keeps its escapes, and they are drawn as
+   written.
 3. Render:
 
 ```bash
@@ -41,7 +43,10 @@ done
 ## Why SVG
 
 Crisp at any zoom, a few kilobytes each, diffable in review, and readable on both
-GitHub themes because the terminal is dark in either. No external image host, no
+GitHub themes because the terminal is dark in either. The frame is the site's: the
+`--ed-well` background, square corners, the corner ticks and readout every clip on
+the site carries, and the site's signal blue, amber and oxide for pass, advisory
+and blocked. No external image host, no
 binary blobs in history, and a wrong number is a one-line fix rather than a
 re-shoot.
 
@@ -58,8 +63,8 @@ still frame instead of a loop.
 with a CSS animation on a twelve-second loop, the five commands lighting up in
 order as the run reaches them, then resetting. **Edit the file directly.**
 
-`infinity.svg` opens the page and is the animation `edify init` paints in the
-terminal while it works. **Do not edit it by hand** — it is generated, and the
+`infinity.svg` sits under the install and is the animation `edify init` paints in
+the terminal while it works, in the site's ink. **Do not edit it by hand** — it is generated, and the
 lattice of dots is exactly the grid cells `src/edify/anim.py` lights up, imported
 from the module itself rather than redrawn, so the curve in the README and the
 curve in the terminal cannot drift apart. Regenerate after any change to `anim`'s
@@ -67,6 +72,19 @@ geometry:
 
 ```bash
 python tools/render_infinity.py assets/infinity.svg
+```
+
+## `motion/`
+
+The animated clips on the README and in `docs/` are the site's own ink loops from
+`site/assets/film/`, scaled down and re-encoded as animated WebP, because a README
+plays an animated image but not a video. Nothing is re-shot: the README and the site
+show the same frames, and each clip already loops seamlessly. Regenerate after a
+clip changes (needs an `ffmpeg` with libwebp — on PATH, in `$FFMPEG`, or from
+`pip install imageio-ffmpeg`):
+
+```bash
+python tools/render_motion.py assets/motion
 ```
 
 ## The rule

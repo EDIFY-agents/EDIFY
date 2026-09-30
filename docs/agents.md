@@ -12,6 +12,19 @@ quarter.
 
 ## Supported runtimes
 
+<table>
+  <tr>
+    <td><img src="../assets/motion/rt-claude.webp" alt=".claude in ink"></td>
+    <td><img src="../assets/motion/rt-codex.webp" alt=".codex in ink"></td>
+    <td><img src="../assets/motion/rt-cursor.webp" alt=".cursor in ink"></td>
+  </tr>
+  <tr>
+    <td><img src="../assets/motion/rt-gemini.webp" alt=".gemini in latex"></td>
+    <td><img src="../assets/motion/rt-github.webp" alt=".github in blue latex"></td>
+    <td><img src="../assets/motion/rt-windsurf.webp" alt=".windsurf in ink"></td>
+  </tr>
+</table>
+
 | runtime | reads | commands land in | message |
 |---|---|---|---|
 | **Claude Code** | `CLAUDE.md` | `.claude/commands/`, `.claude/skills/`, `.claude/agents/` | works with your existing agent |

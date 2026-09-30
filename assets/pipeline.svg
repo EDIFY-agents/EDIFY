@@ -4,9 +4,9 @@
 
 <defs>
   <linearGradient id="run" x1="86" y1="0" x2="914" y2="0" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#4C8DFF"/>
-    <stop offset="0.72" stop-color="#4C8DFF"/>
-    <stop offset="1" stop-color="#3FB950"/>
+    <stop offset="0" stop-color="#2C6FD6"/>
+    <stop offset="0.72" stop-color="#2C6FD6"/>
+    <stop offset="1" stop-color="#7ABDFF"/>
   </linearGradient>
   <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
     <feGaussianBlur stdDeviation="3.5" result="b"/>
@@ -60,17 +60,14 @@
 </style>
 
 <!-- terminal chrome, dark on either GitHub theme -->
-<rect width="1000" height="260" rx="12" fill="#0B0F17"/>
-<path d="M12 0 h976 a12 12 0 0 1 12 12 v26 h-1000 v-26 a12 12 0 0 1 12 -12 z" fill="#111825"/>
-<line x1="0" y1="38" x2="1000" y2="38" stroke="#1E2733" stroke-width="1"/>
-<rect x="0.5" y="0.5" width="999" height="259" rx="12" fill="none" stroke="#1E2733" stroke-width="1"/>
-<circle cx="22" cy="19" r="5.5" fill="#F85149" opacity="0.85"/>
-<circle cx="40" cy="19" r="5.5" fill="#D29922" opacity="0.85"/>
-<circle cx="58" cy="19" r="5.5" fill="#3FB950" opacity="0.85"/>
-<text class="mono" x="500" y="23.5" font-size="12" fill="#5E6B7E" text-anchor="middle" letter-spacing="0.4">edify · think hard once, then build without thinking</text>
+<rect width="1000" height="260" rx="2" fill="#04060A"/>
+<path d="M12 0 h976 a12 12 0 0 1 12 12 v26 h-1000 v-26 a12 12 0 0 1 12 -12 z" fill="#0D1116"/>
+<line x1="0" y1="38" x2="1000" y2="38" stroke="#1C1F24" stroke-width="1"/>
+<rect x="0.5" y="0.5" width="999" height="259" rx="2" fill="none" stroke="#1C1F24" stroke-width="1"/>
+<text class="mono" x="500" y="23.5" font-size="12" fill="#6A6D71" text-anchor="middle" letter-spacing="0.4">edify · think hard once, then build without thinking</text>
 
 <!-- the connectors, drawn under the stages -->
-<g stroke="#1E2733" stroke-width="2" stroke-linecap="round">
+<g stroke="#1C1F24" stroke-width="2" stroke-linecap="round">
   <line x1="230" y1="96" x2="254" y2="96"/>
   <line x1="402" y1="96" x2="426" y2="96"/>
   <line x1="574" y1="96" x2="598" y2="96"/>
@@ -79,57 +76,57 @@
 
 <!-- /spec -->
 <g>
-  <rect x="86" y="76" width="140" height="40" rx="8" fill="#111825" stroke="#1E2733"/>
-  <rect class="lit s0" x="86" y="76" width="140" height="40" rx="8" fill="#0E1B33" stroke="#4C8DFF"/>
-  <text class="mono" x="156" y="101.5" font-size="15" fill="#6B7A8D" text-anchor="middle">/spec</text>
-  <text class="mono lit s0" x="156" y="101.5" font-size="15" fill="#EEF3F8" text-anchor="middle">/spec</text>
-  <text class="mono lit s0" x="156" y="141" font-size="11.5" fill="#5E6B7E" text-anchor="middle">spec.md</text>
+  <rect x="86" y="76" width="140" height="40" rx="2" fill="#0D1116" stroke="#1C1F24"/>
+  <rect class="lit s0" x="86" y="76" width="140" height="40" rx="2" fill="#0A2440" stroke="#2C6FD6"/>
+  <text class="mono" x="156" y="101.5" font-size="15" fill="#9C9FA4" text-anchor="middle">/spec</text>
+  <text class="mono lit s0" x="156" y="101.5" font-size="15" fill="#E8ECF2" text-anchor="middle">/spec</text>
+  <text class="mono lit s0" x="156" y="141" font-size="11.5" fill="#6A6D71" text-anchor="middle">spec.md</text>
 </g>
 
 <!-- /plan -->
 <g>
-  <rect x="258" y="76" width="140" height="40" rx="8" fill="#111825" stroke="#1E2733"/>
-  <rect class="lit s1" x="258" y="76" width="140" height="40" rx="8" fill="#0E1B33" stroke="#4C8DFF"/>
-  <text class="mono" x="328" y="101.5" font-size="15" fill="#6B7A8D" text-anchor="middle">/plan</text>
-  <text class="mono lit s1" x="328" y="101.5" font-size="15" fill="#EEF3F8" text-anchor="middle">/plan</text>
-  <text class="mono lit s1" x="328" y="141" font-size="11.5" fill="#5E6B7E" text-anchor="middle">plan.md</text>
+  <rect x="258" y="76" width="140" height="40" rx="2" fill="#0D1116" stroke="#1C1F24"/>
+  <rect class="lit s1" x="258" y="76" width="140" height="40" rx="2" fill="#0A2440" stroke="#2C6FD6"/>
+  <text class="mono" x="328" y="101.5" font-size="15" fill="#9C9FA4" text-anchor="middle">/plan</text>
+  <text class="mono lit s1" x="328" y="101.5" font-size="15" fill="#E8ECF2" text-anchor="middle">/plan</text>
+  <text class="mono lit s1" x="328" y="141" font-size="11.5" fill="#6A6D71" text-anchor="middle">plan.md</text>
 </g>
 
 <!-- /tasks -->
 <g>
-  <rect x="430" y="76" width="140" height="40" rx="8" fill="#111825" stroke="#1E2733"/>
-  <rect class="lit s2" x="430" y="76" width="140" height="40" rx="8" fill="#0E1B33" stroke="#4C8DFF"/>
-  <text class="mono" x="500" y="101.5" font-size="15" fill="#6B7A8D" text-anchor="middle">/tasks</text>
-  <text class="mono lit s2" x="500" y="101.5" font-size="15" fill="#EEF3F8" text-anchor="middle">/tasks</text>
-  <text class="mono lit s2" x="500" y="141" font-size="11.5" fill="#5E6B7E" text-anchor="middle">tasks.md</text>
+  <rect x="430" y="76" width="140" height="40" rx="2" fill="#0D1116" stroke="#1C1F24"/>
+  <rect class="lit s2" x="430" y="76" width="140" height="40" rx="2" fill="#0A2440" stroke="#2C6FD6"/>
+  <text class="mono" x="500" y="101.5" font-size="15" fill="#9C9FA4" text-anchor="middle">/tasks</text>
+  <text class="mono lit s2" x="500" y="101.5" font-size="15" fill="#E8ECF2" text-anchor="middle">/tasks</text>
+  <text class="mono lit s2" x="500" y="141" font-size="11.5" fill="#6A6D71" text-anchor="middle">tasks.md</text>
 </g>
 
 <!-- /build -->
 <g>
-  <rect x="602" y="76" width="140" height="40" rx="8" fill="#111825" stroke="#1E2733"/>
-  <rect class="lit s3" x="602" y="76" width="140" height="40" rx="8" fill="#0E1B33" stroke="#4C8DFF"/>
-  <text class="mono" x="672" y="101.5" font-size="15" fill="#6B7A8D" text-anchor="middle">/build</text>
-  <text class="mono lit s3" x="672" y="101.5" font-size="15" fill="#EEF3F8" text-anchor="middle">/build</text>
-  <text class="mono lit s3" x="672" y="141" font-size="11.5" fill="#5E6B7E" text-anchor="middle">a green diff</text>
+  <rect x="602" y="76" width="140" height="40" rx="2" fill="#0D1116" stroke="#1C1F24"/>
+  <rect class="lit s3" x="602" y="76" width="140" height="40" rx="2" fill="#0A2440" stroke="#2C6FD6"/>
+  <text class="mono" x="672" y="101.5" font-size="15" fill="#9C9FA4" text-anchor="middle">/build</text>
+  <text class="mono lit s3" x="672" y="101.5" font-size="15" fill="#E8ECF2" text-anchor="middle">/build</text>
+  <text class="mono lit s3" x="672" y="141" font-size="11.5" fill="#6A6D71" text-anchor="middle">a green diff</text>
 </g>
 
 <!-- /verify — the one that ends in evidence, so it lands green -->
 <g>
-  <rect x="774" y="76" width="140" height="40" rx="8" fill="#111825" stroke="#1E2733"/>
-  <rect class="lit s4" x="774" y="76" width="140" height="40" rx="8" fill="#0D2015" stroke="#3FB950"/>
-  <text class="mono" x="844" y="101.5" font-size="15" fill="#6B7A8D" text-anchor="middle">/verify</text>
-  <text class="mono lit s4" x="844" y="101.5" font-size="15" fill="#EEF3F8" text-anchor="middle">/verify</text>
-  <text class="mono lit s4" x="844" y="141" font-size="11.5" fill="#3FB950" text-anchor="middle">verification.md</text>
+  <rect x="774" y="76" width="140" height="40" rx="2" fill="#0D1116" stroke="#1C1F24"/>
+  <rect class="lit s4" x="774" y="76" width="140" height="40" rx="2" fill="#0A2440" stroke="#7ABDFF"/>
+  <text class="mono" x="844" y="101.5" font-size="15" fill="#9C9FA4" text-anchor="middle">/verify</text>
+  <text class="mono lit s4" x="844" y="101.5" font-size="15" fill="#E8ECF2" text-anchor="middle">/verify</text>
+  <text class="mono lit s4" x="844" y="141" font-size="11.5" fill="#7ABDFF" text-anchor="middle">verification.md</text>
 </g>
 
 <!-- the run itself -->
-<line x1="86" y1="180" x2="914" y2="180" stroke="#1E2733" stroke-width="3" stroke-linecap="round"/>
+<line x1="86" y1="180" x2="914" y2="180" stroke="#1C1F24" stroke-width="3" stroke-linecap="round"/>
 <line class="track-run" x1="86" y1="180" x2="914" y2="180" stroke="url(#run)" stroke-width="3" stroke-linecap="round"/>
 <g class="head">
-  <circle cx="86" cy="180" r="4.5" fill="#8FBBFF" filter="url(#glow)"/>
+  <circle cx="86" cy="180" r="4.5" fill="#7ABDFF" filter="url(#glow)"/>
 </g>
 
-<text class="mono" x="86" y="224" font-size="12" fill="#5E6B7E">local-first · no telemetry · works with the agent you already use</text>
-<rect class="cursor" x="556" y="214" width="7" height="13" fill="#4C8DFF"/>
-<text class="mono" x="914" y="224" font-size="12" fill="#5E6B7E" text-anchor="end">python 3.10+ · zero runtime dependencies</text>
+<text class="mono" x="86" y="224" font-size="12" fill="#6A6D71">local-first · no telemetry · works with the agent you already use</text>
+<rect class="cursor" x="556" y="214" width="7" height="13" fill="#2C6FD6"/>
+<text class="mono" x="914" y="224" font-size="12" fill="#6A6D71" text-anchor="end">python 3.10+ · zero runtime dependencies</text>
 </svg>
