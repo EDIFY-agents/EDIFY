@@ -4,7 +4,30 @@
 checks formats. It is a pure function over files: every command reads files and
 writes files, and none holds state or opens a socket while doing your work.
 
-Global flags: `--repo PATH` · `--json` · `--no-color` · `--quiet` · `--version`
+Global flags: `--repo PATH` · `--json` · `--no-color` · `--no-anim` · `--quiet` · `--version`
+
+---
+
+## How it looks
+
+At a terminal, `edify` borrows the site's identity: the wordmark with the ink poured
+into it as `init` opens, labels set as quiet readouts, hairline rules, and the site's
+state marks — `[x]` a pass in blue, `[!]` advisory in amber, `[-]` blocked in oxide,
+`[ ]` not covered. The infinity it draws while it works is the same ink, with a
+readout of how long the wait has been.
+
+<img src="../assets/init.svg" alt="edify init at a terminal" width="100%">
+
+None of that reaches a pipe, a file, CI, or `--json`: there the output is the plain
+ASCII it has always been, so a script that reads it keeps working.
+
+| control | effect |
+|---|---|
+| `--no-color`, `NO_COLOR=1` | no colour anywhere; marks and hairlines fall back to ASCII |
+| `--no-anim`, `EDIFY_NO_ANIM=1` | no wordmark, no infinity — the step names still print |
+| `EDIFY_THEME=day` | the palette for a light terminal (`night` is the default) |
+| `COLORFGBG` | read if set: a light background picks `day` on its own |
+| `COLORTERM=truecolor` | exact brand colours; otherwise the nearest of 256, or the basic 16 |
 
 ---
 
@@ -96,11 +119,8 @@ it is regenerated output and carries its own checksums.
 | `edify self where` | which `edify` is this, and where did it come from |
 | `edify self update` | replace the binary — hands fetching to uv, pipx, or pip |
 | `edify self update --offline` | refuse to touch the network |
-| `edify license status` | plan, entitlements, and limits |
-| `edify license projects` | which repositories are using a free slot |
-| `edify license projects forget PATH` | release one |
-| `edify license buy --seats N` | opens a browser, not a socket |
-| `edify license activate TOKEN` | the token you were emailed — verified locally |
+| `edify license status` | which edition this machine runs, and what a licence adds |
+| `edify license activate TOKEN` | the token you were sent — verified locally |
 | `edify feedback` | four questions, written to a file on this machine |
 | `edify feedback list` | what you have written; none of it has been sent |
 | `edify feedback off` | never show the invitation again |

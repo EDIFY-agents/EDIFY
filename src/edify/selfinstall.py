@@ -12,8 +12,8 @@ worth getting right unit-testable without ever installing anything.
 **The manager is detected, not assumed** (plan D-1, D-2). The binary was put on
 PATH by uv, pipx, or pip, and only that tool can correctly replace it. A hardcoded
 `pip install` into a uv tool environment produces a second, shadowed copy — the
-worst possible outcome for a command named "update". `uv/tools/edify-cli` and
-`pipx/venvs/edify-cli` are structural path segments rather than conventions, so
+worst possible outcome for a command named "update". `uv/tools/edify-agents-cli` and
+`pipx/venvs/edify-agents-cli` are structural path segments rather than conventions, so
 `sys.prefix` is enough to tell them apart, and `--manager` overrides when it is
 not, which makes a mis-detection cost one flag rather than a broken install.
 """
@@ -24,24 +24,23 @@ import re
 import sys
 from pathlib import Path
 
-from .errors import EdifyError
-
 #: The distribution name in `pyproject.toml`. A directory is a usable source
 #: checkout only if its manifest names this — otherwise `--from .` typed in the
 #: wrong folder would cheerfully install something else over `edify`.
-DIST_NAME = "edify-cli"
+from .distribution import DIST_NAME
+from .errors import EdifyError
 
 MANAGERS = ("uv", "pipx", "pip")
 
 
 def is_source_checkout(path: Path | str) -> bool:
-    """Does this directory hold a `pyproject.toml` naming `edify-cli`?"""
+    """Does this directory hold a `pyproject.toml` naming `edify-agents-cli`?"""
     manifest = Path(path) / "pyproject.toml"
     try:
         text = manifest.read_text(encoding="utf-8", errors="replace")
     except (OSError, ValueError):
         return False
-    # A dependency-free parse: `name = "edify-cli"` on its own line. `tomllib`
+    # A dependency-free parse: `name = "edify-agents-cli"` on its own line. `tomllib`
     # would do this on 3.11+ and not on 3.10, which this package supports.
     for line in text.splitlines():
         stripped = line.strip().replace(" ", "")
@@ -56,7 +55,7 @@ def running_source() -> Path | None:
     """The checkout the running `edify` was imported from, when there is one.
 
     Walks up from the package directory looking for a manifest that names
-    `edify-cli`. On an editable install this resolves directly to the repository;
+    `edify-agents-cli`. On an editable install this resolves directly to the repository;
     on a wheel install there is no such manifest above `site-packages`, so it
     returns None and `resolve_source` falls back to the repository root.
     """
@@ -72,7 +71,7 @@ def resolve_source(explicit: str | None = None, repo_root: Path | str | None = N
     """Which checkout to install from: `--from`, else the running one, else the repo.
 
     Raises rather than guessing. Installing from a directory that is not an
-    `edify-cli` checkout is not an update, and finding that out afterwards costs
+    `edify-agents-cli` checkout is not an update, and finding that out afterwards costs
     the person the working binary they started with.
     """
     if explicit:

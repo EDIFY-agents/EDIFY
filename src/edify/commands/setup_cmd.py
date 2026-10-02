@@ -51,14 +51,14 @@ def run(ctx: Context) -> int:
     # The wordmark opens the install, once, above `setup`'s own first line rather
     # than in the middle of it. `caller_opens` is how `init_cmd` is told not to
     # print a second one — the same shape as `caller_closes` at the other end.
-    anim.banner(ctx.out)
+    anim.banner(ctx.out, "setup")
     ctx.args.caller_opens = True
 
-    ctx.out.line(f"setup     {root}{' (created)' if created else ''}")
+    ctx.out.field("setup", f"{root}{' (created)' if created else ''}")
 
     if getattr(ctx.args, "fresh", False):
         cleared = _clear(layout)
-        ctx.out.line(f"fresh     {len(cleared)} edify-owned path(s) cleared before installing")
+        ctx.out.field("fresh", f"{len(cleared)} edify-owned path(s) cleared before installing")
         for path, action in cleared:
             ctx.out.note(f"  {action} {layout.rel(path)}")
 

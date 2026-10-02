@@ -116,8 +116,8 @@ def test_the_manifest_declares_what_it_pins() -> None:
     assert manifest["extractor"] == "builtin"
 
 
-def test_the_version_is_the_same_in_all_three_places() -> None:
-    """`__init__`, `pyproject.toml`, and the manifest. PUBLISHING.md §2 bumps all three.
+def test_the_version_has_one_source_and_two_readers() -> None:
+    """`__init__` holds the version; `pyproject.toml` and the manifest read the same one.
 
     A release where they disagree ships a wheel whose `edify version` and whose
     `pip show` are different numbers, and every governance row it writes is stamped
@@ -129,7 +129,7 @@ def test_the_version_is_the_same_in_all_three_places() -> None:
     from edify import __version__
 
     root = Path(__file__).resolve().parent.parent
-    declared = re.search(r'^version = "([^"]+)"', (root / "pyproject.toml").read_text(encoding="utf-8"), re.M)
-    assert declared, "pyproject.toml has no version"
-    assert declared.group(1) == __version__
+    text = (root / "pyproject.toml").read_text(encoding="utf-8")
+    assert re.search(r'^dynamic = \["version"\]', text, re.M), "pyproject.toml does not read the version"
+    assert 'path = "src/edify/__init__.py"' in text
     assert assets.manifest()["edify"] == __version__

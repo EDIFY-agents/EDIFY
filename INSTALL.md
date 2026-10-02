@@ -18,7 +18,7 @@ collides with a project's dependencies.
 ```bash
 brew install pipx        # or: python3 -m pip install --user pipx
 pipx ensurepath          # adds ~/.local/bin to PATH; open a new shell after this
-pipx install edify-cli
+pipx install edify-agents-cli
 
 edify version
 ```
@@ -27,17 +27,17 @@ edify version
 
 ```bash
 brew install uv
-uv tool install edify-cli
+uv tool install edify-agents-cli
 ```
 
 ### With Homebrew directly
 
 ```bash
-brew install EDIFY-agents/tap/edify
+brew install edify-dev/tap/edify
 ```
 
-The tap is published from this repository's `packaging/homebrew/edify.rb`. It
-installs the same PyPI artifact, wrapped in Homebrew's own Python virtualenv.
+The tap installs the same PyPI artifact, wrapped in Homebrew's own Python
+virtualenv.
 
 ### If `edify: command not found`
 
@@ -79,7 +79,7 @@ Gatekeeper does not gate that.
 ## Linux
 
 ```bash
-pipx install edify-cli          # or: uv tool install edify-cli
+pipx install edify-agents-cli   # or: uv tool install edify-agents-cli
 ```
 
 Configuration lives in `$XDG_CONFIG_HOME/edify`, or `~/.config/edify`.
@@ -89,7 +89,7 @@ Configuration lives in `$XDG_CONFIG_HOME/edify`, or `~/.config/edify`.
 ```powershell
 py -m pip install --user pipx
 py -m pipx ensurepath
-pipx install edify-cli
+pipx install edify-agents-cli
 ```
 
 Configuration lives in `%APPDATA%\edify`.
@@ -155,8 +155,8 @@ nothing is asked and no profile is written.
 ## Installing from a checkout
 
 ```bash
-git clone https://github.com/EDIFY-agents/edify_public
-cd edify_public
+git clone https://github.com/EDIFY-agents/EDIFY
+cd EDIFY
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
@@ -198,38 +198,35 @@ shell rather than reporting a success it did not have.
 `self update` never touches `.edify/` in any repository. Reinstalling the harness into a
 checkout is `edify setup . --fresh`.
 
-## The free plan, and what a licence lifts
+## The public edition, and what a licence adds
 
-Nothing here needs an account. The free plan is a whole working system: every command,
-every query, every check, the whole methodology tree, on repositories up to 25,000 graph
-nodes, in up to three projects on one machine.
+Nothing here needs an account. The public edition, `edify-agents-cli`, is MIT-licensed
+and free: every command, every query, every check, the whole methodology tree, on a
+repository of any size, in as many repositories as you like. It has no caps except one —
+the MCP registry scopes a single server into spawns.
+
+The team edition, `edify-agents-teams`, is by licence. A team or partner licence adds the
+team commands and lifts the one-server rule. `partner` plans are free for University of
+Toronto design teams and researchers. There is no payment and no price anywhere; a
+licence is issued on request.
 
 ```bash
-edify license status                   # what this machine is entitled to
-edify license projects                 # which repositories are using a slot
-edify license projects forget PATH     # release one
-edify license buy --seats 1            # the pro plan, and where to pay
-edify license activate <token>         # the token you were emailed
+edify license status                   # which edition this machine runs, and what a licence adds
+edify license activate <token>         # the token you were sent
 ```
 
-`edify license buy` opens a **browser**, not a socket, and prints the URL instead under
-`--json`, `--quiet`, or with no terminal. Activation writes a signed token to a file and
-verifies it locally — there is no activation server and no phone-home, so a licence works
-on an air-gapped machine and keeps working if we are down.
-
-The project count lives in `projects.tsv` beside the licence and never leaves your
-machine. A project is keyed on its git remote where it has one, so a re-clone, a second
-worktree, and a fresh CI checkout are one project rather than three; a repository you
-delete returns its slot on its own. Only a **new** project is ever refused.
+Activation writes a signed token to a file and verifies it locally — there is no
+activation server and no phone-home, so a licence works on an air-gapped machine and
+keeps working if we are down.
 
 `EDIFY_LICENSE` carries a token in CI without writing a file. `EDIFY_LICENSE_PUBKEY`
-points verification at a self-hosted issuer. `EDIFY_HOME` moves the licence, the project
-ledger, and the feedback file together — which is also how a test isolates all three.
+points verification at a self-hosted issuer. `EDIFY_HOME` moves the licence and the
+feedback file together — which is also how a test isolates both.
 
 ## Uninstalling
 
 ```bash
-pipx uninstall edify-cli                        # or: brew uninstall edify
+pipx uninstall edify-agents-cli                 # or: brew uninstall edify
 rm -rf ~/Library/Application\ Support/edify     # macOS; ~/.config/edify elsewhere
 ```
 

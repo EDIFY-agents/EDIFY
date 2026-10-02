@@ -1,6 +1,6 @@
 """Where everything lives, and how the repository root is found.
 
-The installed tree is nine paths (`docs/design/architecture/01-folder-structure.md` §2).
+The installed tree is nine paths, and they are a contract with every repository.
 This module is the only place those names are written down.
 """
 

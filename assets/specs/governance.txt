@@ -1,17 +1,17 @@
 #! edify governance — every file EDIFY installed, and where it came from
 $ edify governance list
-path                          kind      origin     licence             source
-----------------------------  --------  ---------  ------------------  ---------------
-.edify/commands/build.md      command   shipped    FSL-1.1-Apache-2.0  edify-cli@0.1.0
-.edify/commands/spec.md       command   shipped    FSL-1.1-Apache-2.0  edify-cli@0.1.0
-.edify/conventions.md         scraped   generated  FSL-1.1-Apache-2.0  edify-cli@0.1.0
-.edify/skills/planner.md      skill     library    FSL-1.1-Apache-2.0  edify-cli@0.1.0
-.edify/mcp.md                 registry  seeded     FSL-1.1-Apache-2.0  edify-cli@0.1.0
+[38;2;106;109;113mpath                                         kind          origin     provenance  license  source[0m
+[38;2;79;82;86m───────────────────────────────────────────[0m  [38;2;79;82;86m────────────[0m  [38;2;79;82;86m─────────[0m  [38;2;79;82;86m──────────[0m  [38;2;79;82;86m───────[0m  [38;2;79;82;86m──────────────────────────────────[0m
+.claude/commands/spec.md                     pointer       generated  original    MIT      edify-agents-cli@0.2.0
+.edify/commands/spec.md                      command       shipped    original    MIT      edify-agents-cli@0.2.0
+.edify/conventions.md                        conventions   scraped    client      -        this repository's own config files
+.edify/mcp.md                                registry      seeded     original    MIT      edify-agents-cli@0.2.0
+.edify/skills/planner.md                     skill         library    original    MIT      edify-agents-cli@0.2.0
 
-26 files · 11 shipped · 7 library · 1 scraped · 1 seeded · 6 pointers
+33 files · 12 generated · 7 library · 1 merged · 1 scraped · 1 seeded · 11 shipped
 
 $ edify governance verify
-modified   .edify/skills/planner.md  changed since it was installed
-           (library) — `edify upgrade` will replace it
+[38;2;242;163;89m[!][0m [38;2;242;163;89mmodified  [0m .edify/skills/planner.md  changed since it was installed
+                           (library) — `edify upgrade` will replace it
 
 1 to look at · 0 edited by this repository

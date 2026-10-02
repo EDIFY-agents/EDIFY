@@ -56,27 +56,27 @@ def test_rfc8032_test_vector() -> None:
     )
 
 
-def test_a_valid_pro_token_carries_its_entitlements(keypair: bytes) -> None:
+def test_a_valid_team_token_carries_its_entitlements(keypair: bytes) -> None:
     token = issue(
-        {"sub": "acct_1", "email": "dev@example.com", "plan": "pro", "seats": 1,
+        {"sub": "acct_1", "email": "dev@example.com", "plan": "team", "seats": 1,
          "iat": int(time.time()), "exp": int(time.time()) + 86400},
         keypair,
     )
     verdict = parse(token)
     assert verdict.valid
-    assert verdict.license.plan == "pro"
+    assert verdict.license.plan == "team"
 
     tier.save(token)
     ent = tier.current()
-    assert ent.plan == "pro"
-    assert ent.allows("graph.unlimited")
-    assert ent.node_cap is None
+    assert ent.plan == "team"
+    assert ent.allows("mcp.multi")
     assert ent.mcp_cap is None
+    assert ent.node_cap is None
 
 
 def test_an_expired_token_falls_back_to_free_and_says_why(keypair: bytes) -> None:
     token = issue(
-        {"sub": "acct_1", "plan": "pro", "iat": 0, "exp": int(time.time()) - 10}, keypair
+        {"sub": "acct_1", "plan": "team", "iat": 0, "exp": int(time.time()) - 10}, keypair
     )
     tier.save(token)
     ent = tier.current()
@@ -85,7 +85,7 @@ def test_an_expired_token_falls_back_to_free_and_says_why(keypair: bytes) -> Non
 
 
 def test_a_tampered_token_falls_back_to_free(keypair: bytes) -> None:
-    token = issue({"sub": "acct_1", "plan": "pro", "iat": 0, "exp": 0}, keypair)
+    token = issue({"sub": "acct_1", "plan": "team", "iat": 0, "exp": 0}, keypair)
     head, payload, signature = token.split(".")
     forged = f"{head}.{payload[:-2]}AA.{signature}"
 
@@ -98,12 +98,11 @@ def test_a_tampered_token_falls_back_to_free(keypair: bytes) -> None:
 def test_no_licence_is_the_free_plan_with_working_limits() -> None:
     ent = tier.current()
     assert ent.plan == "free"
-    assert ent.node_cap == tier.FREE_NODE_CAP
+    assert ent.node_cap is None
     assert ent.mcp_cap == tier.FREE_MCP_ENTRIES
-    assert not ent.allows("library.upgrade")
 
     with pytest.raises(TierRequired):
-        ent.require("library.upgrade")
+        ent.require("mcp.multi")
 
 
 def test_the_environment_variable_carries_a_licence_for_ci(
@@ -119,14 +118,14 @@ def test_the_environment_variable_carries_a_licence_for_ci(
 
 def test_an_extra_feature_on_a_token_only_adds(keypair: bytes) -> None:
     token = issue(
-        {"sub": "x", "plan": "free", "iat": 0, "exp": 0, "features": ["graph.unlimited"]},
+        {"sub": "x", "plan": "free", "iat": 0, "exp": 0, "features": ["mcp.multi"]},
         keypair,
     )
     tier.save(token)
     ent = tier.current()
     assert ent.plan == "free"
-    assert ent.allows("graph.unlimited")
-    assert not ent.allows("library.upgrade")
+    assert ent.allows("mcp.multi")
+    assert not ent.allows("team")
 
 
 # -- M1 · the shipped issuing key -------------------------------------------
@@ -150,8 +149,7 @@ def test_the_shipped_key_is_not_derivable_from_a_trivial_seed() -> None:
     for seed in _trivial_seeds():
         assert ed25519.public_key(seed) != shipped, (
             "the shipped issuing key is derivable from a guessable seed — anyone can "
-            "mint a pro token. Run `python tools/issue_license.py keygen` and commit "
-            "only the public half."
+            "mint a licence. Run the issuer's keygen and commit only the public half."
         )
 
 
@@ -170,80 +168,3 @@ def test_a_token_signed_with_the_zero_seed_no_longer_verifies(
     verdict = parse(forged)
     assert not verdict.valid
     assert "signature" in verdict.reason
-
-
-# -- M5 · the issuer ---------------------------------------------------------
-# The issuer is the payment path until the webhook exists, so the guard that
-# stopped M1's mistake from happening twice is worth a test.
-#
-# It lives on the private side: it signs with the real Ed25519 seed, and a signing
-# tool in a public repository is an invitation. These tests therefore skip when it
-# is absent — which is every run of the public repository — and run in full where
-# the tool exists. What they cover is the *issuer's* input validation, not the
-# verification path; verification is `token.py`, it is public, and it is tested
-# above without needing a private key.
-
-
-def _issuer_path():
-    from pathlib import Path as _Path
-
-    return _Path(__file__).resolve().parent.parent / "tools" / "issue_license.py"
-
-
-#: Skips the issuer tests where the tool is not checked out, rather than failing
-#: a public contributor's `pytest` for a file they are not meant to have.
-needs_issuer = pytest.mark.skipif(
-    not _issuer_path().exists(),
-    reason="tools/issue_license.py is private tooling and is not in this checkout",
-)
-
-
-def _issuer():
-    """Load the issuer script as a module. It is a tool, not a package."""
-    import importlib.util
-
-    path = _issuer_path()
-    spec = importlib.util.spec_from_file_location("issue_license", path)
-    module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
-    spec.loader.exec_module(module)
-    return module
-
-
-@pytest.mark.parametrize(
-    "seed",
-    [
-        bytes(32),
-        bytes([0xFF]) * 32,
-        bytes([0x07]) * 32,
-        (1).to_bytes(32, "big"),
-        (42).to_bytes(32, "big"),
-    ],
-)
-@needs_issuer
-def test_the_issuer_refuses_a_guessable_seed(seed: bytes) -> None:
-    issuer = _issuer()
-    with pytest.raises(SystemExit):
-        issuer._refuse_weak_seed(seed)
-
-
-@needs_issuer
-def test_the_issuer_accepts_a_real_seed() -> None:
-    _issuer()._refuse_weak_seed(secrets.token_bytes(32))
-
-
-@needs_issuer
-def test_the_default_validity_is_a_month_plus_the_stated_grace() -> None:
-    """§5 specifies seven days of grace. A late renewal email must not stop work."""
-    issuer = _issuer()
-    assert issuer.GRACE_DAYS == 7
-    assert issuer.DEFAULT_DAYS == issuer.BILLING_DAYS + issuer.GRACE_DAYS
-
-
-@needs_issuer
-def test_the_customer_email_carries_the_token_and_the_price() -> None:
-    issuer = _issuer()
-    body = issuer._customer_email("a@b.c", "pro", 1, int(time.time()) + 86400, "edify1.x.y")
-    assert "edify license activate edify1.x.y" in body
-    assert tier.PRO_PRICE in body
-    assert "a@b.c" in body

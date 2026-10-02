@@ -1,88 +1,61 @@
-# Screenshots
+# Images
 
-Every terminal image in the docs is **generated from real output of the actual
-binary**, not drawn by hand. Evidence is only worth something if it is real, so
-the pipeline is committed and anyone can re-run it.
+## `infinity.svg`
 
-## The convention
-
-Wherever a document shows the product working, the section is marked with `···`
-and the exact command, immediately above the image:
-
-```markdown
-···  `edify doctor`
-
-<img src="../assets/doctor.svg" alt="edify doctor output" width="100%">
-```
-
-The `···` line tells a reader — and whoever regenerates these — precisely what to
-run to reproduce the image below it.
-
-## Regenerating
-
-1. Run the command in a real repository and capture the output verbatim.
-2. Put it in `assets/specs/<name>.txt`. The first line is `#! <title>` — what
-   appears in the terminal title bar. Lines starting with `$ ` render as prompts;
-   lines starting with `#` render as dim comments.
-3. Render:
-
-```bash
-python tools/render_terminal.py assets/specs/doctor.txt assets/doctor.svg
-```
-
-Or all of them:
-
-```bash
-for f in assets/specs/*.txt; do
-  python tools/render_terminal.py "$f" "assets/$(basename "${f%.txt}").svg"
-done
-```
-
-## Why SVG
-
-Crisp at any zoom, a few kilobytes each, diffable in review, and readable on both
-GitHub themes because the terminal is dark in either. No external image host, no
-binary blobs in history, and a wrong number is a one-line fix rather than a
-re-shoot.
-
-## The two exceptions: `pipeline.svg` and `infinity.svg`
-
-Both are animated banners in the root [`README.md`](../README.md), and both show
-a shape rather than the output of a command — so the rule below does not apply to
-either and neither has a transcript in `specs/`. Like every other image here,
-they carry no script, no external font, and no remote reference, so GitHub
-renders and animates them as-is, and `prefers-reduced-motion: reduce` gets a
-still frame instead of a loop.
-
-`pipeline.svg` sits under the promise and shows the workflow: hand-written SVG
-with a CSS animation on a twelve-second loop, the five commands lighting up in
-order as the run reaches them, then resetting. **Edit the file directly.**
-
-`infinity.svg` opens the page and is the animation `edify init` paints in the
-terminal while it works. **Do not edit it by hand** — it is generated, and the
-lattice of dots is exactly the grid cells `src/edify/anim.py` lights up, imported
-from the module itself rather than redrawn, so the curve in the README and the
-curve in the terminal cannot drift apart. Regenerate after any change to `anim`'s
-geometry:
+The animation under "The binary" on the README, in the same ink as the CLI. It is not drawn by hand: the lattice of dots
+is exactly the grid cells `edify init`'s own animation lights up, imported from
+`src/edify/anim.py`, so the curve in the README and the curve in the terminal are
+the same curve. Regenerate after any change to `anim`'s geometry:
 
 ```bash
 python tools/render_infinity.py assets/infinity.svg
 ```
 
-## The rule
+It animates through SMIL (`animateMotion`), which GitHub renders and which needs
+no script — so it plays in the README and stays a still infinity anywhere that
+does not animate. `prefers-reduced-motion: reduce` gets the head parked at the
+start of the curve instead of the loop.
 
-**Do not edit the SVGs.** Edit the transcript in `specs/` and re-render, so the
-image and the claim stay tied to a command someone can run. If a transcript is
-trimmed or reflowed to fit, it stays faithful to what the command actually
-printed.
+## `motion/`
 
-| image | command |
+The ink clips on the README and in `docs/`. They are the site's own rendered loops
+from `site/assets/film/`, scaled down and re-encoded as animated WebP, because a
+README plays an animated image but not a video. Nothing is re-shot: the README and
+the site show the same frames, and each clip loops seamlessly already.
+
+| file | where it plays |
 |---|---|
-| `infinity.svg` | *generated from `edify.anim` — the animated README header* |
-| `pipeline.svg` | *drawn, not captured — the animated workflow banner* |
-| `hero.svg` | `pipx install edify-cli` · `edify init --yes` |
-| `graph-where.svg` | `edify graph where` · `dependents` · `defines` |
-| `doctor.svg` | `edify doctor` |
-| `verify.svg` | `edify check` |
-| `governance.svg` | `edify governance list` · `verify` |
-| `license.svg` | `edify license status` |
+| `stage.webp` | README header |
+| `init.webp` | README install, `docs/quickstart.md` |
+| `spec.webp`, `build.webp` | README commands; `build` also in `docs/verification.md` |
+| `rt-*.webp` | README runtimes table, `docs/agents.md` |
+| `free.webp` | README editions |
+
+Regenerate after a clip changes (needs an `ffmpeg` with libwebp — on PATH, in
+`$FFMPEG`, or from `pip install imageio-ffmpeg`):
+
+```bash
+python tools/render_motion.py assets/motion            # every clip
+python tools/render_motion.py assets/motion stage      # just these
+```
+
+Sizes are chosen so the whole README stays under about 7 MB; the header is the
+largest at under 2 MB.
+
+## The terminal screenshots
+
+`init.svg`, `doctor.svg`, `governance.svg`, `graph-where.svg`, `license.svg` and
+`verify.svg` are real output of the binary, not drawings. Each one is a transcript in
+`specs/` captured at a truecolor terminal, so it keeps the escapes the CLI wrote —
+`$ ` lines are prompts, the rest is what the command printed, with long lines
+wrapped, wide tables trimmed to a few rows, and the machine-specific path in `init`
+shortened. `tools/render_terminal.py` draws the escapes as written, in the site's
+terminal frame: `--ed-well` behind, square corners, the corner ticks and readout
+every clip carries, and the wordmark's half blocks as solid rectangles:
+
+```bash
+python tools/render_terminal.py assets/specs/doctor.txt assets/doctor.svg
+```
+
+Recapture a transcript whenever the command's output changes; an image of output
+the binary no longer prints is worse than no image.

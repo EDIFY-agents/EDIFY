@@ -1,7 +1,6 @@
 """Asking for feedback without becoming a tool that phones home.
 
-`docs/pricing.md` §4 commits to no telemetry — not anonymous, not
-aggregate, not opt-out. These tests are that commitment written down as assertions:
+EDIFY commits to no telemetry — not anonymous, not aggregate, not opt-out. These tests are that commitment written down as assertions:
 nothing is transmitted, nothing is collected in the background, nothing is written
 into the customer's repository, and a non-interactive run leaves no trace at all.
 """

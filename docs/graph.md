@@ -96,13 +96,7 @@ instead of burning context rediscovering the repository.
 
 ## Size
 
-The free tier covers graphs up to **25,000 nodes** — roughly a 200–300k-line
-repository. Below that a frontier model in auto mode is already good and EDIFY is
-genuinely optional, which is why the free plan is complete there. See
-[pricing.md](pricing.md).
+There is no size limit. Below roughly a 200–300k-line repository a frontier model
+in auto mode is already good and EDIFY is genuinely optional; above it is where the
+map starts to pay for itself.
 
-## Design detail
-
-[`docs/design/06-the-graph.md`](design/06-the-graph.md) is the reasoning;
-[`docs/design/architecture/06-graph.md`](design/architecture/06-graph.md) is the
-buildable contract, including the TSV schema and the extractor interface.

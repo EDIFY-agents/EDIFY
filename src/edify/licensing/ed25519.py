@@ -5,9 +5,9 @@ verify with no network and no third-party package, on an air-gapped build server
 because everything else in this product works offline and a licence check that
 phones home would be the one thing that does not.
 
-Verification is what the CLI uses. Signing is included because the issuer is part
-of this repository (`tools/issue_license.py`) and a signer nobody can run is a
-signer nobody can test. Neither is fast, and neither needs to be: one signature
+Verification is what the CLI uses. Signing is included because the issuer, which
+is not shipped, signs with it, and a signer nobody can run is a signer nobody can
+test. Neither is fast, and neither needs to be: one signature
 verification per command invocation is roughly a millisecond.
 """
 

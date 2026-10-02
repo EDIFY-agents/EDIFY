@@ -61,9 +61,9 @@ repository to a new hire in an afternoon.
 
 ### What does it cost?
 
-Free, forever, with no account, up to a 25,000-node graph (~200–300k lines), one
-server in the registry, and three projects on one machine. Above that, $20 per
-user per month. Five gates and only five. See [pricing.md](pricing.md).
+Nothing. The public edition is MIT-licensed, free, and needs no account, on a
+repository of any size. Its one limit is a single server in the registry; a team
+or partner licence lifts it, and a licence is issued on request.
 
 ### Can I remove the licence check?
 
@@ -99,9 +99,8 @@ requirement.
 
 No, and this is deliberate. `edify check` prints; you or your CI decide what that
 means. `--exit-code` is how you build a gate **you** own. EDIFY does not claim
-enforcement it does not have —
-[`10-what-we-dropped.md`](design/10-what-we-dropped.md) records the enforcement
-machinery that was cut and what the cut cost.
+enforcement it does not have: the enforcement machinery of an earlier design
+was cut, and the cut is recorded with what it cost.
 
 ### Can I use it in CI?
 
@@ -126,5 +125,5 @@ and the graph is documented checksummed TSV any tool can read.
 ### How do I help?
 
 Run it on one real task and tell us what broke — `edify feedback`, or an
-[issue](https://github.com/EDIFY-agents/edify_public/issues/new/choose). A [graph gap](../.github/ISSUE_TEMPLATE/graph_gap.yml)
+[issue](https://github.com/EDIFY-agents/EDIFY/issues/new/choose). A [graph gap](../.github/ISSUE_TEMPLATE/graph_gap.yml)
 report is the single most valuable thing we receive.

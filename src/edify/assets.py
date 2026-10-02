@@ -1,7 +1,7 @@
 """Finding the shipped methodology tree.
 
-The authored tree lives at the repository root in `edify/` (the source tree of
-`docs/design/architecture/01-folder-structure.md` §1) and is copied into the wheel at
+The authored tree lives at the repository root in `edify/` (the source tree the
+installed layout is built from) and is copied into the wheel at
 `edify/assets/`. Both layouts resolve here, so a developer running from a checkout
 and a user running an installed wheel get the same files.
 """
@@ -12,6 +12,7 @@ import os
 from functools import lru_cache
 from pathlib import Path
 
+from .distribution import DIST_NAME
 from .errors import EdifyError
 
 _SUBTREES = ("commands", "formats", "skills", "mcp", "harvest", "templates")
@@ -40,7 +41,7 @@ def asset_root() -> Path:
 
     raise EdifyError(
         "the methodology tree is missing from this install",
-        hint="reinstall edify-cli, or set EDIFY_ASSETS to a checkout's edify/ directory",
+        hint=f"reinstall {DIST_NAME}, or set EDIFY_ASSETS to a checkout's edify/ directory",
     )
 
 

@@ -92,9 +92,9 @@ edify skills sync     # if you added or removed an entry by hand
 Check what your runtime reads in [agents.md](agents.md). Some tools need a
 restart to notice new command files.
 
-## The graph is huge / hits the free cap
+## The graph is huge
 
-The free tier covers 25,000 nodes. If you are over it:
+There is no cap, but a huge graph is usually a sign of something. If yours is:
 
 ```bash
 edify graph stat            # where the nodes actually are
@@ -103,11 +103,11 @@ edify graph stat            # where the nodes actually are
 Vendored code, generated clients, and build output are the usual cause.
 `.edify/graph/` respects your `.gitignore` plus its own ignore rules — see
 [`src/edify/graph/ignore.py`](../src/edify/graph/ignore.py). Excluding generated
-directories usually brings a repo well under the cap and produces a *better* map,
+directories usually shrinks a repo's graph a great deal and produces a *better* map,
 because generated code was never useful to the agent anyway.
 
 If the repository is genuinely that large, that is the population EDIFY exists
-for — see [pricing.md](pricing.md).
+for.
 
 ## `edify init` installed into the wrong directory
 
@@ -131,7 +131,7 @@ command you wrote by hand — exactly where it was.
 
 ## Something else
 
-- [Discussions](https://github.com/EDIFY-agents/edify_public/discussions) — questions, answered in public.
-- [Issues](https://github.com/EDIFY-agents/edify_public/issues/new/choose) — with `edify doctor` output and a
+- [Discussions](https://github.com/EDIFY-agents/EDIFY/discussions) — questions, answered in public.
+- [Issues](https://github.com/EDIFY-agents/EDIFY/issues/new/choose) — with `edify doctor` output and a
   reproduction.
 - A **security** problem: do not open an issue. See [SECURITY.md](../SECURITY.md).

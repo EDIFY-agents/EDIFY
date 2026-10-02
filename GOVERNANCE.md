@@ -18,32 +18,24 @@ steering committee is telling you something false on its first page.
 |---|---|
 | bug fixes, tests, docs, platform support | contributors — send the PR |
 | new languages in the graph extractor | contributors, against the extractor contract |
-| skill library entries | maintainers, after curation ([harvest](docs/design/architecture/10-harvest.md)) |
+| skill library entries | maintainers, after curation |
 | the three document formats | maintainers — these are contracts; changing one invalidates every existing spec |
 | the five commands and their boundaries | maintainers |
-| pricing, gates, licensing | maintainers |
+| editions, licensing | maintainers |
 | the name and marks | maintainers ([TRADEMARK.md](TRADEMARK.md)) |
 
 ## How decisions get made in public
 
 Anything that changes behaviour a user depends on goes through a
-[discussion](https://github.com/EDIFY-agents/edify_public/discussions) before it goes through a PR. The reasoning is
-written down in [`docs/design/`](docs/design/), which is the actual source of
-truth for this project — including
-[`10-what-we-dropped.md`](docs/design/10-what-we-dropped.md), which is the
-ledger of everything cut and what the cut cost. A design dossier that lists only
-additions is a sales document.
+[discussion](https://github.com/EDIFY-agents/EDIFY/discussions) before it goes through a PR. The reasoning is
+written down, including a ledger of everything cut and what the cut cost. A design
+record that lists only additions is a sales document.
 
 ## Licence stability
 
-The [FSL](LICENSE) grant is irrevocable and each released version converts to
-Apache 2.0 on its second anniversary. **We cannot take that back.** A version
-published today is Apache 2.0 in two years even if the company is gone, the
-project is abandoned, or a future maintainer would rather it were not.
-
-If EDIFY is acquired or discontinued, the conversion still runs on every version
-already published. That is the point of choosing a licence with a dated
-conversion instead of a promise.
+The public edition is released under the [MIT License](LICENSE). A version
+published under it stays under it: that grant cannot be taken back, even if the
+project is abandoned or a future maintainer would rather it were not.
 
 ## Becoming a maintainer
 

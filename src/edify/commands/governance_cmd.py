@@ -40,8 +40,9 @@ def verify(ctx: Context) -> int:
     )
 
     for problem in problems:
-        colour = "red" if problem.state == "missing" else "yellow" if problem.serious else "dim"
-        ctx.out.line(f"{ctx.out.c(problem.state.ljust(10), colour)} {problem.path}  {problem.detail}")
+        # `edited` and `unknown-origin` are not serious, so both print dim.
+        kind = "blocked" if problem.state == "missing" else "advisory" if problem.serious else "uncovered"
+        ctx.out.line(f"{ctx.out.state(problem.state, kind, 10)} {problem.path}  {problem.detail}")
 
     serious = [p for p in problems if p.serious]
     if not problems:

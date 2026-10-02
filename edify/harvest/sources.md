@@ -186,7 +186,7 @@ actually knows — `edify harvest status` prints the rows to commit.
   and NoDerivatives, and therefore not on the allowlist and not adaptable. It is a
   directory: read it to find *where* things are, then draw from the repository the
   link points at under that repository's own licence. Never stage its bytes.
-- **the engagement row** — §7 of `docs/design/architecture/10-harvest.md`: the half that is
+- **the engagement row** — the half of harvesting that is
   not free is failure knowledge from engineers who have watched it go wrong. It stays
   in the table with a zero yield because that is the honest state until there is an
   engagement to fund it.

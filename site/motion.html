@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Motion — EDIFY</title>
+<meta name="description" content="Every motion piece on the EDIFY site in one place: the ink series, live and rendered, and the page films, with the grammar they share.">
+<meta name="theme-color" content="#07090C">
+<meta name="robots" content="noindex,nofollow">
+<!-- Internal: a viewing and testing page for the motion work. Not linked from the site and
+     not published (publish.sh leaves it out). Open it locally: http://localhost:8765/motion.html -->
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="assets/css/site.css?v=20260927m">
+<script>(function(){try{if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&!sessionStorage.getItem('ed:boot')){var h=document.documentElement;h.setAttribute('data-boot','');window.__edBootFallback=setTimeout(function(){h.removeAttribute('data-boot')},4000)}}catch(e){}})()</script>
+<script src="assets/js/ink.js?v=20260927m" defer></script>
+<script src="assets/js/site.js?v=20260927m" defer></script>
+</head>
+<body>
+<div id="ed-boot" aria-hidden="true">
+  <div class="boot-bg"></div>
+  <div class="boot-grid" data-field-grid></div>
+  <div class="boot-stack">
+    <svg id="ed-boot-mark" viewBox="0 0 100 100" fill="none">
+      <path d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="rgba(232,236,242,0.09)" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="6"></path>
+      <path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="15"></path>
+      <path d="M44 6 L66 94" stroke="rgba(232,236,242,0.09)" stroke-width="9"></path>
+      <path data-boot-draw d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="#2C6FD6" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="6"></path>
+      <path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="15"></path>
+      <path data-boot-draw d="M44 6 L66 94" stroke="#2C6FD6" stroke-width="9"></path>
+    </svg>
+    <div class="boot-word">EDIFY</div>
+    <div class="boot-hide">
+      <div id="ed-boot-log"></div>
+      <div class="boot-skip">any key to skip</div>
+    </div>
+  </div>
+</div>
+<div class="grain" data-grain aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="lockup" href="./" aria-label="EDIFY home">
+      <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <path d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="#E8ECF2" stroke-width="11" stroke-linejoin="miter" stroke-miterlimit="6"></path>
+        <path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="18"></path>
+        <path data-nav-spine d="M44 6 L66 94" stroke="#E8ECF2" stroke-width="11"></path>
+      </svg>
+      <span>EDIFY</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="how-it-works.html">How it works</a>
+      <a href="benchmarks.html">Benchmarks</a>
+      <a href="docs.html">Docs</a>
+      <a href="teams.html">Teams</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="contact.html">Contact</a>
+      <a class="gh" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
+      <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY</a>
+    </nav>
+    <button class="burger" data-menu-toggle aria-label="Menu" aria-expanded="false" aria-controls="ed-menu"><span></span><span></span></button>
+  </div>
+</header>
+<div class="menu" id="ed-menu">
+  <div class="menu-top"><button data-menu-toggle aria-label="Close menu">X</button></div>
+  <nav class="menu-list" aria-label="Mobile">
+    <a href="./">Home</a>
+    <a href="how-it-works.html">How it works</a>
+    <a href="benchmarks.html">Benchmarks</a>
+    <a href="docs.html">Docs</a>
+    <a href="teams.html">Teams</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub &#8599;</a>
+    <a class="cta" href="docs.html#install">Install EDIFY</a>
+  </nav>
+</div>
+<main id="main">
+<section class="page-hero has-loop">
+  <video class="hero-loop" data-loop muted loop playsinline preload="none" poster="assets/film/home/poster.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/home/loop.mp4" type="video/mp4"></video>
+  <div class="band">
+    <div class="eyebrow bare">Motion</div>
+    <h1 class="h-display w18" data-rv="claim">
+      <span class="ln"><span>Two series.</span></span>
+      <span class="ln"><span class="blue">One grammar.</span></span>
+    </h1>
+    <p class="lead" data-rv="card" data-i="0" style="margin-top:30px">The films are hairlines on the void: one object per page, every line of copy sourced. The ink series is solid type, a liquid mask and foil. They share the grid, the tolerance lines, the readout in the corners and the same four durations, so either can stand next to the other.</p>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="live-h">
+  <div class="eyebrow">01 / Live</div>
+  <h2 id="live-h" class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Every scene runs in your browser.</span></span></h2>
+  <p class="small" data-rv="card" data-i="0" style="max-width:52ch;color:var(--ed-text-3)">One WebGL2 shader, <code class="c">assets/js/ink.js</code>. The clips below are this same file, captured frame by frame. Move through the frame: the pointer is one more drop of ink.</p>
+  <div class="play" data-playground data-rv="card" data-i="1">
+    <div class="play-stage"><canvas aria-label="Live ink scene"></canvas><img src="assets/film/home/stage-poster.jpg" alt="" class="play-still"></div>
+    <div class="play-bar">
+      <div class="chips" role="group" aria-label="Scene">
+      <button type="button" data-scene="hero" data-note="scene hero · the pointer is ink" aria-pressed="false">EDIFY</button>
+      <button type="button" data-scene="mark" data-note="scene mark · the pointer is ink" aria-pressed="false">the mark</button>
+      <button type="button" data-scene="build" data-note="scene build · the pointer is ink" aria-pressed="false">red to green</button>
+      <button type="button" data-scene="rt-codex" data-note="scene rt-codex · the pointer is ink" aria-pressed="false">.codex</button>
+      <button type="button" data-scene="rt-gemini" data-note="scene rt-gemini · the pointer is ink" aria-pressed="false">.gemini</button>
+      <button type="button" data-scene="rt-claude" data-note="scene rt-claude · the pointer is ink" aria-pressed="false">.claude</button>
+      <button type="button" data-scene="spec" data-note="scene spec · the pointer is ink" aria-pressed="false">spec</button>
+      <button type="button" data-scene="free" data-note="scene free · the pointer is ink" aria-pressed="false">$0</button>
+      </div>
+      <span class="play-cap" data-cap></span>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="ink-h">
+  <div class="eyebrow">02 / The ink series</div>
+  <div class="gallery-head">
+    <h2 id="ink-h" class="h-section w22" data-rv="claim" style="margin:0"><span class="ln"><span>Flat is the agent alone.</span></span><span class="ln"><span class="blue">The ink is EDIFY.</span></span></h2>
+    <p class="small" data-rv="card" data-i="0" style="max-width:40ch;color:var(--ed-text-3)">Twelve clips and the stage. Each loops seamlessly: every motion in it turns a whole number of times per loop.</p>
+  </div>
+  <figure class="clip-card hero-card" data-rv="card" data-i="1">
+    <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/home/stage-poster.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/home/stage.mp4" type="video/mp4"></video></div>
+    <figcaption><span class="no">INK 00</span><span class="t">The stage</span><span class="s">1920&times;1080 &middot; 16 s</span><span class="w">home &middot; live, this is its fallback</span><span class="h">two pools travel the wordmark</span></figcaption>
+  </figure>
+  <div class="clip-grid">
+    <figure class="clip-card" data-rv="card" data-i="0" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/mark.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/mark.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 01</span><span class="t">The mark</span><span class="s">1200×800 · 10 s</span><span class="w">home · beside the 60-second path</span><span class="h">a tide breathes over the mark</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="1" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/rt-claude.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/rt-claude.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 02</span><span class="t">.claude/commands/</span><span class="s">800×600 · 8 s</span><span class="w">home · runtime 01</span><span class="h">drips gather, stretch, let go</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="2" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/rt-codex.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/rt-codex.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 03</span><span class="t">.codex/prompts/</span><span class="s">800×600 · 8 s</span><span class="w">home · runtime 02</span><span class="h">one front sweeps across</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="3" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/rt-cursor.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/rt-cursor.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 04</span><span class="t">.cursor/commands/</span><span class="s">800×600 · 8 s</span><span class="w">home · runtime 03</span><span class="h">a pointer draws a lemniscate</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="4" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/rt-gemini.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/rt-gemini.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 05</span><span class="t">.gemini/commands/</span><span class="s">800×600 · 8 s</span><span class="w">home · runtime 04</span><span class="h">two pools meet and part · latex</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="5" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/rt-github.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/rt-github.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 06</span><span class="t">.github/prompts/</span><span class="s">800×600 · 8 s</span><span class="w">home · runtime 05</span><span class="h">bubbles rise through the word</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="0" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/rt-windsurf.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/rt-windsurf.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 07</span><span class="t">.windsurf/workflows/</span><span class="s">800×600 · 8 s</span><span class="w">home · runtime 06</span><span class="h">a tide with a running crest</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="1" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/spec.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/spec.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 08</span><span class="t">spec · plan · tasks</span><span class="s">800×600 · 9 s</span><span class="w">how it works · 01</span><span class="h">three reads, one after another</span></figcaption>
+    </figure>
+    <figure class="clip-card" data-rv="card" data-i="2" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/build.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/build.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 09</span><span class="t">Red to green</span><span class="s">800×600 · 8 s</span><span class="w">how it works · 03</span><span class="h">the failing suite, and the same suite passing</span></figcaption>
+    </figure>
+    <figure class="clip-card wide" data-rv="card" data-i="3" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/empty.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/empty.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 10</span><span class="t">The empty table</span><span class="s">1600×640 · 10 s</span><span class="w">benchmarks · 04</span><span class="h">dashes, the only honest value</span></figcaption>
+    </figure>
+    <figure class="clip-card wide" data-rv="card" data-i="4" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/init.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/init.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 11</span><span class="t">edify init</span><span class="s">1600×640 · 12 s</span><span class="w">home · 10</span><span class="h">the command, as wide as the band</span></figcaption>
+    </figure>
+    <figure class="clip-card wide" data-rv="card" data-i="5" data-step="tight">
+      <div class="clip-media"><video class="clip" data-loop muted loop playsinline preload="none" poster="assets/film/clips/free.jpg" aria-hidden="true" tabindex="-1"><source src="assets/film/clips/free.mp4" type="video/mp4"></video></div>
+      <figcaption><span class="no">INK 12</span><span class="t">$0</span><span class="s">1600×640 · 12 s</span><span class="w">pricing · hero</span><span class="h">nothing to pay, inflated</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="films-h">
+  <div class="eyebrow">03 / The page films</div>
+  <div class="gallery-head">
+    <h2 id="films-h" class="h-section w22" data-rv="claim" style="margin:0"><span class="ln"><span>One object per page,</span></span><span class="ln"><span class="blue">made of hairlines.</span></span></h2>
+    <p class="small" data-rv="card" data-i="0" style="max-width:40ch;color:var(--ed-text-3)">Each plays while it is on screen; click one to pause it. The copy is the page's own, with its source file in the corner.</p>
+  </div>
+  <div class="mreel-grid">
+    <figure class="mreel" data-film data-no="02" data-name="Home" data-dur="43" data-chapters='[[0,"Make it reliable"],[6.9,"The problem"],[13,"How it works"],[20.5,"The codebase graph"],[27.5,"Verification"],[33.5,"Local-first"]]' data-rv="card" data-i="0">
+      <video muted loop preload="none" playsinline data-auto tabindex="0" poster="assets/film/home/film-poster.jpg" aria-label="EDIFY home film, 43 s, no audio"><source src="assets/film/home/film.mp4" type="video/mp4"></video>
+      <figcaption><span class="no">FILM 01</span><span class="t">Home</span><span class="s">43 s &middot; 1600&times;900</span><span class="h">one ribbon lands on the workflow rail</span><a href="index.html">on the page &#8594;</a></figcaption>
+    </figure>
+    <figure class="mreel" data-film data-no="03" data-name="How it works" data-dur="45" data-chapters='[[0,"Think hard once"],[8.4,"The map"],[16,"Build"],[24.2,"Verify"],[31.5,"Six commands"],[37,"Limits, first"]]' data-rv="card" data-i="1">
+      <video muted loop preload="none" playsinline data-auto tabindex="0" poster="assets/film/how-it-works/film-poster.jpg" aria-label="EDIFY how it works film, 45 s, no audio"><source src="assets/film/how-it-works/film.mp4" type="video/mp4"></video>
+      <figcaption><span class="no">FILM 02</span><span class="t">How it works</span><span class="s">45 s &middot; 1600&times;900</span><span class="h">three passes, three lanes, one oxide error</span><a href="how-it-works.html">on the page &#8594;</a></figcaption>
+    </figure>
+    <figure class="mreel" data-film data-no="04" data-name="Docs" data-dur="32" data-chapters='[[0,"Quickstart"],[6.4,"What you see"],[16,"Ask the map"],[24,"One real task"]]' data-rv="card" data-i="0">
+      <video muted loop preload="none" playsinline data-auto tabindex="0" poster="assets/film/docs/film-poster.jpg" aria-label="EDIFY docs film, 32 s, no audio"><source src="assets/film/docs/film.mp4" type="video/mp4"></video>
+      <figcaption><span class="no">FILM 03</span><span class="t">Docs</span><span class="s">32 s &middot; 1600&times;900</span><span class="h">the sample repo’s 18-node graph assembles</span><a href="docs.html">on the page &#8594;</a></figcaption>
+    </figure>
+    <figure class="mreel" data-film data-no="05" data-name="Benchmarks" data-dur="37" data-chapters='[[0,"Same model"],[7.5,"Status"],[15,"The three arms"],[23.2,"The minimum credible package"],[29.6,"Help run it"]]' data-rv="card" data-i="1">
+      <video muted loop preload="none" playsinline data-auto tabindex="0" poster="assets/film/benchmarks/film-poster.jpg" aria-label="EDIFY benchmarks film, 37 s, no audio"><source src="assets/film/benchmarks/film.mp4" type="video/mp4"></video>
+      <figcaption><span class="no">FILM 04</span><span class="t">Benchmarks</span><span class="s">37 s &middot; 1600&times;900</span><span class="h">three arms in step, flattened into the empty table</span><a href="benchmarks.html">on the page &#8594;</a></figcaption>
+    </figure>
+    <figure class="mreel" data-film data-no="06" data-name="About" data-dur="37" data-chapters='[[0,"The same starting line"],[7.1,"Two roots"],[14.5,"The drawing"],[21.6,"What we will not trade"],[28.5,"Name the limit first"]]' data-rv="card" data-i="0">
+      <video muted loop preload="none" playsinline data-auto tabindex="0" poster="assets/film/about/film-poster.jpg" aria-label="EDIFY about film, 37 s, no audio"><source src="assets/film/about/film.mp4" type="video/mp4"></video>
+      <figcaption><span class="no">FILM 05</span><span class="t">About</span><span class="s">37 s &middot; 1600&times;900</span><span class="h">the drawing resolves onto the grid</span><a href="about.html">on the page &#8594;</a></figcaption>
+    </figure>
+    <figure class="mreel" data-film data-no="01" data-name="Teams" data-dur="49" data-chapters='[[0,"The boundary"],[6.5,"Fragments"],[12.5,"The shared brain"],[19.8,"On disk"],[27.4,"Status"],[35.1,"The learning loop"],[41,"No server"]]' data-rv="card" data-i="1">
+      <video muted loop preload="none" playsinline data-auto tabindex="0" poster="assets/film/teams/film-poster.jpg" aria-label="EDIFY teams film, 49 s, no audio"><source src="assets/film/teams/film.mp4" type="video/mp4"></video>
+      <figcaption><span class="no">FILM 06</span><span class="t">Teams</span><span class="s">49 s &middot; 1600&times;900</span><span class="h">five ribbons become the five strokes</span><a href="teams.html">on the page &#8594;</a></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="g-h">
+  <div class="eyebrow">04 / The shared grammar</div>
+  <h2 id="g-h" class="h-section-sm w22" data-rv="claim"><span class="ln"><span>Technical first.</span></span><span class="ln"><span class="blue">Then beautiful.</span></span></h2>
+  <div class="rows mt-26">
+    <div class="row" data-rv="card" data-i="0" data-step="tight"><i class="sq"></i><span class="n">Four durations: 140, 420, 900 and 1400 ms. Nothing else.</span><span class="s">--d-micro &middot; --d-el &middot; --d-section</span></div>
+    <div class="row" data-rv="card" data-i="1" data-step="tight"><i class="sq"></i><span class="n">Claims ease on <code class="c">--e-edify</code>, structure on <code class="c">--e-out</code>, objects on <code class="c">--e-emph</code>.</span><span class="s">site.css</span></div>
+    <div class="row" data-rv="card" data-i="2" data-step="tight"><i class="sq"></i><span class="n">The 56-pixel grille sits under every frame, films and ink alike.</span><span class="s">P3.x &middot; engine grid</span></div>
+    <div class="row" data-rv="card" data-i="3" data-step="tight"><i class="sq"></i><span class="n">A hairline tolerance line traces every ink, so a dark ink on the void still reads.</span><span class="s">P3.z</span></div>
+    <div class="row" data-rv="card" data-i="4" data-step="tight"><i class="sq"></i><span class="n">The foil carries contour lines: the balloon is read as a height map.</span><span class="s">P4.x</span></div>
+    <div class="row" data-rv="card" data-i="5" data-step="tight"><i class="sq"></i><span class="n">Blue is enforced, amber advisory, oxide blocked. Never colour for decoration.</span><span class="s">state marks</span></div>
+    <div class="row" data-rv="card" data-i="6" data-step="tight"><i class="sq"></i><span class="n">Every loop is seamless: its last frame meets its first.</span><span class="s">render-ink.cjs</span></div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="foot-top">
+    <div>
+      <div class="foot-brand">
+        <svg viewBox="0 0 100 100" fill="none" aria-hidden="true"><path d="M6 28 L44 6 L66 94 L30 74 L94 52 Z" stroke="#E8ECF2" stroke-width="10" stroke-linejoin="miter" stroke-miterlimit="6"></path><path d="M50.5 32 L54.9 49.4 M56.4 55.5 L60.7 72.9" stroke="#07090C" stroke-width="16"></path><path d="M44 6 L66 94" stroke="#E8ECF2" stroke-width="10"></path></svg>
+        <span>EDIFY</span>
+      </div>
+      <p class="foot-tag">The reliability layer for AI coding agents working on large, real-world codebases.</p>
+      <div class="btn-row" style="margin-top:26px">
+        <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY <span class="m">&#8594;</span></a>
+        <a class="btn btn-line btn-sm" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">View on GitHub <span class="m">&#8599;</span></a>
+      </div>
+    </div>
+    <div class="foot-cols">
+      <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="teams.html">Teams</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="contact.html">Contact</a></div>
+      <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
+      <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/claude-skills/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
+    </div>
+  </div>
+  <div class="foot-art" data-field-grid aria-hidden="true">
+    <div class="boxes">
+      <div style="left:3.2%;top:22%;width:14%;height:56%"></div>
+      <div style="left:3.2%;top:44%;width:23%;height:12%"></div>
+      <div style="left:3.2%;top:70%;width:23%;height:12%"></div>
+      <div style="left:47%;top:22%;width:11%;height:56%"></div>
+      <div style="left:56%;top:44%;width:15%;height:12%"></div>
+      <div style="left:70%;top:22%;width:1px;height:56%;border:none;background:rgba(232,236,242,0.055)"></div>
+    </div>
+    <div class="foot-word" data-rv="media" data-i="0"><span>EDIFY</span></div>
+  </div>
+  <div class="foot-line"><span>EDIFY / local-first / no telemetry / files, not conversations</span><span><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/LICENSE" target="_blank" rel="noopener">FSL-1.1-Apache-2.0</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/TRADEMARK.md" target="_blank" rel="noopener">Trademark</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></span></div>
+</footer>
+</body>
+</html>

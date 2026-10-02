@@ -65,18 +65,9 @@ outside the repository at all. That is asserted in
 
 ## The project ledger
 
-`projects.tsv` holds one line per project: key, path, first seen. **Nothing about
-it is ever sent anywhere**, so there is nothing to gain by hashing or hiding it
-and plenty to lose — you can read your own limit.
-
-```bash
-edify license projects              # what is using a slot
-edify license projects forget PATH  # release one
-```
-
-A project is keyed on its git remote, so a re-clone, a second worktree, and a
-fresh CI checkout count once. A repository whose folder is gone returns its slot
-the next time anything reads the ledger.
+Retired in 0.2.0: there is no project limit, so nothing reads or writes
+`projects.tsv` any more. A ledger file an earlier version wrote is left where it
+is and never deleted. It was never sent anywhere.
 
 ## Feedback, since there is no telemetry
 

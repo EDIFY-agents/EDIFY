@@ -11,7 +11,7 @@ Run EDIFY on one real task in a repository you actually work in, and tell us
 what broke.
 
 ```bash
-pipx install edify-cli
+pipx install edify-agents-cli
 cd your-repository
 edify init
 edify doctor
@@ -27,8 +27,8 @@ most valuable thing we receive.
 | you want to | do this first |
 |---|---|
 | fix a bug | open an issue, or just send the PR if it is small and obvious |
-| add a language to the graph extractor | open an issue — the extractor contract is in [`docs/design/architecture/06-graph.md`](docs/design/architecture/06-graph.md) |
-| add or change a skill library entry | read [`docs/design/architecture/10-harvest.md`](docs/design/architecture/10-harvest.md); entries are curated, not merged on sight |
+| add a language to the graph extractor | open an issue first — the extractor contract is described there |
+| add or change a skill library entry | open an issue first; entries are curated, not merged on sight |
 | change a document format | open a **discussion**, not an issue — formats are contracts and changing one invalidates existing specs |
 | add a runtime dependency | open a discussion and expect resistance; see below |
 | change positioning, pricing, or claims | open a discussion |
@@ -47,7 +47,7 @@ in use.
 ## Development setup
 
 ```bash
-git clone https://github.com/EDIFY-agents/edify_public && cd edify_public
+git clone https://github.com/EDIFY-agents/EDIFY && cd EDIFY
 pip install -e ".[dev]"
 pytest
 ```
@@ -76,18 +76,16 @@ edify governance verify        # has anything EDIFY installed drifted
 
 ## Contributor licensing (please read — it is four sentences)
 
-EDIFY is released under the [Functional Source License](LICENSE)
-(FSL-1.1-Apache-2.0), and each version converts to Apache 2.0 after two years.
+EDIFY is released under the [MIT License](LICENSE).
 
 By submitting a contribution you certify the [Developer Certificate of
 Origin](https://developercertificate.org/) — that you wrote it, or have the
 right to submit it — and you grant EDIFY a perpetual, worldwide, non-exclusive,
 royalty-free, irrevocable licence to use, reproduce, modify, sublicense, and
-distribute your contribution, **including under licences other than the FSL**.
+distribute your contribution, **including under licences other than MIT**.
 
-That last clause is what lets us keep the two-year Apache 2.0 conversion
-promise, ship commercial builds, and relicense the whole project more
-permissively later without hunting down every contributor. It does not take
+That last clause is what lets us relicense the whole project later
+without hunting down every contributor. It does not take
 your copyright — you keep it, and you can do anything you like with your own
 work elsewhere.
 
@@ -103,8 +101,8 @@ Do not open an issue. See [SECURITY.md](SECURITY.md).
 
 ## Where conversation happens
 
-- **[Issues](https://github.com/EDIFY-agents/edify_public/issues)** — reproducible bugs, install problems, graph gaps.
-- **[Discussions](https://github.com/EDIFY-agents/edify_public/discussions)** — questions, ideas, benchmark
+- **[Issues](https://github.com/EDIFY-agents/EDIFY/issues)** — reproducible bugs, install problems, graph gaps.
+- **[Discussions](https://github.com/EDIFY-agents/EDIFY/discussions)** — questions, ideas, benchmark
   methodology, "is this the right approach", showing what you built.
 
 There is no Discord. When there is a recurring community that needs one, there

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="584" viewBox="0 0 620 584" role="img" aria-label="Terminal: edify init — seven things, and then it stops">
+<rect width="620" height="584" rx="2" fill="#04060A"/>
+<rect width="620" height="34" rx="2" fill="#07090C"/>
+<line x1="0" y1="34" x2="620" y2="34" stroke="#1C1F24" stroke-width="1"/>
+<rect x="0.5" y="0.5" width="619" height="583" rx="2" fill="none" stroke="#1C1F24" stroke-width="1"/>
+<path d="M8 51 V42 H17" fill="none" stroke="#4A4D51" stroke-width="1"/>
+<path d="M612 51 V42 H603" fill="none" stroke="#4A4D51" stroke-width="1"/>
+<path d="M8 567 V576 H17" fill="none" stroke="#4A4D51" stroke-width="1"/>
+<path d="M612 567 V576 H603" fill="none" stroke="#4A4D51" stroke-width="1"/>
+<text x="24" y="21.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="10.5" fill="#6A6D71" letter-spacing="1.6">EDIFY / INIT</text>
+<text x="596" y="21.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="10.5" fill="#6A6D71" text-anchor="end" letter-spacing="0.4">seven things, and then it stops</text>
+<text x="24" y="60" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#7ABDFF">$ </tspan><tspan fill="#E8ECF2">edify init --yes</tspan></text>
+<rect x="40.84" y="66.50" width="8.82" height="22.40" fill="#C4C8CE"/>
+<rect x="49.26" y="66.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="57.68" y="66.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="66.10" y="66.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="82.94" y="66.50" width="8.82" height="22.40" fill="#397CDD"/>
+<rect x="91.36" y="66.50" width="8.82" height="11.40" fill="#5194EA"/>
+<rect x="99.78" y="66.50" width="8.82" height="11.40" fill="#65A8F4"/>
+<rect x="108.20" y="77.50" width="8.82" height="11.40" fill="#73B6FB"/>
+<rect x="125.04" y="66.50" width="8.82" height="22.40" fill="#73B6FB"/>
+<rect x="141.88" y="66.50" width="8.82" height="22.40" fill="#5194EA"/>
+<rect x="150.30" y="66.50" width="8.82" height="11.40" fill="#397CDD"/>
+<rect x="158.72" y="66.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="167.14" y="66.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="183.98" y="66.50" width="8.82" height="22.40" fill="#C4C8CE"/>
+<rect x="217.66" y="66.50" width="8.82" height="22.40" fill="#C4C8CE"/>
+<rect x="40.84" y="88.50" width="8.82" height="22.40" fill="#C4C8CE"/>
+<rect x="49.26" y="88.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="57.68" y="88.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="82.94" y="88.50" width="8.82" height="22.40" fill="#4B8EE6"/>
+<rect x="108.20" y="88.50" width="8.82" height="22.40" fill="#75B8FC"/>
+<rect x="125.04" y="88.50" width="8.82" height="22.40" fill="#75B8FC"/>
+<rect x="141.88" y="88.50" width="8.82" height="22.40" fill="#5C9FEF"/>
+<rect x="150.30" y="88.50" width="8.82" height="11.40" fill="#4B8EE6"/>
+<rect x="158.72" y="88.50" width="8.82" height="11.40" fill="#377ADC"/>
+<rect x="192.40" y="88.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="200.82" y="88.50" width="8.82" height="22.40" fill="#C4C8CE"/>
+<rect x="209.24" y="88.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="40.84" y="110.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="49.26" y="110.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="57.68" y="110.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="66.10" y="110.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="82.94" y="110.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<rect x="91.36" y="110.50" width="8.82" height="11.40" fill="#3D80DF"/>
+<rect x="99.78" y="110.50" width="8.82" height="11.40" fill="#5A9DEE"/>
+<rect x="125.04" y="110.50" width="8.82" height="11.40" fill="#6FB2F9"/>
+<rect x="141.88" y="110.50" width="8.82" height="11.40" fill="#3D80DF"/>
+<rect x="200.82" y="110.50" width="8.82" height="11.40" fill="#C4C8CE"/>
+<text x="24" y="148" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#C4C8CE">  </tspan><tspan fill="#6A6D71">EDIFY / INIT</tspan><tspan fill="#C4C8CE"> </tspan><tspan fill="#4F5256">───────────────────────────</tspan><tspan fill="#C4C8CE"> </tspan><tspan fill="#6A6D71">0.2.0</tspan></text>
+<text x="24" y="170" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#C4C8CE">  </tspan><tspan fill="#6A6D71">three documents and a map</tspan></text>
+<text x="24" y="214" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">repository root: ~/code/orders</tspan></text>
+<text x="24" y="236" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">stack      </tspan><tspan fill="#C4C8CE"> python</tspan></text>
+<text x="24" y="258" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">manager    </tspan><tspan fill="#C4C8CE"> - · test runner pytest</tspan></text>
+<text x="24" y="280" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">graph      </tspan><tspan fill="#C4C8CE"> 9 nodes · 11 edges · 3 files</tspan></text>
+<text x="24" y="302" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">conventions</tspan><tspan fill="#C4C8CE"> scraped from config files · zero model calls</tspan></text>
+<text x="24" y="324" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">skills     </tspan><tspan fill="#C4C8CE"> 7 installed · 5 in the library did not match this stack</tspan></text>
+<text x="24" y="346" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">index      </tspan><tspan fill="#C4C8CE"> 71 lookup rows</tspan></text>
+<text x="24" y="368" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">mcp        </tspan><tspan fill="#C4C8CE"> registry seeded with one entry: the documentation server</tspan></text>
+<text x="24" y="390" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">commands   </tspan><tspan fill="#C4C8CE"> 5 installed under .edify/commands/</tspan></text>
+<text x="24" y="412" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">wrote      </tspan><tspan fill="#C4C8CE"> CLAUDE.md — written</tspan></text>
+<text x="24" y="434" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">agents     </tspan><tspan fill="#C4C8CE"> 1 runtime(s) — each one&#x27;s own commands and skills:</tspan></text>
+<text x="24" y="456" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#C4C8CE">  claude    5 commands · 7 skills · 0 agents  (Claude Code)</tspan></text>
+<text x="24" y="478" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#6A6D71">governance </tspan><tspan fill="#C4C8CE"> 33 files recorded in .edify/governance.tsv</tspan></text>
+<text x="24" y="500" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#C4C8CE">            origin, licence, and hash for each</tspan></text>
+<text x="24" y="544" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="14" xml:space="preserve"><tspan fill="#7ABDFF">Next: /spec — write the spec before anything else.</tspan></text>
+</svg>

@@ -71,8 +71,6 @@ ship
   edify self where                    which edify is this, and where did it come from
   edify self update [--from PATH]     put an edited checkout behind the `edify` binary
   edify license status|activate|deactivate
-  edify license buy [--seats N]       the pro plan, and where to pay for it
-  edify license projects [forget ...] which repositories are using a free slot
   edify feedback [list|show|off|on]   four questions, written to a file on this machine
   edify version
 """
@@ -350,21 +348,6 @@ def build_parser() -> argparse.ArgumentParser:
     l_deactivate = license_sub.add_parser("deactivate", help="remove the licence from this machine")
     l_deactivate.set_defaults(func=_license_deactivate)
 
-    # Opens a browser, not a socket. Under --json, --quiet, or with no terminal it
-    # prints the URL and stops.
-    l_buy = license_sub.add_parser("buy", help="the pro plan, its price, and where to pay")
-    l_buy.add_argument("--seats", type=int, default=1, help="how many seats to buy")
-    l_buy.set_defaults(func=_license_buy)
-
-    l_projects = license_sub.add_parser(
-        "projects", help="which repositories are using a slot on the free plan"
-    )
-    l_projects.set_defaults(func=_license_projects)
-    projects_sub = l_projects.add_subparsers(dest="projects_command")
-    l_forget = projects_sub.add_parser("forget", help="release one slot")
-    l_forget.add_argument("which", metavar="PATH", help="the project's path, or its ledger key")
-    l_forget.set_defaults(func=_license_projects_forget)
-
     p_feedback = sub.add_parser("feedback", help="how this is going — written to a file on this machine")
     p_feedback.add_argument("--message", "-m", help="one line instead of the four questions")
     p_feedback.set_defaults(func=_feedback_new)
@@ -609,24 +592,6 @@ def _license_deactivate(ctx):
     from .commands import license_cmd
 
     return license_cmd.deactivate(ctx)
-
-
-def _license_buy(ctx):
-    from .commands import license_cmd
-
-    return license_cmd.buy(ctx)
-
-
-def _license_projects(ctx):
-    from .commands import license_cmd
-
-    return license_cmd.projects(ctx)
-
-
-def _license_projects_forget(ctx):
-    from .commands import license_cmd
-
-    return license_cmd.projects_forget(ctx)
 
 
 def _feedback_new(ctx):

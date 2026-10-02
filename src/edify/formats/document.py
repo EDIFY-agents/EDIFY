@@ -5,7 +5,7 @@ to say where, and a parser that loses position produces reports nobody can act o
 
 The frontmatter reader deliberately handles scalars and space-separated lists only
 — no nesting, no anchors, no multi-line values. That is the metadata format
-(`docs/design/architecture/05-skills-and-spawning.md` §2), and a stricter reader is what
+(flat on purpose, so any tool can read it), and a stricter reader is what
 keeps the index a two-line awk script for anyone who wants one.
 """
 

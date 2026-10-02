@@ -47,11 +47,6 @@ The contracts live next to the examples:
 - [`edify/formats/plan.format.md`](../edify/formats/plan.format.md)
 - [`edify/formats/tasks.format.md`](../edify/formats/tasks.format.md)
 
-And the reasoning behind each, in the design dossier:
-[the spec](../docs/design/03-the-spec.md) ·
-[the plan](../docs/design/04-the-plan.md) ·
-[the tasks](../docs/design/05-the-tasks.md).
-
 ## Trying it on your own repository
 
 The best example is your codebase and one real task you have already watched an

@@ -1,44 +1,24 @@
 # Changelog
 
-All notable changes to `edify-cli`. The format follows Keep a Changelog; versioning
+All notable changes to `edify-agents-cli`. The format follows Keep a Changelog; versioning
 is semantic on the CLI surface.
 
 Two contract versions move independently of the CLI version and are recorded in
 `.edify/graph/meta` and `edify/manifest.md`: `graph-schema` (bumping it rebuilds an
 existing graph rather than misreading it) and `index-schema`.
 
+## 0.2.0
+
+- **Renamed** on PyPI from `edify-cli`, a name that belongs to another project, to
+  `edify-agents-cli`.
+- Removed: the individual paid plan (`pro`), the purchase and project-count
+  subcommands, and the graph, project and upgrade caps.
+- Changed: a second MCP server needs a team or partner licence, and existing entries are
+  kept.
+- Docs: the README and `docs/` now carry the site's ink clips as animated WebP
+  (`assets/motion/`), and the terminal screenshots are recaptured from 0.2.0 output.
+
 ## [Unreleased]
-
-### Licence — MIT → FSL-1.1-Apache-2.0
-
-The project moves from the MIT License to the **[Functional Source
-License](LICENSE)**, version 1.1, with an Apache 2.0 Future License.
-
-Nothing a *user* could do under MIT is withdrawn: use at work, on commercial code,
-in production, at any company size; read, modify, fork, self-host, redistribute.
-The single restriction added is a Competing Use — selling EDIFY, or a rebranded
-EDIFY, as a product or hosted service.
-
-Under MIT, the five gates in `src/edify/licensing/tier.py` could be deleted and
-the result sold, legally, by anyone. Defending that technically would mean
-obfuscation or a phone-home, and both cost every honest user something real —
-`docs/pricing.md` §4 commits to neither. A licence is the honest place to put that
-boundary.
-
-**Every released version converts to Apache 2.0 on its second anniversary**,
-irrevocably, with a patent grant. Release dates are in this file, so the
-conversion date of any version is computable without us.
-
-- `LICENSE` — FSL-1.1-Apache-2.0, replacing the MIT text.
-- `NOTICE` — copyright, third-party material, and the trademark reservation.
-- `TRADEMARK.md` — what the licence deliberately does not grant: the name.
-- `docs/license.md` — the plain-English version, including why not MIT and why
-  not AGPL, and stating plainly that this is source-available and not OSI open
-  source.
-- `governance.py` — `SHIPPED_LICENSE` is now `FSL-1.1-Apache-2.0`, so
-  `edify governance list`, `LICENSE`, and the README cannot drift apart.
-- `CONTRIBUTING.md` — DCO sign-off plus an explicit inbound grant, which is what
-  keeps the two-year Apache 2.0 conversion promise keepable.
 
 ### The ship release — a real issuing key, `edify self update`, the ∞, and a way to pay
 
@@ -122,7 +102,7 @@ behind the `edify` binary, and nothing else could either.
   refused install leaves nothing behind — not even an empty `.edify/`.
 - **`edify license projects`** lists what is using a slot, with `forget <path>` beside
   it. Releasing a slot is not a support ticket.
-- **`edify license buy [--seats N]`** prints the plan and the price and opens a Stripe
+- **`edify license`'s purchase subcommand** (removed in 0.2.0) prints the plan and the price and opens a Stripe
   Payment Link in a browser — it opens a browser, it does not open a socket. Under
   `--json`, `--quiet`, or with no terminal it prints the URL and stops.
   `EDIFY_BUY_URL` overrides the link, which is how test mode is reached.
@@ -136,11 +116,11 @@ behind the `edify` binary, and nothing else could either.
 
 #### The issuer
 
-the licence issuer (private tooling) refuses to sign with a zero or single-repeated-byte seed or a
+`tools/issue_license.py` refuses to sign with a zero or single-repeated-byte seed or a
 small counting integer, requires a real email, defaults `--days` to a billing month plus
-the seven-day grace `docs/pricing.md` §3 specifies, prints a paste-ready customer
+the seven-day grace `design/11-commercial.md` §5 specifies, prints a paste-ready customer
 email, and appends an audit line to a gitignored `tools/.issued.tsv` that
-the issuer's `issued` subcommand reads back. `keygen` refuses to overwrite an existing seed
+`issue_license.py issued` reads back. `keygen` refuses to overwrite an existing seed
 without `--force`, because doing so invalidates every licence signed with it.
 
 There is no webhook, no Postgres, and no transactional email in this build. That is
@@ -329,7 +309,7 @@ four steps and one door, and the door does not open by itself.
 - `edify feedback` asks four questions and writes the answers to a file under the
   user's config directory, then prints the `gh` command and the URL that would send
   it. **Nothing is transmitted**; `edify upgrade` remains the only command that
-  opens a socket, and `docs/pricing.md` §4 is unchanged.
+  opens a socket, and `design/11-commercial.md` §10 is unchanged.
 - A one-line invitation on stderr as the CLI opens: at most once per released
   version, only on a real terminal, never in CI or a pipe. `edify feedback off`, or
   `EDIFY_NO_FEEDBACK`, ends it permanently.
@@ -350,7 +330,7 @@ four steps and one door, and the door does not open by itself.
 
 ### Publishing
 
-- The release runbook (private) — registering the name, PyPI trusted publishing via GitHub OIDC,
+- `PUBLISHING.md` — registering the name, PyPI trusted publishing via GitHub OIDC,
   the TestPyPI rehearsal, the per-release checklist, and the Homebrew tap.
 - `.github/workflows/release.yml` — tag-driven, no API tokens, refuses to publish
   when the git tag and the package version disagree, and smoke-installs the wheel on
@@ -361,7 +341,7 @@ four steps and one door, and the door does not open by itself.
 ## [0.1.0] — 2026-08-07
 
 First release. The graph commands and the methodology surface — steps 1 and 2 of the
-build order in `docs/design/architecture/09-cli.md` §5 — plus the install path a stranger
+build order in `design/architecture/09-cli.md` §5 — plus the install path a stranger
 needs.
 
 ### The map
@@ -415,8 +395,8 @@ needs.
 - `edify license status | activate | deactivate`.
 - Free plan: everything, forever, no account, up to 25,000 graph nodes. Four paid
   entitlements — `graph.unlimited`, `library.upgrade`, `mcp.multi`, `team`.
-- the licence issuer (private tooling) — the issuer, so the whole path is testable end to end.
-- Full commercial design in `docs/pricing.md`.
+- `tools/issue_license.py` — the issuer, so the whole path is testable end to end.
+- Full commercial design in `design/11-commercial.md`.
 
 ### Known limits
 
@@ -425,5 +405,5 @@ needs.
 - `edify mcp check` cannot verify a pin for a server with a remote transport or one
   that does not answer `--version`. It reports that as unprobeable rather than as
   passing.
-- Standalone binaries are not built yet (M4 in the release milestones). The
+- Standalone binaries are not built yet (M4 in `design/11-commercial.md` §2). The
   install path today is `pipx` or `uv tool`.

@@ -1,13 +1,11 @@
-"""The project ledger: how many repositories the free plan has installed into.
+"""The project ledger, retired in 0.2.0.
 
-The fifth gate, and the first one that is about how *much* rather than how *big*.
-Three projects on free (`FREE_PROJECT_CAP`), unlimited on paid.
+It counted how many repositories the free plan had installed into. The public
+edition has no project cap any more, so nothing reads or writes `projects.tsv`. A
+0.1.x ledger file is left exactly where it is, in `user_config_dir()`, and never
+deleted: it belongs to the person whose machine it is on.
 
-**It never leaves this machine.** There is no telemetry, ever
-(`docs/pricing.md` §4 commitment 2), so the ledger is a readable TSV in
-`user_config_dir()` rather than a hashed or hidden file (plan D-6). Obfuscating it
-would buy nothing — nobody is being told about it — and would cost the person the
-ability to see and manage their own limit with `cat`.
+What follows describes how the ledger worked while it was read.
 
 **A project's identity is its `git remote origin`** (D-7). A re-clone, a second
 worktree, and a fresh CI checkout are all the same project. Keying on the path

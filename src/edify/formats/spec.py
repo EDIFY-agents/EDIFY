@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .document import Document, Row, parse_document
 
-# The whole legal set, cheapest to strongest (`docs/design/architecture/08-verification.md` §1).
+# The whole legal set, ordered from the cheapest evidence to the strongest.
 VERIFICATION_KINDS = ("types", "example", "contract", "property", "model", "proof", "observation")
 
 # Above this rung an assertion has to be budgeted in plan.md, because an

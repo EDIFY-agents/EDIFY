@@ -1,16 +1,13 @@
 #! edify check — what is wrong with the documents
 $ edify check
-specs/orders/plan.md:70: error: [plan-decision-no-version]
-    D-2 names no exact version
-    `2.3`, not `^2.3` and not `latest` — this is what the docs
-    server is pointed at
+[38;2;234;107;98m[-][0m [38;2;234;107;98mspecs/orders/plan.md:12: error: [plan-decision-loose-version]
+    D-2 has a range, not a version: `^2.9`
+[38;2;242;163;89m[!][0m [38;2;242;163;89mspecs/orders/plan.md:17: warn: [plan-seed-no-range]
+    context seed `src/api.py` has no line range
+[38;2;106;109;113m    a seed without a range transfers its cost to /tasks, which[0m
+    [38;2;106;109;113mis the reason the plan exists[0m
 
-specs/orders/plan.md:152: warn: [plan-seed-no-range]
-    context seed `src/auth.py` has no line range
-    a seed without a range transfers its cost to /tasks, which
-    is the reason the plan exists
-
-1 error · 1 warning · 0 notes
+1 errors · 1 warnings · 0 notes
 
 # Nothing blocks. `edify check` prints; you or your CI decide
 # what that means. `--exit-code` is how you make it a gate you own.

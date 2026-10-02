@@ -5,7 +5,7 @@
 **Do not open a public issue.**
 
 Use GitHub's [private vulnerability
-reporting](https://github.com/EDIFY-agents/edify_public/security/advisories/new), or email **security@edify.dev**.
+reporting](https://github.com/EDIFY-agents/EDIFY/security/advisories/new), or email **security@edify.dev**.
 
 Include what you would want to receive: the version (`edify self where`), the
 platform, a reproduction, and what an attacker gets out of it.
@@ -44,9 +44,8 @@ tries not to make.
 ## What is out of scope
 
 - **Removing the licence check.** The source is readable, the verification is
-  local, and anyone determined can delete it. That is stated plainly in
-  [docs/pricing.md](docs/pricing.md) rather than hidden: paying is a contract,
-  not a technical protection measure. Reports that the gate can be bypassed
+  local, and anyone determined can delete it. That is stated plainly rather
+  than hidden: a licence is a contract, not a technical protection measure. Reports that the gate can be bypassed
   describe the design. Reports that a *signature check* accepts a forged token
   are in scope and serious.
 - Findings that require an attacker who already has write access to the

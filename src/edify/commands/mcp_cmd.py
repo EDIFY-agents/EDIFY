@@ -12,8 +12,14 @@ import subprocess
 from pathlib import Path
 
 from ..context import Context
+from ..errors import TierRequired
 from ..formats import mcp as mcp_format
 from ..licensing import tier
+
+
+def _licence_hint() -> str:
+    """The one licence sentence, taken from the refusal rather than retyped."""
+    return TierRequired(tier.FEATURE_NAMES["mcp.multi"]).hint
 
 
 def list_(ctx: Context) -> int:
@@ -34,8 +40,9 @@ def list_(ctx: Context) -> int:
                 "phases": s.phases,
                 "network": s.network,
                 "source": s.source,
+                "needs_licence": cap is not None and i >= cap,
             }
-            for s in registry.servers
+            for i, s in enumerate(registry.servers)
         ]
     )
     ctx.out.table(
@@ -47,10 +54,10 @@ def list_(ctx: Context) -> int:
     )
     if cap is not None and len(registry.servers) > cap:
         ctx.out.warn(
-            f"{len(registry.servers)} servers declared; the free plan covers {cap}."
-            " Entries beyond the first are listed but not scoped into spawns."
+            f"{len(registry.servers)} servers declared; the public edition loads the first {cap}."
+            " The rest stay on disk and load once a team or partner licence is present."
         )
-        ctx.out.note(tier.upsell())
+        ctx.out.note(_licence_hint())
     return 0
 
 
@@ -65,7 +72,11 @@ def for_(ctx: Context) -> int:
         withheld = [s for s in servers if s.name not in allowed]
         servers = [s for s in servers if s.name in allowed]
         for server in withheld:
-            ctx.out.warn(f"`{server.name}` is beyond the free plan's registry limit and was not loaded")
+            ctx.out.warn(
+                f"`{server.name}` needs a team or partner licence (more than {cap} server) and was not loaded"
+            )
+        if withheld:
+            ctx.out.note(_licence_hint())
 
     ctx.out.data([{"server": s.name, "version": s.version, "network": s.network} for s in servers])
     if not servers:

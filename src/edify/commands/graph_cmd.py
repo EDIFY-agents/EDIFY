@@ -9,14 +9,12 @@ from __future__ import annotations
 from .. import anim
 from ..context import Context
 from ..graph import extract, queries
-from ..licensing import tier
 
 
 def build(ctx: Context) -> int:
     ctx.layout.require_installed()
-    cap = ctx.entitlement.node_cap
     with anim.spinner(ctx.out, "reading every file, building the map"):
-        result = extract.build(ctx.layout, backend=ctx.args.extractor, node_cap=cap)
+        result = extract.build(ctx.layout, backend=ctx.args.extractor)
 
     ctx.out.data(result.as_dict())
     ctx.out.line(
@@ -32,12 +30,6 @@ def build(ctx: Context) -> int:
             + ", ".join(f"{k} ({v} files)" for k, v in sorted(result.uncovered.items()))
         )
         ctx.out.note("a language the extractor does not handle has no nodes. That gap is stated, not filled.")
-    if result.truncated_at is not None:
-        ctx.out.warn(
-            f"the graph was truncated at {result.truncated_at:,} nodes — this repository is larger than the free plan covers"
-        )
-        ctx.out.note("a truncated graph answers fewer questions, exactly.")
-        ctx.out.note(tier.upsell())
     return 0
 
 
@@ -48,7 +40,6 @@ def update(ctx: Context) -> int:
         result = extract.build(
             ctx.layout,
             backend=ctx.args.extractor,
-            node_cap=ctx.entitlement.node_cap,
             subdirs=ctx.args.dirs,
         )
     ctx.out.data(result.as_dict())

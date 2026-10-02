@@ -1,8 +1,8 @@
 """Asking how this is going, without becoming a tool that phones home.
 
-`docs/pricing.md` §4 commits to no telemetry — "not anonymous, not
-aggregate, not opt-out" — and the reason it gives is the buyer: frequently the
-person who has to explain to somebody external what touched the source tree. That
+EDIFY commits to no telemetry — not anonymous, not aggregate, not opt-out — and
+the reason is the person running it: frequently the one who has to explain to
+somebody external what touched the source tree. That
 commitment is not weakened here, so this module is built to the opposite shape from
 the usual one:
 
@@ -30,7 +30,7 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
-from . import __version__
+from . import __version__, distribution
 from .paths import user_config_dir
 from .tsv import read_kv, write_kv
 from .ui import Out
@@ -39,8 +39,8 @@ from .ui import Out
 # opinion, and asking at that point is a pop-up rather than a question.
 INVITE_AFTER_RUNS = 3
 
-ISSUES_URL = "https://github.com/EDIFY-agents/edify_public/issues/new"
-REPO = "EDIFY-agents/edify_public"
+ISSUES_URL = distribution.ISSUES_URL
+REPO = distribution.PUBLIC_REPO
 
 QUESTIONS = (
     ("doing", "  What were you using EDIFY for?"),

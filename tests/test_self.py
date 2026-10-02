@@ -18,7 +18,7 @@ from edify import selfinstall
 from edify.cli import main
 from edify.errors import EdifyError
 
-MANIFEST = '[project]\nname = "edify-cli"\nversion = "0.1.0"\n'
+MANIFEST = '[project]\nname = "edify-agents-cli"\nversion = "0.1.0"\n'
 OTHER_MANIFEST = '[project]\nname = "something-else"\nversion = "9.9.9"\n'
 
 
@@ -36,10 +36,10 @@ def checkout(tmp_path: Path) -> Path:
 @pytest.mark.parametrize(
     "prefix, expected",
     [
-        ("/home/x/.local/share/uv/tools/edify-cli", "uv"),
-        (r"C:\Users\x\AppData\Roaming\uv\tools\edify-cli", "uv"),
-        ("/home/x/.local/share/pipx/venvs/edify-cli", "pipx"),
-        (r"C:\Users\x\pipx\venvs\edify-cli", "pipx"),
+        ("/home/x/.local/share/uv/tools/edify-agents-cli", "uv"),
+        (r"C:\Users\x\AppData\Roaming\uv\tools\edify-agents-cli", "uv"),
+        ("/home/x/.local/share/pipx/venvs/edify-agents-cli", "pipx"),
+        (r"C:\Users\x\pipx\venvs\edify-agents-cli", "pipx"),
         ("/usr", "pip"),
         ("/home/x/project/.venv", "pip"),
         ("/usr/local/Cellar/python@3.12/3.12.4/Frameworks", "pip"),

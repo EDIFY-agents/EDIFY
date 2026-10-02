@@ -8,13 +8,19 @@ and a coding agent you already use.
 ## 1 · Install
 
 ```bash
-pipx install edify-cli          # or: uv tool install edify-cli
+pipx install edify-agents-cli          # or: uv tool install edify-agents-cli
 ```
 
 Per-platform detail, PATH fixes, and where EDIFY keeps its files:
 [INSTALL.md](../INSTALL.md).
 
 ## 2 · Install the harness into a repository
+
+<p align="center">
+  <img src="../assets/motion/init.webp" width="640" alt="edify init, in flat grey type, filling with blue ink">
+</p>
+
+<img src="../assets/init.svg" width="100%" alt="edify init at a terminal: the wordmark, then one line per step, ending on Next: /spec">
 
 ```bash
 cd your-repository
@@ -127,4 +133,4 @@ edify feedback
 
 Four questions, written to a file on your machine. Nothing is sent — it prints a
 `gh issue create` command and you decide. Or open a
-[discussion](https://github.com/EDIFY-agents/edify_public/discussions) directly.
+[discussion](https://github.com/EDIFY-agents/EDIFY/discussions) directly.

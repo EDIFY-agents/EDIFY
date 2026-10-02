@@ -4,10 +4,9 @@ Shape: `edify1.<base64url(payload json)>.<base64url(signature)>`. The signature 
 Ed25519 over the payload bytes. There is no network call, no activation server,
 and no machine fingerprint — the token is a receipt, not a lock.
 
-That is a deliberate position and `docs/pricing.md` states it: the source
-is readable, the check is local, and anyone determined can remove it. Paying is a
-contract, and pretending otherwise would cost real users offline operation for no
-protection.
+That is a deliberate position: the source is readable, the check is local, and
+anyone determined can remove it. A licence is a contract, and pretending otherwise
+would cost real users offline operation for no protection.
 """
 
 from __future__ import annotations
@@ -23,8 +22,8 @@ from .ed25519 import verify
 
 PREFIX = "edify1"
 
-# The production issuing key. The private half never leaves the issuer (see
-# `docs/pricing.md` §3, D-7). It is a random 32-byte seed held in a
+# The production issuing key. The private half never leaves the issuer, which
+# signs by hand and is not shipped. It is a random 32-byte seed held in a
 # secrets store — *not* a derivable one. The public key of an all-zeros seed,
 # `3b6a27bc…59da29`, shipped in 0.1.0 and let anyone mint a `pro` token; the
 # regression test in `tests/test_licensing.py` makes its return impossible.

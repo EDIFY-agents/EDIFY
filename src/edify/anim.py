@@ -35,6 +35,8 @@ import threading
 import time
 from typing import Any
 
+from . import ui
+
 # -- geometry ---------------------------------------------------------------
 
 WIDTH = 31
@@ -54,6 +56,11 @@ UNICODE_GLYPHS = ("●", "○", "·")
 ASCII_GLYPHS = ("O", "o", ".")
 
 FPS = 14.0
+
+#: How much of a spinner's label is shown. The label says what the wait is for;
+#: past this it is a paragraph, and a terminal narrower than it wraps and breaks
+#: the repaint.
+LABEL = 60
 
 
 def _point(t: float) -> tuple[float, float]:
@@ -109,10 +116,28 @@ def _build(glyphs: tuple[str, str, str]) -> tuple[str, ...]:
     return tuple(frames)
 
 
+def _tones() -> tuple[dict[tuple[int, int], int], ...]:
+    """For every frame, each lit cell's age: 0 is the head, `TRAIL` the oldest.
+
+    The same walk `_build` makes, kept apart from the glyphs so a frame's text is
+    unchanged by colour. The painter reads the age to shade the trail from the
+    bright head into the deeper ink, the way a drop thins as it spreads.
+    """
+    table = []
+    for f in range(FRAMES):
+        lead = int(SAMPLES * f / FRAMES)
+        ages: dict[tuple[int, int], int] = {}
+        for back in range(TRAIL, -1, -1):
+            ages[_cell(2.0 * math.pi * ((lead - back) % SAMPLES) / SAMPLES)] = back
+        table.append(ages)
+    return tuple(table)
+
+
 #: Built once, at import. Two tuples of `FRAMES` strings — deterministic, and so
 #: assertable in a test rather than only visible to a person.
 UNICODE_FRAMES: tuple[str, ...] = _build(UNICODE_GLYPHS)
 ASCII_FRAMES: tuple[str, ...] = _build(ASCII_GLYPHS)
+TONES = _tones()
 
 #: The wordmark. Pure ASCII by construction, because it survives a pipe, a CI log,
 #: and a code page — it is printed even when the animation is not.
@@ -122,6 +147,25 @@ BANNER = (
     "  | _|| |) | || _|  \\ V /    three documents and a map",
     "  |___|___/___|_|    |_|",
 )
+
+#: The wordmark a person at a terminal sees: the site's heavy sans, in half blocks.
+#: Three rows, so it is a mark and not a poster.
+WORDMARK = (
+    "█▀▀▀ █▀▀▄ █ █▀▀▀ █   █",
+    "█▀▀  █  █ █ █▀▀   ▀█▀ ",
+    "▀▀▀▀ ▀▀▀  ▀ ▀      ▀  ",
+)
+
+#: The readout under the wordmark, as wide as the clips' corner readouts sit apart.
+READOUT_WIDTH = 46
+
+#: The ink pool. Where it comes to rest (a column of the wordmark), how wide it is
+#: on each row — uneven, so it reads as liquid and not as a highlighter — and how
+#: long it takes to arrive: `--d-el`, the site's single-element entrance.
+POOL_REST = 9.0
+POOL_HALF = (4.5, 5.5, 3.5)
+POOL_MS = 420
+POOL_FRAMES = 12
 
 
 # -- glyph selection --------------------------------------------------------
@@ -197,11 +241,13 @@ class Spinner:
         self._thread: threading.Thread | None = None
         self._stop = threading.Event()
         self._painted = False
+        self._start = time.monotonic()
         self._lines = HEIGHT + (1 if label else 0)
 
     # -- lifecycle ---------------------------------------------------
 
     def __enter__(self) -> "Spinner":
+        self._start = time.monotonic()
         if not self._enabled():
             if self.label:
                 self.out.note(self.label)
@@ -242,7 +288,7 @@ class Spinner:
             self.stream.write(_HIDE)
             index = 0
             while not self._stop.is_set():
-                self._write_frame(frames[index % len(frames)])
+                self._write_frame(frames[index % len(frames)], index % len(frames))
                 index += 1
                 self._stop.wait(1.0 / FPS)
         except Exception:  # noqa: BLE001 — decoration is never load-bearing
@@ -254,10 +300,16 @@ class Spinner:
             except Exception:  # noqa: BLE001
                 pass
 
-    def _write_frame(self, frame: str) -> None:
-        body = frame
+    def _write_frame(self, frame: str, index: int = 0) -> None:
+        colour = bool(getattr(self.out, "color_err", False))
+        body = "\n".join("  " + row for row in inked(frame, index, colour).split("\n"))
         if self.label:
-            body = frame + "\n" + self.out.c(self.label[:WIDTH], "dim")
+            # The clips carry a readout in their corners; the wait carries one too.
+            took = f"{time.monotonic() - self._start:4.1f}s"
+            said = f"  {self.label[:LABEL]}  {took}"
+            if colour:
+                said = f"  {ui.sgr('muted')}{self.label[:LABEL]}{ui.RESET}  {ui.sgr('faint')}{took}{ui.RESET}"
+            body = body + "\n" + said
         if self._painted:
             self.stream.write(_UP * self._lines)
         chunks = []
@@ -308,12 +360,14 @@ def spinner(out: Any, label: str = "") -> Any:
 # -- the banner -------------------------------------------------------------
 
 
-def banner(out: Any) -> None:
+def banner(out: Any, verb: str = "init") -> None:
     """The wordmark, once, as the install opens.
 
-    Suppressed only by `--json` and `--quiet` — not by the absence of a tty. It is
-    static ASCII, so it survives a pipe and reads fine in a CI log, and a build log
-    that says which tool wrote it is more useful than one that does not.
+    Suppressed only by `--json` and `--quiet` — not by the absence of a tty. Off a
+    terminal it is the static ASCII `BANNER`, so it survives a pipe and reads fine
+    in a CI log, and a build log that says which tool wrote it is more useful than
+    one that does not. At a terminal it is the site's wordmark, and the ink pours
+    into it once.
     """
     if getattr(out, "json_mode", False) or getattr(out, "quiet", False):
         return
@@ -322,11 +376,122 @@ def banner(out: Any) -> None:
     if getattr(out, "no_anim", False):
         return
     try:
+        if getattr(out, "animated", False) and ui.encodes("█▀▄─", sys.stderr):
+            _wordmark(out, verb)
+            return
         for line in BANNER:
             out.note(line)
         out.note("")
     except Exception:  # noqa: BLE001
         pass
+
+
+def _ease(t: float) -> float:
+    """`--e-edify`, cubic-bezier(.2,.8,.2,1), closely enough for twelve frames."""
+    return 1.0 - (1.0 - t) ** 3
+
+
+def _mix(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[int, int, int]:
+    return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))  # type: ignore[return-value]
+
+
+def ink(row: int, line: str, centre: float, colour: bool) -> str:
+    """One row of the wordmark with the pool at `centre`.
+
+    Inside the pool a glyph takes the ink: bright at the heart, the deeper edge
+    blue at the rim. Outside it keeps the terminal's own foreground — flat is the
+    agent alone, the ink is EDIFY. A 16-colour terminal gets one blue.
+    """
+    if not colour:
+        return line
+    palette = ui.PALETTES[ui.theme()]
+    bright, edge = ui.rgb(palette["signal"]), ui.rgb(palette["edge"])
+    bits = ui.depth()
+    half = POOL_HALF[row % len(POOL_HALF)]
+    cells = []
+    for col, glyph in enumerate(line):
+        reach = abs(col - centre) / half
+        if glyph == " " or reach > 1.0:
+            cells.append(glyph)
+            continue
+        start = "\033[94m" if bits == 16 else ui.fg(_mix(bright, edge, reach ** 1.6), bits)
+        cells.append(start + glyph + ui.RESET)
+    return "".join(cells)
+
+
+def inked(frame: str, index: int, colour: bool) -> str:
+    """A frame of the infinity in ink: the head bright, the trail thinning into the
+    deeper blue, the curve at rest in the faint tone. Text unchanged without colour."""
+    if not colour:
+        return frame
+    palette = ui.PALETTES[ui.theme()]
+    bright, edge = ui.rgb(palette["signal"]), ui.rgb(palette["edge"])
+    faint, bits = ui.sgr("faint"), ui.depth()
+    ages = TONES[index % len(TONES)]
+    rows = []
+    for r, row in enumerate(frame.split("\n")):
+        cells = []
+        for c, glyph in enumerate(row):
+            if glyph == " ":
+                cells.append(glyph)
+                continue
+            age = ages.get((r, c))
+            if age is None:
+                start = faint
+            elif bits == 16:
+                start = "\033[94m" if age == 0 else "\033[34m"
+            else:
+                start = ui.fg(_mix(bright, edge, age / TRAIL), bits)
+            cells.append(start + glyph + ui.RESET)
+        rows.append("".join(cells))
+    return "\n".join(rows)
+
+
+def readout(verb: str, colour: bool, width: int = READOUT_WIDTH) -> str:
+    """`EDIFY / INIT ──────── 0.2.0` — the clips' corner readout, as one line."""
+    from . import __version__
+
+    left, right = f"EDIFY / {verb.upper()}", __version__
+    rule = "─" * max(3, width - len(left) - len(right) - 2)
+    if not colour:
+        return f"{left} {rule} {right}"
+    muted, faint = ui.sgr("muted"), ui.sgr("faint")
+    return f"{muted}{left}{ui.RESET} {faint}{rule}{ui.RESET} {muted}{right}{ui.RESET}"
+
+
+def _wordmark(out: Any, verb: str) -> None:
+    """Paint the wordmark to stderr, pour the ink once, and leave it standing."""
+    stream = sys.stderr
+    colour = bool(getattr(out, "color_err", False))
+    pad = "  "
+    rows = len(WORDMARK)
+    tail = [readout(verb, colour), ui.sgr("muted") + "three documents and a map" + ui.RESET if colour
+            else "three documents and a map", ""]
+
+    def paint(centre: float, first: bool) -> None:
+        if not first:
+            stream.write(_UP * rows)
+        stream.write("".join(
+            _CLEAR_LINE + pad + ink(r, WORDMARK[r], centre, colour) + "\n" for r in range(rows)
+        ))
+        stream.flush()
+
+    if colour:
+        start = -max(POOL_HALF) - 1.0
+        stream.write(_HIDE)
+        try:
+            for f in range(POOL_FRAMES + 1):
+                centre = start + (POOL_REST - start) * _ease(f / POOL_FRAMES)
+                paint(centre, first=f == 0)
+                if f < POOL_FRAMES:
+                    time.sleep(POOL_MS / 1000.0 / POOL_FRAMES)
+        finally:
+            stream.write(_SHOW)
+    else:
+        paint(POOL_REST, first=True)
+    for line in tail:
+        stream.write(pad + line + "\n" if line else "\n")
+    stream.flush()
 
 
 def elapsed(start: float) -> str:

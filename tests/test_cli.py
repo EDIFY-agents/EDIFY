@@ -213,15 +213,10 @@ def test_a_command_needing_the_graph_says_so_before_init(
     assert "edify graph build" in capsys.readouterr().err
 
 
-def test_upgrade_is_declined_on_the_free_plan(capsys: pytest.CaptureFixture[str], installed: Path) -> None:
-    assert run(installed, "upgrade", "--check") == 7
-    err = capsys.readouterr().err
-    assert "pro plan" in err
-    # A gate names the price and both doors — buying one, and activating a token
-    # somebody already has. Neither is useful without the other.
-    assert "$20 per user per month" in err
-    assert "edify license buy" in err
-    assert "edify license activate" in err
+def test_upgrade_is_not_gated(capsys: pytest.CaptureFixture[str], installed: Path) -> None:
+    # 1, not 7: the command ran on the free plan and failed on its own terms.
+    assert run(installed, "upgrade", "--archive", "nope.zip") == 1
+    assert "is not a file" in capsys.readouterr().err
 
 
 def test_version_needs_no_repository(capsys: pytest.CaptureFixture[str], tmp_path: Path) -> None:

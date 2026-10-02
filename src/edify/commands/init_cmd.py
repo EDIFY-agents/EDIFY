@@ -25,9 +25,7 @@ from ..agents import BLOCK_BEGIN, BLOCK_END, Instructions
 from ..conventions import scrape
 from ..context import Context
 from ..detect import Stack, detect
-from ..errors import TierRequired
 from ..graph import extract
-from ..licensing import projects, tier
 from ..tsv import write_rows
 
 # Kept under their old names because `setup` and anything else that reasoned about
@@ -46,7 +44,7 @@ def run(ctx: Context) -> int:
     # lines, and say so with `caller_opens` — otherwise it appears twice in eight
     # lines. Mirrors `caller_closes` at the bottom of this function.
     if not getattr(ctx.args, "caller_opens", False):
-        anim.banner(out)
+        anim.banner(out, "init")
 
     out.note(f"repository root: {root}")
 
@@ -55,26 +53,10 @@ def run(ctx: Context) -> int:
     if ctx.args.stack and ctx.args.stack != "auto":
         declared = [t.strip().lower() for t in ctx.args.stack.replace(",", " ").split() if t.strip()]
         stack.frameworks = sorted(set(stack.frameworks) | set(declared))
-    out.line(f"stack     {', '.join(stack.tech) or 'nothing detected'}")
-    out.line(f"manager   {stack.package_manager}   test runner {stack.test_runner}")
-
-    # The fifth gate, and the only place it is enforced. `setup` and `init new`
-    # both route through this function, so one call covers all three install paths
-    # and there is no second copy to drift. Only a *new* project is ever refused:
-    # a repository already in the ledger keeps installing, forever.
-    #
-    # Before the `.edify/` mkdir, not after: a refused install must leave nothing
-    # behind, and an empty `.edify/` is worse than nothing — `require_installed`
-    # would then say this repository is installed when it is not.
-    verdict = projects.register(root, ctx.entitlement.project_cap)
-    if verdict == projects.OVER_CAP:
-        raise TierRequired(f"a {tier.ordinal(ctx.entitlement.project_cap + 1)} project")
+    out.field("stack", f"{', '.join(stack.tech) or 'nothing detected'}")
+    out.field("manager", f"{stack.package_manager} · test runner {stack.test_runner}")
 
     ctx.layout.edify.mkdir(parents=True, exist_ok=True)
-    if verdict == projects.REGISTERED:
-        used, cap = projects.slots(ctx.entitlement.project_cap)
-        if cap is not None:
-            out.note(f"projects  {used} of {cap} on the free plan · `edify license projects`")
 
     _write_stack(ctx, stack)
 
@@ -82,54 +64,49 @@ def run(ctx: Context) -> int:
     result = None
     if not ctx.args.no_graph:
         with anim.spinner(out, "reading every file, building the map"):
-            result = extract.build(
-                ctx.layout, backend=ctx.args.extractor, node_cap=ctx.entitlement.node_cap
-            )
-        out.line(f"graph     {result.nodes} nodes · {result.edges} edges · {result.files} files")
+            result = extract.build(ctx.layout, backend=ctx.args.extractor)
+        out.field("graph", f"{result.nodes} nodes · {result.edges} edges · {result.files} files")
         if result.uncovered:
             out.line(
-                "          not covered: "
+                " " * 12 + "not covered: "
                 + ", ".join(sorted(result.uncovered))
                 + " — these have no nodes, which is stated rather than guessed"
             )
-        if result.truncated_at is not None:
-            out.warn(f"graph truncated at {result.truncated_at:,} nodes (free plan)")
-            out.note(f"          {tier.upsell()}")
     else:
-        out.line("graph     skipped (--no-graph)")
+        out.field("graph", "skipped (--no-graph)")
 
     # 3 · conventions ----------------------------------------------------
     if force or not ctx.layout.conventions.exists():
         ctx.layout.conventions.write_text(scrape(root, stack), encoding="utf-8")
-        out.line("conventions  scraped from config files · zero model calls")
+        out.field("conventions", "scraped from config files · zero model calls")
     else:
-        out.line("conventions  kept (already present)")
+        out.field("conventions", "kept (already present)")
 
     # 4 · select skills --------------------------------------------------
     # No spinner around this one: `_install_skills` may stop and ask which entries
     # to take, and an animation painting over a question is a question nobody can
     # read. `Out.interactive` and `Out.animated` are both true at a terminal.
     installed, declined, unmatched = _install_skills(ctx, stack, force)
-    detail = f"skills    {installed} installed"
+    detail = f"{installed} installed"
     if declined:
         detail += f" · {declined} declined"
     detail += f" · {unmatched} in the library did not match this stack"
-    out.line(detail)
+    out.field("skills", detail)
     rows, invalid = skills_index.build_index(ctx.layout)
-    out.line(f"index     {rows} lookup rows")
+    out.field("index", f"{rows} lookup rows")
     for problem in invalid:
         out.warn(f"skipped in index — {problem}")
 
     # 5 · seed the registry ----------------------------------------------
     if force or not ctx.layout.mcp.exists():
         ctx.layout.mcp.write_text(assets.read("mcp", "default-registry.md"), encoding="utf-8")
-        out.line("mcp       registry seeded with one entry: the documentation server")
+        out.field("mcp", "registry seeded with one entry: the documentation server")
     else:
-        out.line("mcp       kept (already present)")
+        out.field("mcp", "kept (already present)")
 
     # 6 · the methodology surface and CLAUDE.md --------------------------
     commands = _install_commands(ctx, force)
-    out.line(f"commands  {commands} installed under .edify/commands/")
+    out.field("commands", f"{commands} installed under .edify/commands/")
     _install_formats(ctx, force)
 
     targets = agents.resolve(
@@ -138,10 +115,10 @@ def run(ctx: Context) -> int:
         root=ctx.layout.root,
     )
     for path, action in _write_instructions(ctx, stack, targets):
-        out.line(f"{path.ljust(31)} {action}")
+        out.field("wrote", f"{path} — {action}")
 
     if targets:
-        out.line(f"agents    {len(targets)} runtime(s) — each one's own commands and skills:")
+        out.field("agents", f"{len(targets)} runtime(s) — each one's own commands and skills:")
     with anim.spinner(out, "mirroring skills into each runtime"):
         lines = _sync_host(ctx, targets)
     for kind, text in lines:
@@ -150,13 +127,13 @@ def run(ctx: Context) -> int:
 
     profile = getattr(ctx, "profile", None)
     if profile is not None and interview.write(ctx.layout.profile, profile):
-        out.line("profile   .edify/profile.md — your answers, which every session reads")
+        out.field("profile", ".edify/profile.md — your answers, which every session reads")
 
     # 7 · record what was installed --------------------------------------
     ledger = governance.rebuild(ctx.layout)
-    out.line(
-        f"governance {len(ledger)} files recorded in .edify/governance.tsv"
-        " — origin, licence, and hash for each"
+    out.field(
+        "governance",
+        f"{len(ledger)} files recorded in .edify/governance.tsv — origin, licence, and hash for each",
     )
 
     out.data(
@@ -177,7 +154,7 @@ def run(ctx: Context) -> int:
     # what to do next twice in eight lines.
     if not getattr(ctx.args, "caller_closes", False):
         out.line("")
-        out.line("Next: /spec — write the spec before anything else.")
+        out.next("Next: /spec — write the spec before anything else.")
     return 0
 
 

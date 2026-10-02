@@ -4,7 +4,7 @@ A skill file has carried its own provenance since the first release. Nothing els
 did — a command file, a format example, the seeded registry and the scraped
 conventions all arrived with no record of what installed them, from which version,
 or whether anybody has changed them since. That is a gap in exactly the thing
-`docs/design/01-principles.md` P7 asks for: a control counts as governance if a person
+governance is about: a control counts as governance if a person
 can look at it and tell whether the work complied.
 
 So every file EDIFY writes is recorded in `.edify/governance.tsv`, one row each:
@@ -12,7 +12,7 @@ where it is, what it is, where it came from, under what licence, and its hash at
 moment it was installed. `edify governance verify` reads that back against the disk.
 
 It is a ledger, not a lock. Nothing here prevents an edit — it makes one visible,
-which is the whole claim. Five origins, and `verify` treats them differently
+which is the whole claim. Eight origins, and `verify` treats them differently
 because they are owned by different people:
 
     library    a curated skill entry — EDIFY's to replace, so an edit is a warning
@@ -23,6 +23,7 @@ because they are owned by different people:
     merged     CLAUDE.md, AGENTS.md and the rest, where EDIFY owns a block and
                somebody else owns the file
     answered   .edify/profile.md — what a person said when `init new` asked
+    team       an entry a team admitted — written only by the team edition
 
 The graph is deliberately not in here. It is regenerated output, it changes on every
 build, and it already carries its own checksums in `.edify/graph/meta`.
@@ -34,6 +35,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import __version__
+from .distribution import DIST_NAME
 from .errors import EdifyError
 from .formats import skill as skill_format
 from .host import written_by_edify
@@ -42,13 +44,13 @@ from .tsv import read_rows, sha256_file, write_rows
 
 LEDGER_HEADER = ("path", "kind", "origin", "provenance", "license", "source", "sha256", "edify")
 
-# The licence the shipped methodology tree is under — the same one this repository
-# carries, so `edify governance list`, LICENSE, and the README cannot drift apart.
-# Skill entries override it from their own frontmatter, which is how an adapted
-# entry stays governed by its upstream.
-SHIPPED_LICENSE = "FSL-1.1-Apache-2.0"
+# The licence the shipped methodology tree is under: the same licence `LICENSE` and
+# the README state, so the ledger, the file and the page cannot drift apart. Skill
+# entries override it from their own frontmatter, which is how an adapted entry
+# stays governed by its upstream.
+SHIPPED_LICENSE = "MIT"
 
-ORIGINS = ("library", "shipped", "seeded", "scraped", "generated", "merged", "answered")
+ORIGINS = ("library", "shipped", "seeded", "scraped", "generated", "merged", "answered", "team")
 
 # An edit to one of these is EDIFY's business: `upgrade` will overwrite it.
 EDIFY_OWNED = ("library", "shipped", "generated")
@@ -84,12 +86,16 @@ class Record:
 @dataclass(frozen=True)
 class Problem:
     path: str
-    state: str  # missing | modified | edited | unrecorded
+    state: str  # missing | modified | edited | unrecorded | unknown-origin
     detail: str
 
     @property
     def serious(self) -> bool:
-        """`edited` is a repository doing what it is entitled to do with its own file."""
+        """`edited` is a repository doing what it is entitled to do with its own file.
+
+        `unknown-origin` is a row a newer edify wrote. This version cannot judge it, so
+        it says so and moves on rather than failing a build it does not understand.
+        """
         return self.state in ("missing", "modified", "unrecorded")
 
     def as_dict(self) -> dict[str, str]:
@@ -124,7 +130,7 @@ def scan(layout: Layout) -> list[Record]:
                 origin="seeded",
                 provenance="original",
                 license=SHIPPED_LICENSE,
-                source=f"edify-cli@{__version__}",
+                source=f"{DIST_NAME}@{__version__}",
                 sha256=sha256_file(layout.mcp),
                 edify=__version__,
             )
@@ -163,7 +169,7 @@ def scan(layout: Layout) -> list[Record]:
                     origin="generated",
                     provenance="original",
                     license=SHIPPED_LICENSE,
-                    source=f"edify-cli@{__version__}",
+                    source=f"{DIST_NAME}@{__version__}",
                     sha256=sha256_file(path),
                     edify=__version__,
                 )
@@ -184,7 +190,7 @@ def scan(layout: Layout) -> list[Record]:
                 origin="merged",
                 provenance="client",
                 license="-",
-                source=f"edify-cli@{__version__} owns the edify:begin/end block only",
+                source=f"{DIST_NAME}@{__version__} owns the edify:begin/end block only",
                 sha256="-",
                 edify=__version__,
             )
@@ -221,7 +227,7 @@ def _skill_record(layout: Layout, path: Path) -> Record:
         origin="library",
         provenance=parsed.provenance or "-",
         license=declared,
-        source=parsed.source or f"edify-cli@{__version__}",
+        source=parsed.source or f"{DIST_NAME}@{__version__}",
         sha256=sha256_file(path),
         edify=__version__,
     )
@@ -234,7 +240,7 @@ def _shipped_record(layout: Layout, path: Path, kind: str) -> Record:
         origin="shipped",
         provenance="original",
         license=SHIPPED_LICENSE,
-        source=f"edify-cli@{__version__}",
+        source=f"{DIST_NAME}@{__version__}",
         sha256=sha256_file(path),
         edify=__version__,
     )
@@ -272,6 +278,15 @@ def verify(layout: Layout) -> list[Problem]:
     for path in sorted(set(recorded) | set(present)):
         was = recorded.get(path)
         now = present.get(path)
+        if was and was.origin not in ORIGINS:
+            problems.append(
+                Problem(
+                    path,
+                    "unknown-origin",
+                    f"written by a newer edify (origin `{was.origin}`) — run 0.2.0 or later to read it",
+                )
+            )
+            continue
         if was and not now:
             problems.append(Problem(path, "missing", f"recorded as {was.origin}, not on disk"))
             continue

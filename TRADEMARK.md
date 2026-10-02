@@ -7,7 +7,7 @@ separate grants, and the licence deliberately does not include this one.
 
 We keep this short and permissive on purpose. The point is not to police
 language — it is to make sure that when a developer types `pipx install
-edify-cli`, they get software we built and can support.
+edify-agents-cli`, they get software we built and can support.
 
 ---
 
@@ -60,6 +60,6 @@ support requests for someone else's build is not.
 
 ## Asking
 
-Open a [discussion](https://github.com/EDIFY-agents/edify_public/discussions) or email **legal@edify.dev**. Requests
+Open a [discussion](https://github.com/EDIFY-agents/EDIFY/discussions) or email **legal@edify.dev**. Requests
 that amount to "we want to be clear we are not you" are approved as a matter of
 routine.

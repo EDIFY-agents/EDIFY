@@ -8,6 +8,8 @@ more than it saves.
 
 from __future__ import annotations
 
+from .distribution import CONTACT
+
 
 class EdifyError(Exception):
     """A condition the person running the command can do something about."""
@@ -45,25 +47,20 @@ class GraphMissing(EdifyError):
 
 
 class TierRequired(EdifyError):
-    """A paid entitlement is needed. Stated plainly, with the price and both doors.
+    """A team or partner licence is needed. Stated plainly, with both doors.
 
-    The price appears here, at `edify license status`, and at the two soft caps
-    that warn rather than raise. Nowhere else — no periodic reminder, nothing on an
-    ordinary run. That is `docs/pricing.md` §4 commitment 3, and it was
-    decided rather than overlooked.
+    There is no price and no purchase: a licence is issued on request, and this is
+    the one sentence that says how to ask for one. Every refusal and every soft
+    cap reuses it rather than retyping it.
 
-    No new exit code: 7 already means "this needs the paid plan", and a second one
-    would have to be documented in three places to buy nothing.
+    No new exit code: 7 still means "this needs a licence", and a second one would
+    have to be documented in three places to buy nothing.
     """
 
     exit_code = 7
 
-    def __init__(self, feature: str, plan: str = "pro") -> None:
-        # Imported here rather than at module scope: `errors` is imported by
-        # `licensing.tier`, and the other direction would be a cycle.
-        from .licensing.tier import PRO_PRICE
-
+    def __init__(self, feature: str, plan: str = "team") -> None:
         super().__init__(
-            f"{feature} is part of the {plan} plan — {PRO_PRICE}",
-            hint="edify license buy   ·   have a token already? edify license activate <token>",
+            f"{feature} needs a team or partner licence",
+            hint=f"have a token? edify license activate <token>   ·   ask for one: {CONTACT}",
         )

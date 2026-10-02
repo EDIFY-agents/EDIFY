@@ -6,6 +6,10 @@
 
 ## The mechanism
 
+<p align="center">
+  <img src="../assets/motion/build.webp" width="400" alt="A grid of failing red squares turning to passing blue, one by one">
+</p>
+
 Phase 2 of every build turns each assertion in the spec into an executable test
 that **fails**, before any core logic exists. Everything after that is making red
 go green.
@@ -57,8 +61,7 @@ complaint. The reason is the part that teaches.
 This is a deliberate position, not a gap. EDIFY does not claim enforcement it
 does not have — the previous design had a hook spine that blocked writes, and it
 was honest under exactly one agent runtime and degraded to advisory everywhere
-else. [`10-what-we-dropped.md`](design/10-what-we-dropped.md) records the cut and
-what it cost.
+else. The cut is recorded, with what it cost.
 
 **If you want a hard gate, you own it**, in your CI, where gates belong:
 
@@ -82,10 +85,6 @@ landed. `verify` tells you what changed since.
 <img src="../assets/governance.svg" alt="edify governance output" width="100%">
 
 A control counts as governance if a person can look at it and tell whether the
-work complied ([principle P7](design/01-principles.md)). A hash and a filename
+work complied: advisory means advisory. A hash and a filename
 qualify. A promise does not.
 
-## Design detail
-
-[`docs/design/07-verification.md`](design/07-verification.md) and
-[`docs/design/architecture/08-verification.md`](design/architecture/08-verification.md).

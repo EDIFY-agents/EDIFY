@@ -1,6 +1,6 @@
 """Every file EDIFY installs is recorded, and the record can be checked.
 
-The claim under test is the one `docs/design/01-principles.md` P7 makes: a control counts
+The claim under test is the one governance rests on: a control counts
 as governance if a person can look at it and tell whether the work complied. So the
 ledger has to cover the whole installed surface — not just the skill files, which
 were the only ones carrying provenance before — and `verify` has to tell the

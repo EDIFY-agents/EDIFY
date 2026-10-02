@@ -41,17 +41,17 @@ def run(ctx: Context) -> int:
     ctx.out.data([c.__dict__ for c in checks])
 
     for check in checks:
-        colour = {GREEN: "green", AMBER: "yellow", RED: "red"}[check.state]
-        ctx.out.line(f"{ctx.out.c(check.state.ljust(9), colour)} {check.name.ljust(12)} {check.detail}")
+        kind = {GREEN: "pass", AMBER: "advisory", RED: "blocked"}[check.state]
+        ctx.out.line(f"{ctx.out.state(check.state, kind, 9)} {check.name.ljust(12)} {check.detail}")
 
     ctx.out.line("")
     if any(c.state == RED for c in checks):
-        ctx.out.line(ctx.out.c("red — something here does not work", "red"))
+        ctx.out.line(ctx.out.c("red — something here does not work", "blocked"))
         return 1
     if any(c.state == AMBER for c in checks):
-        ctx.out.line(ctx.out.c("amber — this works, degraded, in the places named above", "yellow"))
+        ctx.out.line(ctx.out.c("amber — this works, degraded, in the places named above", "advisory"))
         return 0
-    ctx.out.line(ctx.out.c("green", "green"))
+    ctx.out.line(ctx.out.c("green", "signal"))
     return 0
 
 
@@ -186,20 +186,9 @@ def _license(ctx: Context) -> Check:
     if ent.paid and ent.license and ent.license.days_left in range(0, 15):
         return Check("license", AMBER, f"{ent.plan} · expires in {ent.license.days_left} days")
 
-    # The project ledger, because "why was my install refused?" should be one line
-    # in `doctor` rather than an investigation. Reading it is free and local.
-    cap = ent.project_cap
-    if cap is None:
-        return Check("license", GREEN, f"{ent.plan} · projects unlimited")
-    try:
-        from ..licensing import projects
-        used = len(projects.known())
-    except OSError:
-        return Check("license", GREEN, f"{ent.plan}")
-    detail = f"{ent.plan} · {used} of {cap} projects"
-    if used >= cap:
-        return Check("license", AMBER, f"{detail} — the next new one needs the pro plan")
-    return Check("license", GREEN, detail)
+    if ent.paid:
+        return Check("license", GREEN, f"{ent.plan} · team edition licensed")
+    return Check("license", GREEN, "public edition · uncapped")
 
 
 def _head(ctx: Context) -> str:

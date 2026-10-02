@@ -1,0 +1,24 @@
+#! edify init — seven things, and then it stops
+$ edify init --yes
+  █▀▀▀ [38;2;57;124;221m█[0m[38;2;81;148;234m▀[0m[38;2;101;168;244m▀[0m[38;2;115;182;251m▄[0m [38;2;115;182;251m█[0m [38;2;81;148;234m█[0m[38;2;57;124;221m▀[0m▀▀ █   █
+  █▀▀  [38;2;75;142;230m█[0m  [38;2;117;184;252m█[0m [38;2;117;184;252m█[0m [38;2;92;159;239m█[0m[38;2;75;142;230m▀[0m[38;2;55;122;220m▀[0m   ▀█▀
+  ▀▀▀▀ ▀[38;2;61;128;223m▀[0m[38;2;90;157;238m▀[0m  [38;2;111;178;249m▀[0m [38;2;61;128;223m▀[0m      ▀
+  [38;2;106;109;113mEDIFY / INIT[0m [38;2;79;82;86m───────────────────────────[0m [38;2;106;109;113m0.2.0[0m
+  [38;2;106;109;113mthree documents and a map[0m
+
+[38;2;106;109;113mrepository root: ~/code/orders
+[38;2;106;109;113mstack      [0m python
+[38;2;106;109;113mmanager    [0m - · test runner pytest
+[38;2;106;109;113mgraph      [0m 9 nodes · 11 edges · 3 files
+[38;2;106;109;113mconventions[0m scraped from config files · zero model calls
+[38;2;106;109;113mskills     [0m 7 installed · 5 in the library did not match this stack
+[38;2;106;109;113mindex      [0m 71 lookup rows
+[38;2;106;109;113mmcp        [0m registry seeded with one entry: the documentation server
+[38;2;106;109;113mcommands   [0m 5 installed under .edify/commands/
+[38;2;106;109;113mwrote      [0m CLAUDE.md — written
+[38;2;106;109;113magents     [0m 1 runtime(s) — each one's own commands and skills:
+  claude    5 commands · 7 skills · 0 agents  (Claude Code)
+[38;2;106;109;113mgovernance [0m 33 files recorded in .edify/governance.tsv
+            origin, licence, and hash for each
+
+[38;2;122;189;255mNext: /spec — write the spec before anything else.[0m

@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -e ".[dev]"
@@ -36,10 +36,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install build && python -m build
+      - run: pip install build==1.6.1 pytest && python -m build
+      # The artefact assertions are private tests and are not in the public export,
+      # so the step runs only where the file is.
+      - name: the artefact assertions, on the wheel just built
+        if: hashFiles('tests/assertions/test_m1_artefacts.py') != ''
+        run: EDIFY_DIST=dist pytest tests/assertions/test_m1_artefacts.py -q
       - name: install the wheel somewhere with no checkout in sight
         run: |
           mkdir -p "$RUNNER_TEMP/elsewhere" && cd "$RUNNER_TEMP/elsewhere"
@@ -61,25 +66,34 @@ jobs:
           test ! -e "$HOME/Library/Application Support/edify/state"
           test ! -e "$HOME/.config/edify/state"
 
-  # `pipx` is what INSTALL.md tells a Mac user to run, so it is what CI runs.
+  # `pipx` is what INSTALL.md tells people to run, so it is what CI runs: on every OS
+  # the package supports, at both ends of the Python range.
   pipx:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.10", "3.13"]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: pip install build pipx && python -m build
-      - run: |
-          pipx install ./dist/*.whl
-          edify version
-          edify doctor || true          # amber before `init`, which is correct
-          cd "$RUNNER_TEMP" && mkdir -p pipx-demo/src && cd pipx-demo
+          python-version: ${{ matrix.python }}
+      - run: pip install build==1.6.1 pipx==1.17.6 && python -m build --wheel
+      - run: pipx install --python "$(python -c 'import sys;print(sys.executable)')" ./dist/edify_agents_cli-*.whl
+      - name: install, init, and verify in a fresh repository
+        run: |
+          mkdir -p "$RUNNER_TEMP/demo/src" && cd "$RUNNER_TEMP/demo"
           printf '[project]\nname = "demo"\n' > pyproject.toml
           printf 'def health():\n    return 1\n' > src/app.py
-          edify init --skills planner,verifier
-          edify skills list
-          edify governance list
+          test "$(edify --version)" = "edify $(python -c "import os,re;print(re.search(r'__version__ = \"(.+)\"', open(os.path.join(os.environ['GITHUB_WORKSPACE'], 'src', 'edify', '__init__.py')).read()).group(1))")"
+          edify init --yes
+          edify doctor
+          edify check --exit-code
           edify governance verify --exit-code
 
   # EDIFY checks its own repository with its own binary. If the harness cannot pass
@@ -89,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -e .

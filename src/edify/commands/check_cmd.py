@@ -2,7 +2,7 @@
 
 A person runs it, or CI runs it, and it prints what is wrong. Nothing halts a
 session. `--exit-code` exists because a customer who needs a hard block should own
-one; that is the honest scope in `docs/design/01-principles.md` P7.
+one; that is the honest scope: advisory means advisory.
 """
 
 from __future__ import annotations
@@ -45,9 +45,9 @@ def run(ctx: Context) -> int:
 
     for finding in findings:
         if finding.level is Level.ERROR:
-            out.line(ctx.out.c(finding.render(), "red"))
+            out.line(_marked(ctx.out, finding.render(), "blocked"))
         elif finding.level is Level.WARN:
-            out.line(ctx.out.c(finding.render(), "yellow"))
+            out.line(_marked(ctx.out, finding.render(), "advisory"))
         else:
             out.line(finding.render())
 
@@ -62,3 +62,11 @@ def run(ctx: Context) -> int:
     if ctx.args.exit_code and ctx.args.strict and warnings:
         return 2
     return 0
+
+
+def _marked(out, text: str, kind: str) -> str:
+    """The finding's first line carries the state mark and the colour; the hint
+    under it is muted, so it reads as the explanation and not as a second alarm."""
+    head, _, rest = text.partition("\n")
+    line = out.state(head, kind)
+    return line + ("\n" + out.c(rest, "dim") if rest else "")

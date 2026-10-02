@@ -1,8 +1,8 @@
 """What `edify check` produces.
 
 A finding is a line a person can act on: where it is, what rule noticed it, and
-what to do. Findings are reported, never enforced — `docs/design/01-principles.md` P7
-says why, and `--exit-code` is how a customer who needs a hard block gets one in
+what to do. Findings are reported, never enforced — advisory means advisory —
+and `--exit-code` is how a customer who needs a hard block gets one in
 their own CI, owned by them.
 """
 

@@ -56,11 +56,11 @@ def run(ctx: Context) -> int:
     out = ctx.out
 
     # Once, above the first line, and `init_cmd` is told not to print a second.
-    anim.banner(out)
+    anim.banner(out, "init new")
     ctx.args.caller_opens = True
 
-    out.line(f"init new  {root}{' (created)' if created else ''}")
-    out.line("          a folder set up from zero, for every agent that reads a repository")
+    out.field("init new", f"{root}{' (created)' if created else ''}")
+    out.field("", "a folder set up from zero, for every agent that reads a repository")
 
     # 1 · ask, before anything is written ---------------------------------
     profile = _interview(ctx, layout)
@@ -88,7 +88,7 @@ def run(ctx: Context) -> int:
     if not getattr(ctx.args, "keep", False):
         cleared = host.clear(layout)
         out.line("")
-        out.line(f"fresh     {len(cleared)} edify-owned path(s) cleared before installing")
+        out.field("fresh", f"{len(cleared)} edify-owned path(s) cleared before installing")
         for path, action in cleared:
             out.note(f"  {action} {layout.rel(path)}")
 
@@ -148,4 +148,4 @@ def _closing(ctx: Context, layout: Layout, chosen: list[agents.Target], profile:
     if profile.filled:
         out.line(f"  {'.edify/profile.md'.ljust(width)}  your answers — edit them whenever they change")
     out.line("")
-    out.line("Next: /spec — write the spec before anything else.")
+    out.next("Next: /spec — write the spec before anything else.")

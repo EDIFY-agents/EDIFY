@@ -1,4 +1,4 @@
-"""`harvest/ledger.json` — every candidate ever seen, and what became of it.
+"""The harvest ledger — every candidate ever seen, and what became of it.
 
 One file, one job: **nothing is gathered, screened, or offered twice.** A harvest
 run that re-proposes last month's rejection wastes the only expensive step in the

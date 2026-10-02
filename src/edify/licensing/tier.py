@@ -1,26 +1,23 @@
-"""Plans, entitlements, and the five places a limit is enforced.
+"""Plans, entitlements, and the one limit the public edition keeps.
 
-The free plan is a whole working system on a small repository. The paid plan is
-what the actual buyer needs, and the split is drawn along the same line the product
-vision draws: EDIFY's value starts where the codebase stops fitting in a context
-window, so the free ceiling sits just under that.
+The public edition is the whole working system, on a repository of any size, in as
+many repositories as a person likes, with no account. It has no caps except one:
+the MCP registry scopes a single server into spawns. Every query, every check,
+every command, `--json`, `--exit-code`, `edify upgrade` and the whole methodology
+tree are free, forever.
 
-Five gates, and they are the only five (`docs/pricing.md` §2):
+Two licensed plans exist, and both add the same two things:
 
-    graph.unlimited     a graph larger than the free node ceiling
-    library.upgrade     pulling new curated skill entries with `edify upgrade`
-    mcp.multi           more than one server in the registry
-    projects.unlimited  installing into more than the free project ceiling
-    team                more than one seat on one licence
+    mcp.multi   more than one server in the registry
+    team        the team edition
 
-`projects.unlimited` is the newest and the only one about how *much* rather than
-how *big*. It is enforced at install time only, in one place — `init_cmd.run`,
-through which `setup` and `init new` also route — and its ledger is a readable
-file on this machine that nothing ever sends anywhere. `licensing/projects.py`
-holds it and says why.
+`team` licences are issued on request; `partner` licences are issued free and
+custom per client. Nothing is sold and no price is written anywhere in this
+package.
 
-Everything else — every query, every check, every command, `--json`, `--exit-code`,
-the whole methodology tree — is free, forever, with no account.
+`pro` and `enterprise` are retired. A token that still names one of them verifies,
+and then resolves to the free plan with a stated reason, because a silent
+downgrade is worse than a stated one.
 """
 
 from __future__ import annotations
@@ -33,40 +30,26 @@ from ..errors import TierRequired
 from ..paths import user_config_dir
 from .token import License, Verdict, parse
 
-FREE_NODE_CAP = 25_000
 FREE_MCP_ENTRIES = 1
-#: How many repositories the free plan installs into. Q-7 in
-#: `docs/pricing.md` records that this number moves on evidence from the
-#: first fifty installs rather than on a guess made now — which is why it is one
-#: constant and not a number typed into four gate messages.
-FREE_PROJECT_CAP = 3
 
-#: The price, written once. A price typed in four places is a price that drifts,
-#: and the one that gets missed is always the one a stranger reads first.
-PRO_PRICE = "$20 per user per month"
+PLANS = ("free", "team", "partner")
 
-#: Where a person goes to pay. `EDIFY_BUY_URL` overrides it, which is how Stripe
-#: test mode is reached without shipping a test link (plan D-8).
-BUY_URL = "https://buy.stripe.com/edify-pro"
-
-PLANS = ("free", "pro", "team", "enterprise")
+#: Plans a token may still name but that no longer exist. They resolve to free,
+#: and `current()` says why.
+RETIRED_PLANS = ("pro", "enterprise")
 
 # plan → the entitlements it carries.
-_PAID = frozenset({"graph.unlimited", "library.upgrade", "mcp.multi", "projects.unlimited"})
+_LICENSED = frozenset({"mcp.multi", "team"})
 
 ENTITLEMENTS: dict[str, frozenset[str]] = {
     "free": frozenset(),
-    "pro": _PAID,
-    "team": _PAID | {"team"},
-    "enterprise": _PAID | {"team"},
+    "team": _LICENSED,
+    "partner": _LICENSED,
 }
 
 FEATURE_NAMES = {
-    "graph.unlimited": f"a graph larger than {FREE_NODE_CAP:,} nodes",
-    "library.upgrade": "`edify upgrade`",
     "mcp.multi": f"more than {FREE_MCP_ENTRIES} server in the registry",
-    "projects.unlimited": f"more than {FREE_PROJECT_CAP} projects on one machine",
-    "team": "more than one seat",
+    "team": "the team edition",
 }
 
 
@@ -82,6 +65,10 @@ class Entitlement:
 
     @property
     def paid(self) -> bool:
+        """Not the free plan.
+
+        Nothing is paid for; the name is kept for the team-edition plugin seam.
+        """
         return self.plan != "free"
 
     def allows(self, feature: str) -> bool:
@@ -93,7 +80,8 @@ class Entitlement:
 
     @property
     def node_cap(self) -> int | None:
-        return None if self.allows("graph.unlimited") else FREE_NODE_CAP
+        """Always `None`. Kept so that `--json` readers get `null`, never a `KeyError`."""
+        return None
 
     @property
     def mcp_cap(self) -> int | None:
@@ -101,7 +89,8 @@ class Entitlement:
 
     @property
     def project_cap(self) -> int | None:
-        return None if self.allows("projects.unlimited") else FREE_PROJECT_CAP
+        """Always `None`. Kept so that `--json` readers get `null`, never a `KeyError`."""
+        return None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -148,6 +137,14 @@ def current() -> Entitlement:
         )
 
     lic = verdict.license
+    if lic.plan in RETIRED_PLANS:
+        return Entitlement(
+            plan="free",
+            license=lic,
+            source=source,
+            problem=f"the {lic.plan} plan is retired; team and partner replace it — ask for a new token",
+            features=ENTITLEMENTS["free"],
+        )
     plan = lic.plan if lic.plan in PLANS else "free"
     features = set(ENTITLEMENTS.get(plan, frozenset()))
     # An explicit feature list on the token can only add, never remove — that is
@@ -173,35 +170,3 @@ def clear() -> bool:
         path.unlink()
         return True
     return False
-
-
-def buy_url(seats: int = 1) -> str:
-    """The Payment Link, with a quantity when more than one seat is wanted.
-
-    `EDIFY_BUY_URL` overrides the constant so Stripe test mode is one variable
-    away. Read at call time rather than at import, because the tests set it.
-    """
-    base = os.environ.get("EDIFY_BUY_URL", "").strip() or BUY_URL
-    if seats and seats > 1:
-        joiner = "&" if "?" in base else "?"
-        return f"{base}{joiner}quantity={seats}"
-    return base
-
-
-def upsell() -> str:
-    """The one line printed under a soft cap that warns rather than raises.
-
-    One string, so the graph-truncation warning, the registry-cap warning, and any
-    later one cannot each word the price differently. `TierRequired` carries the
-    same sentence for the caps that do raise.
-    """
-    return f"the pro plan lifts this — {PRO_PRICE} · `edify license buy`"
-
-
-def ordinal(n: int) -> str:
-    """`4` -> `fourth`. The gate says "a fourth project", not "project 4"."""
-    words = {
-        1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth",
-        6: "sixth", 7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth",
-    }
-    return words.get(n, f"{n}th")

@@ -1,9 +1,9 @@
 """`edify check` — the rule engine.
 
-Every rule here comes from `docs/design/architecture/09-cli.md` §2. Nothing blocks: the
+Every rule here is a rule the formats state. Nothing blocks: the
 command prints what is wrong and a person or a CI job decides what that means.
 `--exit-code` exists so a customer who needs a hard block can own one, which is the
-honest scope stated in `docs/design/01-principles.md` P7.
+honest scope: advisory means advisory.
 """
 
 from __future__ import annotations
@@ -541,7 +541,7 @@ def check_skills(layout: Layout) -> list[Finding]:
     for skill in skill_format.load_all(directory, layout.root):
         rel = skill.rel
         for code, message, line in skill_format.validate(skill):
-            level = Level.WARN if code == "skill-over-budget" else Level.ERROR
+            level = Level.WARN if code in ("skill-over-budget", "skill-unknown-field") else Level.ERROR
             out.append(Finding(level, rel, line, code, message))
         if skill.name:
             if skill.name in seen:

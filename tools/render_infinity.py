@@ -37,14 +37,14 @@ from edify import anim  # noqa: E402
 # header and the terminal images below it read as one set. Dark only: this is a
 # picture of a terminal, and it paints its own background rather than borrowing
 # whichever theme GitHub is in.
-BG = "#0B0F17"          # card
-RULE = "#1E2733"        # hairline border
-LATTICE = "#2E3E5C"     # the curve at rest — `·` in the terminal
-TRAIL = "#4C8DFF"       # the warm trail — `○`
-HEAD = "#EEF3F8"        # the head — `●`
-DIM = "#5E6B7E"         # caption
+BG = "#04060A"          # --ed-well: terminal only
+RULE = "#1C1F24"        # --ed-line-2, the hairline border
+LATTICE = "#4F5256"     # --ed-text-4, the curve at rest — `·` in the terminal
+TRAIL = "#2C6FD6"       # --ed-blue, the ink the trail thins into — `○`
+HEAD = "#7ABDFF"        # --ed-blue-bright, the head — `●`
+DIM = "#6A6D71"         # --ed-text-3, caption
 
-FONT = ("ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, "
+FONT = ("'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, "
         "'DejaVu Sans Mono', monospace")
 
 CELL_W = 16             # one terminal column
@@ -178,8 +178,8 @@ def render() -> str:
         '<feMergeNode in="SourceGraphic"/></feMerge>',
         '</filter>',
         '</defs>',
-        f'<rect width="{W}" height="{H}" rx="10" fill="{BG}"/>',
-        f'<rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="10" '
+        f'<rect width="{W}" height="{H}" rx="2" fill="{BG}"/>',
+        f'<rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="2" '
         f'fill="none" stroke="{RULE}" stroke-width="1"/>',
     ]
 

@@ -12,8 +12,8 @@ the binary — nothing is asked and the stack-matched set is installed, which is
 this command did before the question existed. `--skills` states the answer up front
 for a script that wants one.
 
-**The question is a person's, never a model's.** `docs/design/architecture/09-cli.md` §1
-says no `edify` command lets a model decide what is installed. Being asked in a
+**The question is a person's, never a model's.** No `edify` command
+lets a model decide what is installed. Being asked in a
 terminal does not change that; it narrows a set that was already computed by lookup.
 """
 

@@ -34,7 +34,6 @@ INDEX_URL = "https://registry.edify.dev/library/{channel}.json"
 
 def run(ctx: Context) -> int:
     ctx.layout.require_installed()
-    ctx.entitlement.require("library.upgrade")
 
     if ctx.args.archive:
         return _from_archive(ctx, Path(ctx.args.archive).expanduser())

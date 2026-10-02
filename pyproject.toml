@@ -1,23 +1,18 @@
 [build-system]
-requires = ["hatchling>=1.25"]
+requires = ["hatchling==1.32.4"]
 build-backend = "hatchling.build"
 
 [project]
-name = "edify-cli"
-version = "0.1.0"
-description = "Your coding agent is fast. Make it reliable. Codebase context, a precise plan, and independent verification for every change."
+name = "edify-agents-cli"
+dynamic = ["version"]
+description = "A harness that makes an AI coding agent work reliably on large codebases: three documents and a map."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "EDIFY" }]
-maintainers = [{ name = "EDIFY" }]
-keywords = [
-  "ai", "coding-agent", "claude-code", "codex", "cursor", "copilot",
-  "codebase", "graph", "spec-driven", "verification", "harness", "llm",
-]
+keywords = ["ai", "codegen", "codebase", "graph", "spec", "agent", "harness"]
 classifiers = [
   "Development Status :: 4 - Beta",
-  "License :: Other/Proprietary License",
   "Environment :: Console",
   "Intended Audience :: Developers",
   "Programming Language :: Python :: 3",
@@ -26,8 +21,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Software Development :: Build Tools",
-  "Topic :: Software Development :: Quality Assurance",
-  "Operating System :: OS Independent",
 ]
 
 # Deliberately empty. The CLI runs on the standard library alone so it installs
@@ -41,21 +34,22 @@ treesitter = ["tree-sitter>=0.23", "tree-sitter-language-pack>=0.7"]
 dev = ["pytest>=8.0"]
 
 [project.urls]
-Homepage = "https://github.com/EDIFY-agents/edify_public"
-Documentation = "https://github.com/EDIFY-agents/edify_public/tree/main/docs"
-Changelog = "https://github.com/EDIFY-agents/edify_public/blob/main/CHANGELOG.md"
-Issues = "https://github.com/EDIFY-agents/edify_public/issues"
-Discussions = "https://github.com/EDIFY-agents/edify_public/discussions"
-Source = "https://github.com/EDIFY-agents/edify_public"
+Homepage = "https://github.com/EDIFY-agents/EDIFY"
+Documentation = "https://github.com/EDIFY-agents/EDIFY#readme"
+Changelog = "https://github.com/EDIFY-agents/EDIFY/blob/main/CHANGELOG.md"
+Issues = "https://github.com/EDIFY-agents/EDIFY/issues"
 
 [project.scripts]
 edify = "edify.cli:main"
 
+[tool.hatch.version]
+path = "src/edify/__init__.py"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/edify"]
 
-# The authored methodology tree lives at the repository root exactly as
-# `design/architecture/01-folder-structure.md` §1 specifies. It ships inside the
+# The authored methodology tree lives at the repository root, where the installed
+# layout is built from. It ships inside the
 # package as `edify/assets/` so `edify init` can install it with no network.
 [tool.hatch.build.targets.wheel.force-include]
 "edify/manifest.md" = "edify/assets/manifest.md"
@@ -67,23 +61,18 @@ packages = ["src/edify"]
 "edify/templates" = "edify/assets/templates"
 
 [tool.hatch.build.targets.sdist]
+# Anchored with a leading `/`: an unanchored `README.md` matches at every depth and
+# would carry README files from private folders into the public sdist.
 include = [
-  "src/edify",
-  "edify",
-  "tests",
-  "docs",
-  "tools",
-  "examples",
-  "packaging",
-  "README.md",
-  "INSTALL.md",
-  "LICENSE",
-  "NOTICE",
-  "CONTRIBUTING.md",
-  "SECURITY.md",
-  "TRADEMARK.md",
-  "CHANGELOG.md",
+  "/src/edify",
+  "/edify",
+  "/tests",
+  "/README.md",
+  "/INSTALL.md",
+  "/LICENSE",
+  "/CHANGELOG.md",
 ]
+exclude = ["/tests/assertions", "/tests/private"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
