@@ -62,7 +62,7 @@
       <a href="teams.html">Teams</a>
       <a href="pricing.html">Pricing</a>
       <a href="contact.html">Contact</a>
-      <a class="gh" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
+      <a class="gh" href="https://github.com/EDIFY-agents/EDIFY" target="_blank" rel="noopener">GitHub <span style="color:var(--ed-text-3)">&#8599;</span></a>
       <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY</a>
     </nav>
     <button class="burger" data-menu-toggle aria-label="Menu" aria-expanded="false" aria-controls="ed-menu"><span></span><span></span></button>
@@ -79,7 +79,7 @@
     <a href="pricing.html">Pricing</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
-    <a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">GitHub &#8599;</a>
+    <a href="https://github.com/EDIFY-agents/EDIFY" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a class="cta" href="docs.html#install">Install EDIFY</a>
   </nav>
 </div>
@@ -96,8 +96,8 @@
       <span class="id">01</span>
       <div>
         <div class="t">Install the CLI</div>
-        <p class="small" style="margin-top:8px">One package, zero runtime dependencies. <code class="c">uv tool install edify-agents-cli</code> works too.</p>
-        <div class="cmdline"><code>pipx install edify-agents-cli</code><button class="copy" data-copy="pipx install edify-agents-cli">copy</button></div>
+        <p class="small" style="margin-top:8px">One package from <a href="https://pypi.org/project/edify-agents-cli/" target="_blank" rel="noopener"><code class="c">edify-agents-cli</code> on PyPI</a>, zero runtime dependencies, and it puts <code class="c">edify</code> on your PATH. To keep it in its own environment, <code class="c">pipx install edify-agents-cli</code> or <code class="c">uv tool install edify-agents-cli</code> work too.</p>
+        <div class="cmdline"><code>pip install edify-agents-cli</code><button class="copy" data-copy="pip install edify-agents-cli">copy</button></div>
       </div>
     </div>
     <div class="step" data-rv="card" data-i="1">
@@ -134,14 +134,14 @@
   <div class="reel-ui">
       <div class="rc" data-ch="1">
         <div class="f-panel" style="left:80px;top:180px;width:920px" data-ti="6.6" data-to="15.7" data-fx="blur">
-            <div class="f-th"><span class="f-lbl f-t3">edify init --yes</span><span class="f-lbl f-t4">real output &middot; edify 0.1.0 &middot; 5-file sample repo</span></div>
+            <div class="f-th"><span class="f-lbl f-t3">edify init --yes</span><span class="f-lbl f-t4">real output &middot; edify-agents-cli 0.2.0 &middot; 5-file sample repo</span></div>
             <div class="f-bd f-tb2">
               <div class="f-cmd" data-ti="7.0" data-to="15.7" data-fx="wipe">edify init --yes</div>
               <div class="f-t3" data-ti="7.3" data-to="15.7" data-fx="wipe">reading every file, building the map</div>
               <div class="f-t3" data-ti="7.6" data-to="15.7" data-fx="wipe">mirroring skills into each runtime</div>
               <div data-ti="7.9" data-to="15.7" data-fx="wipe"><span class="f-ok">stack</span>        fastapi, python</div>
               <div data-ti="8.15" data-to="15.7" data-fx="wipe"><span class="f-ok">manager</span>      -  test runner pytest</div>
-              <div data-ti="8.6" data-to="15.7" data-fx="wipe"><span class="f-ok">graph</span>        <span class="f-k2">18 nodes &middot; 21 edges &middot; 5 files</span></div>
+              <div data-ti="8.6" data-to="15.7" data-fx="wipe"><span class="f-ok">graph</span>        <span class="f-k2">21 nodes &middot; 28 edges &middot; 5 files</span></div>
               <div data-ti="11.7" data-to="15.7" data-fx="wipe"><span class="f-ok">conventions</span>  scraped from config files &middot; zero model calls</div>
               <div data-ti="11.9" data-to="15.7" data-fx="wipe"><span class="f-ok">skills</span>       7 installed &middot; 5 did not match this stack</div>
               <div data-ti="12.1" data-to="15.7" data-fx="wipe"><span class="f-ok">index</span>        71 lookup rows</div>
@@ -172,9 +172,9 @@
               <div data-ti="19.8" data-to="23.6" data-fx="wipe"><span class="f-k2">&rarr;</span> src/api.py:7  login  &middot;  src/api.py:11  refresh</div>
               <div data-ti="20.4" data-to="23.6" data-fx="wipe"> </div>
               <div class="f-cmd" data-ti="20.6" data-to="23.6" data-fx="wipe">edify doctor</div>
-              <div data-ti="20.9" data-to="23.6" data-fx="wipe"><span class="f-ok">ok</span>        install    edify 0.1.0 &middot; 12 library entries</div>
+              <div data-ti="20.9" data-to="23.6" data-fx="wipe"><span class="f-ok">ok</span>        install    edify 0.2.0 &middot; 12 library entries</div>
               <div data-ti="21.1" data-to="23.6" data-fx="wipe"><span class="f-amb">degraded</span>  extractor  Python parsed exactly, the rest scanned</div>
-              <div data-ti="21.3" data-to="23.6" data-fx="wipe"><span class="f-ok">ok</span>        graph      18 nodes &middot; 21 edges</div>
+              <div data-ti="21.3" data-to="23.6" data-fx="wipe"><span class="f-ok">ok</span>        graph      21 nodes &middot; 28 edges</div>
             </div>
           </div>
         <div class="f-a f-lbl f-t2" style="left:80px;top:790px" data-ti="21.6" data-to="23.6" data-fx="fade"><i class="f-sq f-aw"></i>amber means it works, degraded, and says where</div>
@@ -204,14 +204,14 @@
   <h2 class="h-section-sm w22">The full documentation lives in the repository.</h2>
   <p class="lead">Plain Markdown, versioned with the code, so it never describes a different release than the one you installed.</p>
   <div class="g3 cells mt-34" style="gap:1px">
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/quickstart.md" target="_blank" rel="noopener"><span class="p">docs/quickstart.md</span><span class="t">Quickstart</span><span class="b">install, init, one real task</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener"><span class="p">docs/cli.md</span><span class="t">CLI reference</span><span class="b">every command, with real output</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/agents.md" target="_blank" rel="noopener"><span class="p">docs/agents.md</span><span class="t">Works with your agent</span><span class="b">six runtimes, one methodology</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/graph.md" target="_blank" rel="noopener"><span class="p">docs/graph.md</span><span class="t">The codebase graph</span><span class="b">coverage, honestly stated</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/verification.md" target="_blank" rel="noopener"><span class="p">docs/verification.md</span><span class="t">Verification</span><span class="b">evidence over assertion</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener"><span class="p">docs/privacy.md</span><span class="t">Privacy</span><span class="b">no telemetry, and how to check</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/troubleshooting.md" target="_blank" rel="noopener"><span class="p">docs/troubleshooting.md</span><span class="t">Troubleshooting</span><span class="b">what edify doctor is telling you</span></a>
-    <a class="doclink" href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener"><span class="p">docs/faq.md</span><span class="t">FAQ</span><span class="b">the questions people ask first</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/quickstart.md" target="_blank" rel="noopener"><span class="p">docs/quickstart.md</span><span class="t">Quickstart</span><span class="b">install, init, one real task</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/cli.md" target="_blank" rel="noopener"><span class="p">docs/cli.md</span><span class="t">CLI reference</span><span class="b">every command, with real output</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/agents.md" target="_blank" rel="noopener"><span class="p">docs/agents.md</span><span class="t">Works with your agent</span><span class="b">six runtimes, one methodology</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/graph.md" target="_blank" rel="noopener"><span class="p">docs/graph.md</span><span class="t">The codebase graph</span><span class="b">coverage, honestly stated</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/verification.md" target="_blank" rel="noopener"><span class="p">docs/verification.md</span><span class="t">Verification</span><span class="b">evidence over assertion</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/privacy.md" target="_blank" rel="noopener"><span class="p">docs/privacy.md</span><span class="t">Privacy</span><span class="b">no telemetry, and how to check</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/troubleshooting.md" target="_blank" rel="noopener"><span class="p">docs/troubleshooting.md</span><span class="t">Troubleshooting</span><span class="b">what edify doctor is telling you</span></a>
+    <a class="doclink" href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/faq.md" target="_blank" rel="noopener"><span class="p">docs/faq.md</span><span class="t">FAQ</span><span class="b">the questions people ask first</span></a>
   </div>
 </section>
 
@@ -223,8 +223,8 @@
       <p class="body">Questions and ideas go to Discussions. Reproducible bugs, install problems and graph gaps go to Issues. There is no Discord yet.</p>
     </div>
     <div class="btn-row">
-      <a class="btn btn-line" href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Discussions <span class="m">&#8599;</span></a>
-      <a class="btn btn-line" href="https://github.com/EDIFY-agents/claude-skills/issues/new/choose" target="_blank" rel="noopener">Open an issue <span class="m">&#8599;</span></a>
+      <a class="btn btn-line" href="https://github.com/EDIFY-agents/EDIFY/discussions" target="_blank" rel="noopener">Discussions <span class="m">&#8599;</span></a>
+      <a class="btn btn-line" href="https://github.com/EDIFY-agents/EDIFY/issues/new/choose" target="_blank" rel="noopener">Open an issue <span class="m">&#8599;</span></a>
     </div>
   </div>
 </section>
@@ -239,13 +239,13 @@
       <p class="foot-tag">The reliability layer for AI coding agents working on large, real-world codebases.</p>
       <div class="btn-row" style="margin-top:26px">
         <a class="btn btn-fill btn-sm" href="docs.html#install">Install EDIFY <span class="m">&#8594;</span></a>
-        <a class="btn btn-line btn-sm" href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">View on GitHub <span class="m">&#8599;</span></a>
+        <a class="btn btn-line btn-sm" href="https://github.com/EDIFY-agents/EDIFY" target="_blank" rel="noopener">View on GitHub <span class="m">&#8599;</span></a>
       </div>
     </div>
     <div class="foot-cols">
       <div><h4>Product</h4><a href="how-it-works.html">How it works</a><a href="teams.html">Teams</a><a href="benchmarks.html">Benchmarks</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="contact.html">Contact</a></div>
-      <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
-      <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/claude-skills" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/claude-skills/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/claude-skills/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
+      <div><h4>Docs</h4><a href="docs.html">Quickstart</a><a href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/cli.md" target="_blank" rel="noopener">CLI reference</a><a href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/privacy.md" target="_blank" rel="noopener">Privacy</a><a href="https://github.com/EDIFY-agents/EDIFY/blob/main/docs/faq.md" target="_blank" rel="noopener">FAQ</a></div>
+      <div><h4>GitHub</h4><a href="https://github.com/EDIFY-agents/EDIFY" target="_blank" rel="noopener">Repository</a><a href="https://github.com/EDIFY-agents/EDIFY/discussions" target="_blank" rel="noopener">Discussions</a><a href="https://github.com/EDIFY-agents/EDIFY/issues" target="_blank" rel="noopener">Issues</a><a href="https://github.com/EDIFY-agents/EDIFY/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></div>
     </div>
   </div>
   <div class="foot-art" data-field-grid aria-hidden="true">
@@ -259,7 +259,7 @@
     </div>
     <div class="foot-word" data-rv="media" data-i="0"><span>EDIFY</span></div>
   </div>
-  <div class="foot-line"><span>EDIFY / local-first / no telemetry / files, not conversations</span><span><a href="https://github.com/EDIFY-agents/claude-skills/blob/main/LICENSE" target="_blank" rel="noopener">FSL-1.1-Apache-2.0</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/TRADEMARK.md" target="_blank" rel="noopener">Trademark</a> · <a href="https://github.com/EDIFY-agents/claude-skills/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></span></div>
+  <div class="foot-line"><span>EDIFY / local-first / no telemetry / files, not conversations</span><span><a href="https://github.com/EDIFY-agents/EDIFY/blob/main/LICENSE" target="_blank" rel="noopener">FSL-1.1-Apache-2.0</a> · <a href="https://github.com/EDIFY-agents/EDIFY/blob/main/TRADEMARK.md" target="_blank" rel="noopener">Trademark</a> · <a href="https://github.com/EDIFY-agents/EDIFY/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></span></div>
 </footer>
 </body>
 </html>

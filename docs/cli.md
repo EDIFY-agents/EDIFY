@@ -33,6 +33,10 @@ ASCII it has always been, so a script that reads it keeps working.
 
 ## Install
 
+The CLI itself is the [`edify-agents-cli`](https://pypi.org/project/edify-agents-cli/)
+package: `pip install edify-agents-cli` (or `pipx install` / `uv tool install`). The
+commands below install the harness into a repository.
+
 | command | what it does |
 |---|---|
 | `edify init` | install the harness into this repository (asks which skills) |

@@ -1,0 +1,45 @@
+name: pages
+
+# Deploys the public website in site/ to GitHub Pages, at
+# https://edify-agents.github.io/EDIFY/. The site arrives here with each release
+# export; this workflow is part of that export, so a release never removes it.
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      # What ships is what a visitor loads. motion.html is an internal viewing page,
+      # and the rendered films and header loops are only used by it: the pages play
+      # their films live, driven by the scroll. Teams' loop is still used by two pages.
+      - name: drop what the published pages do not load
+        run: |
+          rm -f site/motion.html
+          rm -f site/assets/film/*/film.mp4 site/assets/film/*/film-poster.jpg
+          for d in home how-it-works docs benchmarks about; do
+            rm -f "site/assets/film/$d/loop.mp4" "site/assets/film/$d/poster.jpg"
+          done
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

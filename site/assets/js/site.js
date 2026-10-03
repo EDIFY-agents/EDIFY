@@ -1036,7 +1036,7 @@
       var done = function (label) { form.classList.add('sent'); if (state) state.textContent = label; };
       if (route === 'discussion') {
         var cat = topic === 'question' ? 'q-a' : 'general';
-        var url = 'https://github.com/EDIFY-agents/claude-skills/discussions/new?category=' + cat +
+        var url = 'https://github.com/EDIFY-agents/EDIFY/discussions/new?category=' + cat +
           '&title=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(head + '\n\n' + msg);
         window.open(url, '_blank', 'noopener');
         done('opened on GitHub');
