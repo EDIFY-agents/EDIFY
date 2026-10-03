@@ -7,8 +7,12 @@ and a coding agent you already use.
 
 ## 1 · Install
 
+The CLI is [`edify-agents-cli` on PyPI](https://pypi.org/project/edify-agents-cli/).
+It installs one command, `edify`, and has no dependencies.
+
 ```bash
-pipx install edify-agents-cli          # or: uv tool install edify-agents-cli
+pip install edify-agents-cli           # or: pipx install / uv tool install edify-agents-cli
+edify version                          # edify 0.2.0
 ```
 
 Per-platform detail, PATH fixes, and where EDIFY keeps its files:

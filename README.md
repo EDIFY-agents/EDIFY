@@ -40,8 +40,11 @@ macOS, Linux, and Windows, from the same artifact. Python 3.10 or newer is the w
 requirement — there are no dependencies, no compiler, and no runtime to install on a
 build server.
 
+The CLI is [`edify-agents-cli` on PyPI](https://pypi.org/project/edify-agents-cli/);
+it installs one command, `edify`.
+
 ```bash
-pipx install edify-agents-cli           # or: uv tool install edify-agents-cli
+pip install edify-agents-cli            # or: pipx install / uv tool install edify-agents-cli
 brew install edify-dev/tap/edify        # macOS, if you prefer brew
 
 cd your-repository

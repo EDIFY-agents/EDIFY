@@ -6,6 +6,27 @@ procurement conversation about a runtime it drags in behind it.
 
 Requirements: **Python 3.10 or newer**. That is the whole list.
 
+The package is [`edify-agents-cli` on PyPI](https://pypi.org/project/edify-agents-cli/);
+it installs one command, `edify`.
+
+---
+
+## Any platform, with pip
+
+```bash
+pip install edify-agents-cli
+
+edify version            # edify 0.2.0
+```
+
+`pip` installs into whichever Python environment it belongs to. Inside a virtual
+environment that is all there is to it. On a system Python, prefer `pipx` or `uv tool`
+below, which give `edify` an environment of its own; `pip install --user
+edify-agents-cli` is the fallback, and its scripts directory has to be on your PATH
+(see *If `edify: command not found`*).
+
+To upgrade later: `pip install --upgrade edify-agents-cli`.
+
 ---
 
 ## macOS
@@ -80,6 +101,7 @@ Gatekeeper does not gate that.
 
 ```bash
 pipx install edify-agents-cli   # or: uv tool install edify-agents-cli
+                                # or, inside a virtualenv: pip install edify-agents-cli
 ```
 
 Configuration lives in `$XDG_CONFIG_HOME/edify`, or `~/.config/edify`.
@@ -91,6 +113,8 @@ py -m pip install --user pipx
 py -m pipx ensurepath
 pipx install edify-agents-cli
 ```
+
+Or, inside a virtual environment: `py -m pip install edify-agents-cli`.
 
 Configuration lives in `%APPDATA%\edify`.
 
@@ -226,7 +250,7 @@ feedback file together — which is also how a test isolates both.
 ## Uninstalling
 
 ```bash
-pipx uninstall edify-agents-cli                 # or: brew uninstall edify
+pipx uninstall edify-agents-cli                 # or: pip uninstall edify-agents-cli / brew uninstall edify
 rm -rf ~/Library/Application\ Support/edify     # macOS; ~/.config/edify elsewhere
 ```
 
