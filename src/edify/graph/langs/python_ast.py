@@ -36,21 +36,22 @@ def extract(rel_path: str, source: str) -> Extraction:
     out.nodes.append(Node(module_id, "module", rel_path, 1, module_name))
     out.edges.append(Edge(file_id, "defines", module_id))
 
+    owners: dict[int, str] = {}
     for node in tree.body:
-        _visit_top(node, rel_path, module_id, out, prefix="")
-
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            _imports(node, file_id, out)
+        _visit_top(node, rel_path, module_id, out, "", owners)
+    _scan(tree, file_id, owners, out)
     return out
 
 
-def _visit_top(node: ast.AST, rel_path: str, module_id: str, out: Extraction, prefix: str) -> None:
+def _visit_top(
+    node: ast.AST, rel_path: str, module_id: str, out: Extraction, prefix: str, owners: dict[int, str]
+) -> None:
     if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
         name = prefix + node.name
         sym_id = _emit(node, name, rel_path, module_id, out, _signature(node))
         _routes(node, rel_path, sym_id, out)
-        _body_refs(node, sym_id, out)
+        # Calls anywhere under this function, nested defs included, are its references.
+        owners[id(node)] = sym_id
 
     elif isinstance(node, ast.ClassDef):
         name = prefix + node.name
@@ -61,7 +62,7 @@ def _visit_top(node: ast.AST, rel_path: str, module_id: str, out: Extraction, pr
                 # Methods are public surface; nesting stops at one level, which is
                 # where the value stops and the churn starts.
                 if not child.name.startswith("_") or child.name == "__init__":
-                    _visit_top(child, rel_path, module_id, out, prefix=f"{name}.")
+                    _visit_top(child, rel_path, module_id, out, f"{name}.", owners)
 
     elif isinstance(node, ast.Assign):
         for target in node.targets:
@@ -116,15 +117,40 @@ def _routes(node: ast.FunctionDef | ast.AsyncFunctionDef, rel_path: str, sym_id:
         out.edges.append(Edge(route_id, "exposes", sym_id))
 
 
-def _body_refs(node: ast.AST, sym_id: str, out: Extraction) -> None:
-    """Called names, resolved against the repository index after the walk."""
-    for child in ast.walk(node):
-        if isinstance(child, ast.Call):
-            func = child.func
-            if isinstance(func, ast.Name):
-                out.pending_refs.append((sym_id, func.id, "references"))
-            elif isinstance(func, ast.Attribute):
-                out.pending_refs.append((sym_id, func.attr, "references"))
+def _scan(tree: ast.AST, file_id: str, owners: dict[int, str], out: Extraction) -> None:
+    """One walk for every import and every call.
+
+    A call is a reference from the indexed function it sits under, resolved
+    against the repository after the walk. Indexed functions never nest inside
+    each other, so each call has at most one owner.
+    """
+    refs = out.pending_refs
+    call, name_t, attr_t = ast.Call, ast.Name, ast.Attribute
+    imports, node_t, ctx_t = (ast.Import, ast.ImportFrom), ast.AST, ast.expr_context
+    stack: list[tuple[ast.AST, str | None]] = [(tree, None)]
+    pop, push = stack.pop, stack.append
+    while stack:
+        node, owner = pop()
+        kind = node.__class__
+        if kind is call:
+            if owner is not None:
+                func = node.func  # type: ignore[attr-defined]
+                if func.__class__ is name_t:
+                    refs.append((owner, func.id, "references"))
+                elif func.__class__ is attr_t:
+                    refs.append((owner, func.attr, "references"))
+        elif kind in imports:
+            _imports(node, file_id, out)  # type: ignore[arg-type]
+        elif owner is None:
+            owner = owners.get(id(node))
+        for f in node._fields:
+            value = getattr(node, f, None)
+            if value.__class__ is list:
+                for item in value:
+                    if isinstance(item, node_t):
+                        push((item, owner))
+            elif isinstance(value, node_t) and not isinstance(value, ctx_t):
+                push((value, owner))
 
 
 def _imports(node: ast.Import | ast.ImportFrom, file_id: str, out: Extraction) -> None:

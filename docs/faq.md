@@ -46,7 +46,7 @@ is not in the path.
 ### Will it slow me down?
 
 Yes, for the first three commands. `/spec`, `/plan`, and `/tasks` are slow and
-expensive and end at a human reading them. `/build` is fast and cheap.
+expensive and end at a human reading them. Running the task list (`/tasks`, run half) is fast and cheap.
 
 That is the trade the whole product makes: think hard once, then build without
 thinking. If your task is small enough that thinking once is not worth it, EDIFY
@@ -62,8 +62,8 @@ repository to a new hire in an afternoon.
 ### What does it cost?
 
 Nothing. The public edition is MIT-licensed, free, and needs no account, on a
-repository of any size. Its one limit is a single server in the registry; a team
-or partner licence lifts it, and a licence is issued on request.
+repository of any size, with no caps — the full MCP registry included. A team or
+partner licence carries the team edition, and a licence is issued on request.
 
 ### Can I remove the licence check?
 

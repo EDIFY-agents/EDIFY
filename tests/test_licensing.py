@@ -69,7 +69,7 @@ def test_a_valid_team_token_carries_its_entitlements(keypair: bytes) -> None:
     tier.save(token)
     ent = tier.current()
     assert ent.plan == "team"
-    assert ent.allows("mcp.multi")
+    assert ent.allows("team")
     assert ent.mcp_cap is None
     assert ent.node_cap is None
 
@@ -95,14 +95,15 @@ def test_a_tampered_token_falls_back_to_free(keypair: bytes) -> None:
     assert ent.problem
 
 
-def test_no_licence_is_the_free_plan_with_working_limits() -> None:
+def test_no_licence_is_the_free_plan_with_no_caps() -> None:
     ent = tier.current()
     assert ent.plan == "free"
     assert ent.node_cap is None
-    assert ent.mcp_cap == tier.FREE_MCP_ENTRIES
+    assert ent.mcp_cap is None
+    assert ent.project_cap is None
 
     with pytest.raises(TierRequired):
-        ent.require("mcp.multi")
+        ent.require("team")
 
 
 def test_the_environment_variable_carries_a_licence_for_ci(
@@ -118,14 +119,14 @@ def test_the_environment_variable_carries_a_licence_for_ci(
 
 def test_an_extra_feature_on_a_token_only_adds(keypair: bytes) -> None:
     token = issue(
-        {"sub": "x", "plan": "free", "iat": 0, "exp": 0, "features": ["mcp.multi"]},
+        {"sub": "x", "plan": "free", "iat": 0, "exp": 0, "features": ["team", "not-a-feature"]},
         keypair,
     )
     tier.save(token)
     ent = tier.current()
     assert ent.plan == "free"
-    assert ent.allows("mcp.multi")
-    assert not ent.allows("team")
+    assert ent.allows("team")
+    assert not ent.allows("not-a-feature")
 
 
 # -- M1 · the shipped issuing key -------------------------------------------

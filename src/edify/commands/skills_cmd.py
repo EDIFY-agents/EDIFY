@@ -1,6 +1,6 @@
 """`edify skills` — what is installed, and which file a spawn loads.
 
-`resolve` is the lookup `/build` performs before every spawn. It prints one line.
+`resolve` is the lookup a `/tasks` run performs before every spawn. It prints one line.
 
 There is deliberately no `skills install <url>` and no registry browsing. Anything
 arriving from outside goes through `/harvest` and a human in EDIFY's own

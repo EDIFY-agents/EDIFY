@@ -20,7 +20,7 @@ steering committee is telling you something false on its first page.
 | new languages in the graph extractor | contributors, against the extractor contract |
 | skill library entries | maintainers, after curation |
 | the three document formats | maintainers — these are contracts; changing one invalidates every existing spec |
-| the five commands and their boundaries | maintainers |
+| the four commands and their boundaries | maintainers |
 | editions, licensing | maintainers |
 | the name and marks | maintainers ([TRADEMARK.md](TRADEMARK.md)) |
 

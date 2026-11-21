@@ -61,7 +61,7 @@ def status(ctx: Context) -> int:
             mark = "[yes]" if allowed else "[no ]"
         ctx.out.line(f"  {mark} {feature:<19} {ctx.out.c(description, 'dim')}")
     ctx.out.line("")
-    ctx.out.field("registry", 'unlimited' if ent.mcp_cap is None else f'{ent.mcp_cap} server')
+    ctx.out.field("registry", "unlimited")
     if not ent.paid:
         ctx.out.line("")
         ctx.out.line("public edition — every command, uncapped, no account")

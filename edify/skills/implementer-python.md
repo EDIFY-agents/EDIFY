@@ -11,55 +11,26 @@ license: -
 
 # Implementer — Python
 
-## What you're doing
+Build steps, submit gate and hand-back are `.edify/skills/implementer-general.md`; read
+it first. This adds what Python gets wrong.
 
-One task from a build plan in a Python codebase. It names its files, the pattern to
-follow, the steps, and the check. You do exactly that.
+## Method
+1. From the pattern pointer copy: module layout, how errors are raised and caught,
+   fixtures, and the data shape in use (dataclasses, pydantic, plain dicts).
+2. The graph parses Python with a real syntax tree: `edify graph where` and `defines`
+   answers are exact — use them before writing a helper or an import.
+3. Match annotation level: fully annotated module under mypy/pyright → annotate fully;
+   unannotated → do not half-annotate.
+4. Keep the import style (absolute vs relative) and where `__init__.py` re-exports live.
+5. After the done-check, the type checker and linter `.edify/conventions.md` names.
 
-## How the work goes
-
-1. Read the task block. Open only the ranges it names.
-2. Open the pattern pointer and copy its shape: how the module is laid out, how
-   errors are raised and caught, how the test fixtures are built, whether the
-   codebase uses dataclasses, pydantic models, or plain dicts. That file is the
-   convention.
-3. Before writing a helper, `edify graph where <name>`. The graph parses Python
-   with a real syntax tree, so its answers about this language are exact.
-4. Match the type-annotation level of the surrounding code. If the module is fully
-   annotated and the repository runs mypy or pyright, annotate fully; if it is not,
-   do not annotate half of it.
-5. Respect the import style already present — absolute or relative, and where the
-   `__init__.py` re-exports live. `edify graph defines <file>` shows what a module
-   already exports.
-6. Run the done-check exactly as written, then the type check and the linter if the
-   repository has them. `.edify/conventions.md` names the real commands.
-
-## The traps specific to this stack
-
-- A mutable default argument (`def f(x=[])`) is shared across calls. Use `None` and
-  build inside.
-- A bare `except:` swallows `KeyboardInterrupt` and `SystemExit`. Catch the
-  exception the code actually raises.
-- In an async codebase, a synchronous call in an async path blocks the loop for
-  every request. Check whether the surrounding functions are `async def` before
-  reaching for a blocking client.
-- An ORM query inside a loop is the N+1 that shows up under load and never in a
-  test. Follow whatever eager-loading pattern the codebase already uses.
-- Session and transaction boundaries belong where the existing code puts them. A
-  commit in a service function of a codebase that commits in the request layer is
-  a rollback that will not roll back.
-
-## When you're stuck
-
-- **The task is wrong** — write `BLOCKED T-n: <what you found, with file:line>` and
-  stop.
-- **The task is silent on something real** — pick what the surrounding code does,
-  add one row to `## Decisions`, and continue.
-
-Do not restructure what the task did not name. Do not add a dependency the plan did
-not decide on.
-
-## What you hand back
-
-The task id, the files you changed, the done-check output verbatim, and `done`,
-`blocked: <reason>`, or `decided: <the row>`.
+## Traps
+- A mutable default (`def f(x=[])`) is shared across calls; default `None`, build inside.
+- Bare `except:` swallows `KeyboardInterrupt`/`SystemExit`; catch what is raised.
+- A blocking call (sync HTTP client, `time.sleep`, sync DB driver) inside `async def`
+  stalls the loop for every request.
+- An ORM query in a loop is an N+1 that only shows under load; use the codebase's
+  eager-loading pattern.
+- Commit where the existing code commits (request layer vs service); a commit in the
+  wrong layer is a rollback that will not roll back.
+- No new dependency the plan did not decide on.

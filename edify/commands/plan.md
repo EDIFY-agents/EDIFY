@@ -1,68 +1,37 @@
 ---
 name: plan
-description: A specification becomes technical decisions and a sequence.
+description: A spec becomes the decisions that bind more than one task.
 model: strongest
 ends-at: a human
 ---
 
 # /plan
 
-Make every decision that binds more than one task, once, so that no task has to
-make one. Skipped for most features, and skipping it is the normal case.
+Only when the feature adds a technology or service, spans milestones, needs a
+cross-cutting strategy (migrations, shared components, config), or will be built by
+several people or a swarm. Otherwise go from `/spec` to `/tasks`.
 
-## When this runs at all
+**In:** approved `spec.md`, `.edify/constitution.md`, the graph. **Out:** `plan.md`
+(`.edify/formats/plan.format.md`) plus the design files it needs — `research.md`,
+`data-model.md`, `contracts/`, `quickstart.md` (`design.format.md`). Calibrate on the
+`*.example.md` set once; it is one feature end to end.
 
-Write a plan when any of these is true: the feature introduces a technology,
-library, or external service this repository does not already use; it spans more
-than one milestone or shippable stage; it needs cross-cutting strategy — a
-migration sequence, a build variant, a bundled asset, a shared component, a config
-surface; or more than one person will build parts of it.
+## Steps
+0. **Technical context** and **constitution check**; then `research.md` resolves every
+   `[NEEDS CLARIFICATION]`; then `data-model.md`, `contracts/`, `quickstart.md`; re-check.
+1. **Milestones** cut by dependency; each rule states its reason.
+2. **Decisions**, each with an exact version and the alternative it beat. Check real
+   APIs with the `docs` server, not memory.
+3. **Cross-cutting**: migration numbers, variants, asset budgets, shared components —
+   allocated once; plus the verification budget.
+4. **Partition**: from `.edify/graph/MAP.md`, put concurrent milestones in different
+   communities so they cross few bridges. Name each frozen contract's owner.
+5. **Context seeds** per milestone, from `edify graph context`.
+6. **Risks**, each mapped to the milestone that mitigates it.
+7. `edify check`, then stop at the gate.
 
-Otherwise go straight from `/spec` to `/tasks`. A one-page plan is ceremony, and a
-repository whose plans are all one page should stop writing them.
+## Refuse
+Function signatures (that is `/tasks`). Dates.
 
-## What you read
-
-The approved `spec.md`, and the graph. Nothing else.
-
-## What you write
-
-`specs/<feature>/plan.md`, in the format at `.edify/formats/plan.format.md`.
-
-## The passes
-
-1. **Cut into milestones** by dependency, and write each dependency rule with its
-   reason. `/tasks` relaxes rules when a plan is amended and cannot do that safely
-   without knowing why each one exists.
-2. **Decide the technology.** Each row names the alternative it beat and an exact
-   version — `2.3`, not `^2.3` and not `latest`. A row with no alternative is a
-   default, and should say so rather than being dressed as a decision; a default is
-   much cheaper to revisit six months later.
-3. **Write the cross-cutting strategy.** Migration numbers allocated once here so
-   two tasks never claim the same one. Build variants. Bundled assets with a size
-   budget stated rather than discovered. Shared components named so three later
-   milestones do not each build their own. And the verification budget for any
-   assertion the spec marks above `property` on the ladder.
-4. **Resolve the context seeds** — per milestone, `(file, line-start, line-end,
-   why)` resolved against the graph, so `/tasks` inherits them instead of
-   re-deriving them. A seed without a line range transfers its cost downstream,
-   which is the whole thing this document exists to prevent.
-5. **Map the risks**, each to the milestone that mitigates it. A risk with no
-   mitigation has been noticed rather than handled, and the row should say that
-   rather than looking handled.
-
-Run `edify check` before the gate.
-
-## What this command refuses
-
-Specifying function signatures or data structures beyond the contracts — that is
-`/tasks`, which has the graph queries to make them accurate. A technology row with
-no exact version. A context seed with no line range. Carrying dates: sizes and
-sequences, never a schedule.
-
-## The gate
-
-Show the human the milestone sequence, the decisions with their alternatives, and
-the risks. This is where an architectural disagreement is cheap.
-
-Format: `.edify/formats/plan.format.md` · Example: `.edify/formats/plan.example.md`
+## Gate
+Show milestones, decisions with alternatives, partition, risks.

@@ -5,56 +5,45 @@ kind: skill
 role: test
 phase: 2
 tech: python pytest django flask fastapi
-provenance: original
-license: -
+provenance: adapted
+license: MIT github.com/obra/superpowers@44c9b2d6e889982ac18c27d05a19fefe335194e1
+source: harvest test-critique, condition-based-waiting
 ---
 
 # Test writer — Python
 
-## What you're doing
+Phase 2: each assertion the task names becomes a test that **fails**, at the
+verification kind the spec declared, before any implementing code exists. This red is
+the definition of finished every later phase is measured against.
 
-Phase 2. Every assertion in the spec becomes an executable test that **fails**, at
-the verification kind the spec declared, before any implementing code exists.
+## Method
+1. Copy the pattern pointer's fixtures exactly — `conftest.py`, DB teardown, client.
+2. One class or module per requirement, one test function per assertion, the id in the
+   name (`test_a7_…`) so a failure names what is unsatisfied.
+3. Import models and schemas from the frozen phase-1 contract; never redeclare a shape.
+4. `property` → the repository's property library (Hypothesis) with the stated invariant
+   and a bounded example count. None installed → say the plan should have budgeted one;
+   never three examples called a property test.
+5. `observation` → no test; a skipped placeholder naming the phase-7 task keeps the count
+   honest.
+6. Stub nothing. Imports of modules that do not exist yet are the expected failure.
+7. Run the suite: N failing, 0 passing.
 
-The suite you write is the definition of finished. Everything after this phase is
-measured by how much of your red turns green.
+## Traps
+- A test green on arrival tested something that exists, or nothing.
+- `pytest.raises` without `match=` passes on the wrong error.
+- A module-scoped fixture that mutates state makes results depend on test order.
+- Time frozen in one test and not its neighbour: a suite that fails at midnight.
+- Mocking the unit under test makes the suite agree with itself.
 
-## How the work goes
+## Critique before handing back
+- Name the production change that would make each test fail; none → the test is empty.
+- Expected values come from the spec, never from the code under test.
+- No assertions on source text, on mocks of the unit, or on framework dispatch.
+- Replace fixed sleeps with a poll on the condition the next assertion needs; keep a
+  delay only where timing is the behaviour (debounce, TTL). Run it 20× and in parallel.
 
-1. Read the task block. It names the assertion ids you cover and the kind for each.
-2. Open the pattern pointer and copy the fixture setup exactly — the `conftest.py`
-   fixtures, the database teardown, the client fixture. Yours should be
-   indistinguishable from the tests already there.
-3. One class or module per requirement, one test function per assertion, and **the
-   assertion id in the test name**, so a failure output names what is unsatisfied.
-4. Write against the contract frozen in phase 1. Import its models and schemas;
-   never redeclare a shape.
-5. For an assertion marked `property`, use the repository's property-testing library
-   with a stated invariant and a bounded example count. If the repository has none,
-   the plan should have budgeted one — say so rather than writing three examples and
-   calling it a property test.
-6. For an assertion marked `observation`, write no test. Add a skipped placeholder
-   naming the phase-7 task that discharges it, so the assertion count stays honest.
-7. Do not stub the implementation to make anything pass. The imports resolve to
-   modules that do not exist yet; that is the expected failure at this phase.
-8. Run the suite and confirm the count: N failing, 0 passing.
-
-## The traps specific to this phase
-
-- A test that passes on arrival tested something that already existed, or nothing.
-- `pytest.raises` with no `match=` passes on the wrong exception message.
-- A fixture with module scope that mutates shared state makes tests pass in one
-  order and fail in another.
-- Freezing time in one test and not the neighbouring one produces a suite that
-  fails at midnight.
-- Mocking the thing under test makes the suite agree with itself.
-
-## When you're stuck
-
-If an assertion cannot be written as a failing test, that is a finding about the
-spec. Write `BLOCKED T-n: A-k cannot fail as written — <why>` and stop.
-
-## What you hand back
-
-The task id, the test files you wrote, the raw suite output showing the failing
-count, and `done` or `blocked: <reason>`.
+## Hand back
+Status `completed | partial | failed | needs_input` · task id · test files · raw suite
+output with the failing count. An assertion that cannot fail as written is a spec
+finding: `edify swarm done <id> --status needs_input --reason "A-k cannot fail — <why>"`.

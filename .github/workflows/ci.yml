@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+# A newer push to the same branch or PR makes the older run moot.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Every job has a ceiling. A runner that hangs — or a macOS queue that never drains —
+# fails the job at a known time instead of holding the run for six hours.
 jobs:
   test:
     strategy:
@@ -13,13 +20,16 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python: ["3.10", "3.13"]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - run: pip install -e ".[dev]"
-      - run: pytest -q
+      # The whole suite runs in well under a minute; ten is for a slow Windows disk.
+      - run: python -m pytest -q
+        timeout-minutes: 10
 
   # The install path a stranger takes, on a machine that has never seen the source.
   # It is a separate job because a checkout on disk hides a packaging mistake: the
@@ -34,6 +44,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -44,7 +55,7 @@ jobs:
       # so the step runs only where the file is.
       - name: the artefact assertions, on the wheel just built
         if: hashFiles('tests/assertions/test_m1_artefacts.py') != ''
-        run: EDIFY_DIST=dist pytest tests/assertions/test_m1_artefacts.py -q
+        run: EDIFY_DIST=dist python -m pytest tests/assertions/test_m1_artefacts.py -q
       - name: install the wheel somewhere with no checkout in sight
         run: |
           mkdir -p "$RUNNER_TEMP/elsewhere" && cd "$RUNNER_TEMP/elsewhere"
@@ -75,6 +86,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python: ["3.10", "3.13"]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     defaults:
       run:
         shell: bash
@@ -101,6 +113,7 @@ jobs:
   # than defended.
   dogfood:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

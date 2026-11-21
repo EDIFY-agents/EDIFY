@@ -66,6 +66,18 @@ class Layout:
         return self.root / ".edify"
 
     @property
+    def run_dir(self) -> Path:
+        """Per-run scratch (spawn MCP configs, local leases). Ignores itself in git."""
+        return self.edify / "run"
+
+    def ensure_run_dir(self) -> Path:
+        self.run_dir.mkdir(parents=True, exist_ok=True)
+        marker = self.run_dir / ".gitignore"
+        if not marker.exists():
+            marker.write_text("# written by edify — nothing in here is meant to be committed\n*\n", encoding="utf-8")
+        return self.run_dir
+
+    @property
     def graph_dir(self) -> Path:
         return self.edify / "graph"
 

@@ -1,65 +1,47 @@
 ---
 name: tasks
-description: A spec and a plan become a build plan.
-model: strongest
-ends-at: a human
+description: Spec and plan become leaseable tasks — then the tasks get built, by one agent or a swarm.
+model: strongest to write · cheapest that follows instructions to build
+ends-at: a human (write) · a green suite (run)
 ---
 
 # /tasks
 
-Turn the approved documents into something a cheap model can execute without
-thinking. The test is mechanical: if the builder has to think, this document was
-incomplete.
+**Write** the list once; **run** it with the same loop for one agent, fifty, or five people.
 
-## What you read
+## Write → `specs/<feature>/tasks.md` per `.edify/formats/tasks.format.md`
+**In:** approved spec; plan, `data-model.md`, `contracts/`, `quickstart.md` if any; the
+graph. Read `tasks.example.md` once — its level of detail is the contract.
+1. **Cut**: every `REQ` and checklist row → one or more tasks.
+2. **Place**: `edify graph context "<task>"`, `where`, `dependents` → exact files and
+   line ranges.
+3. **Order** into phases 0–7. Phase 2 is every assertion as a **failing** test, never
+   merged into implementation tasks.
+4. **Parallelise** with `edify graph overlap`; keep each task inside one MAP.md community.
+5. **Detail** each block: pattern pointer, steps, `Done when`.
+6. **Close** `## Coverage`; `edify check`; gate: show phases, coverage, tasks.
 
-The approved `spec.md`, `plan.md` if there is one, and the graph. Every `file:line`
-you write comes from a graph query, never from memory.
+## Run — after approval
+```
+edify swarm claim [feature] [--worktree]   # exit 1 = nothing ready right now
+edify swarm prompt <id>                    # skill + task + decisions + graph slice + servers
+build exactly that task · run its Done when · commit on swarm/<id>
+edify swarm done <id>                      # or: --status partial|failed|needs_input --reason "…"
+repeat until claim says "all done"; then /verify in a fresh agent
+```
+- **Swarm**: the orchestrator dispatches and merges, never edits code. N workers, each in
+  its own worktree, get only `edify swarm prompt` output and loop claim → build → done,
+  handing back `completed | partial | failed | needs_input` with raw evidence; anything
+  but `completed` is recorded as a block. Leases are phase-gated and overlap-safe.
+  `edify swarm status`: who holds what, what is expiring. Other machines: `edify swarm --git …`.
+- **Merge** after each phase: `edify swarm merge --apply` lands done `swarm/*` branches
+  (phase, then task order; overlapping radii serialised) and stops at the first conflict;
+  then the phase exit check and `edify graph update --changed`. A conflict is a missing
+  `Depends on`: amend tasks.md.
+- **Failed done-check**: retry once, then the `debugger` skill, then a non-`completed`
+  hand-back. Never retry a side effect (deploy, migration, external write) without
+  checking its prior state.
+- A decision the task left open → one row in `## Decisions`; it binds later spawns.
 
-## What you write
-
-`specs/<feature>/tasks.md`, in the format at `.edify/formats/tasks.format.md`. The
-worked example beside it is the most important artifact in this system — the
-difference between a good plan and a plausible one is entirely in that level of
-detail, and it does not survive being described in the abstract.
-
-## The passes
-
-1. **Cut.** Every requirement and every closure-checklist row becomes one or more
-   tasks. A task that discharges nothing is refused; that is where scope creep
-   enters.
-2. **Place.** For each task, `edify graph where` for the symbols it touches and
-   `edify graph dependents` for everything that breaks. Write the exact file set
-   and line ranges. A task that cannot be placed is a task the plan does not
-   understand, and it blocks the gate rather than becoming build-time exploration.
-3. **Order.** Assign phases by dependency, respecting the plan's milestone rules.
-   Mark the contracts that freeze at the end of phase 1.
-4. **Write phase 2.** Every assertion in the spec becomes a phase-2 task producing
-   a *failing* test, at the verification kind the spec declared. This pass is not
-   optional and is never merged into the tasks that implement the behaviour.
-5. **Parallelise.** Within each phase, `edify graph overlap` between file sets
-   including dependents. Exact, because the graph is exact. A task citing a whole
-   file makes it a false positive and quietly collapses the phase to serial.
-6. **Detail.** Steps and a done-check per task. This pass determines whether
-   `/build` runs on a cheap model, and it is the pass most likely to be rushed.
-7. **Close.** Fill `## Coverage`, one row per requirement and per checklist item,
-   and check it is complete *before* showing it to anyone. An incomplete coverage
-   table must never reach a gate looking complete.
-
-Run `edify check` last. It reports a task with no discharge, no steps, or no
-done-check; a whole-file reference on an edit; a phase-2 done-check that asserts
-tests pass; and an empty coverage cell.
-
-## What this command refuses
-
-A task with no requirement behind it. A task with no done-check. A whole-file
-reference on anything but a new file. A phase-2 task whose done-check asserts tests
-*pass*. Starting implementation. Showing an incomplete coverage table as if it were
-complete.
-
-## The gate
-
-Show the human the phase list, the coverage table, and the tasks. This is the last
-cheap moment to say "that is not how we do it here."
-
-Format: `.edify/formats/tasks.format.md` · Example: `.edify/formats/tasks.example.md`
+## Refuse
+Building an unapproved list. Editing a frozen contract. Marking done without the check.

@@ -452,3 +452,13 @@ def test_yield_counts_come_from_the_door_not_the_screen(tmp_path: Path):
     ledger.add(Candidate(id="c-3", name="c", url="u3", content_sha256="c", source="s", state="quarantined"))
     name, admitted, rejected, seen, _last = next(iter(ledger.by_source()))
     assert (name, admitted, rejected, seen) == ("s", 1, 2, 3)
+
+
+def test_the_harvest_skill_carries_the_shipped_sources_byte_for_byte() -> None:
+    """The skill's copy travels outside the repo; it must not drift from the original."""
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent
+    copy = root / ".claude" / "skills" / "harvest" / "references" / "sources.md"
+    if copy.exists():
+        assert copy.read_bytes() == (root / "edify" / "harvest" / "sources.md").read_bytes()

@@ -13,9 +13,9 @@ an example tells you the *standard*.
 
 | file | format it calibrates | what to look at |
 |---|---|---|
-| [`spec.example.md`](worked-documents/spec.example.md) | `spec.format.md` | tone and completeness — *why* before *what*, the user before the features, hard product rules that bound everything above them |
-| [`plan.example.md`](worked-documents/plan.example.md) | `plan.format.md` | every decision naming the alternative it beat and an exact version; every open question naming who resolves it and when |
-| [`tasks.example.md`](worked-documents/tasks.example.md) | `tasks.format.md` | tasks anchored to real files and line ranges, with a done-check that is checkable |
+| [`spec.example.md`](../edify/formats/spec.example.md) | `spec.format.md` | tone and completeness — *why* before *what*, the user before the features, hard product rules that bound everything above them |
+| [`plan.example.md`](../edify/formats/plan.example.md) | `plan.format.md` | every decision naming the alternative it beat and an exact version; every open question naming who resolves it and when |
+| [`tasks.example.md`](../edify/formats/tasks.example.md) | `tasks.format.md` | tasks anchored to real files and line ranges, with a done-check that is checkable |
 
 **They are three different features on purpose.** The spec and plan are one
 product (IRA7 BIOMECH); the task list is another (team invitations). Each was

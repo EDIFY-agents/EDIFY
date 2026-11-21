@@ -1,20 +1,26 @@
 """`edify doctor` — does the install work here.
 
-Five checks and a green/amber/red line, where amber means "this works but degraded,
-and here is which part". Not the twelve-probe apparatus of the previous design:
-there are no hooks to probe, no runtime surface to pin, and no compiled targets to
-hash.
+A row per check and a green/amber/red line, where amber means "this works but
+degraded, and here is which part". Every check reads files; git is asked at most
+twice (HEAD and the hooks directory in one call, the ignore rule in another), so the
+whole thing stays fast on a large repository.
+
+The rows that only mean something in a git repository — graph hooks, `.edify/run/`
+ignored — are left out of one that is not, rather than reported as amber.
 """
 
 from __future__ import annotations
 
+import json
 import subprocess
 from dataclasses import dataclass
+from pathlib import Path
 
-from .. import __version__, assets, governance, skills as skills_index
+from .. import __version__, agents, assets, governance, host, skills as skills_index
 from ..commands.init_cmd import _instruction_body
 from ..context import Context
 from ..detect import detect
+from ..formats import mcp as mcp_format
 from ..formats import skill as skill_format
 from ..graph.langs import ctags
 
@@ -28,16 +34,28 @@ class Check:
     detail: str
 
 
+#: What `edify graph hook` writes, and the line it puts in each (`graph_cmd._HOOK`).
+GRAPH_HOOKS = ("post-commit", "post-merge", "post-checkout", "post-rewrite")
+GRAPH_HOOK_MARKER = "edify:graph-hook"
+
+
 def run(ctx: Context) -> int:
+    vcs = _Vcs.probe(ctx.layout.root)
+    entries = skill_format.load_all(ctx.layout.skills_dir, ctx.layout.root)
     checks = [
         _install(ctx),
         _extractor(ctx),
-        _graph(ctx),
-        _index(ctx),
+        _graph(ctx, vcs),
+        _hooks(vcs),
+        _index(ctx, entries),
+        _mirror(ctx, entries),
+        _mcp_json(ctx),
+        _run_ignored(ctx, vcs),
         _governance(ctx),
         _claude(ctx),
         _license(ctx),
     ]
+    checks = [c for c in checks if c is not None]
     ctx.out.data([c.__dict__ for c in checks])
 
     for check in checks:
@@ -81,7 +99,7 @@ def _extractor(ctx: Context) -> Check:
     )
 
 
-def _graph(ctx: Context) -> Check:
+def _graph(ctx: Context, vcs: _Vcs) -> Check:
     if not ctx.store.exists():
         return Check("graph", RED, "no graph on disk — run `edify graph build`")
     problems = ctx.store.verify_checksums()
@@ -96,17 +114,40 @@ def _graph(ctx: Context) -> Check:
     if meta.get("truncated_at"):
         return Check("graph", AMBER, detail + f" · truncated at {meta['truncated_at']} (free plan)")
 
-    head = _head(ctx)
     recorded = meta.get("commit", "-")
-    if head and recorded not in ("-", "") and head != recorded:
-        return Check("graph", AMBER, detail + " · built from a different commit — re-run `edify graph build`")
+    if vcs.head and recorded not in ("-", "") and vcs.head != recorded:
+        return Check(
+            "graph",
+            AMBER,
+            detail + f" · built at {recorded[:8]}, HEAD is {vcs.head[:8]}"
+            " — `edify graph update --changed` re-extracts only what moved",
+        )
     if uncovered not in ("-", ""):
         return Check("graph", AMBER, detail)
     return Check("graph", GREEN, detail)
 
 
-def _index(ctx: Context) -> Check:
-    entries = skill_format.load_all(ctx.layout.skills_dir, ctx.layout.root)
+def _hooks(vcs: _Vcs) -> Check | None:
+    """The hooks that keep the graph current between builds."""
+    if vcs.hooks is None:
+        return None
+    ours, missing = [], []
+    for name in GRAPH_HOOKS:
+        text = _read(vcs.hooks / name)
+        # A hook somebody already had, with the update line added by hand, counts:
+        # `edify graph hook` tells them to do exactly that rather than overwrite it.
+        (ours if GRAPH_HOOK_MARKER in text or "edify graph update" in text else missing).append(name)
+    if not ours:
+        return Check(
+            "graph hooks", AMBER,
+            "none — `edify graph hook` keeps the graph current after each commit, merge and checkout",
+        )
+    if missing:
+        return Check("graph hooks", AMBER, f"missing {', '.join(missing)} — run `edify graph hook`")
+    return Check("graph hooks", GREEN, ", ".join(ours) + " refresh the graph")
+
+
+def _index(ctx: Context, entries: list) -> Check:
     if not entries:
         return Check("skills", RED, "no skills installed — run `edify init`")
     if not ctx.layout.skills_index.is_file():
@@ -126,6 +167,85 @@ def _index(ctx: Context) -> Check:
     if over:
         return Check("skills", AMBER, f"{len(entries)} entries · over budget: {', '.join(over[:3])}")
     return Check("skills", GREEN, f"{len(entries)} entries · every role resolves")
+
+
+def _mirror(ctx: Context, entries: list) -> Check | None:
+    """Every installed entry has its pointer in each runtime set up here, and no
+    pointer is left standing for an entry that is gone."""
+    if not entries:
+        return None  # `skills` is already red, and says why
+    targets = [t for t in agents.present_targets(ctx.layout.root) if t.skills or t.agents]
+    if not targets:
+        return Check(
+            "skill mirror", GREEN,
+            "no runtime skill directory here — the library is read through `edify skills resolve`",
+        )
+    missing = outdated = expected = 0
+    for target in targets:
+        for path, body, _kind, _name in host.library_pointers(ctx.layout, target, entries):
+            expected += 1
+            text = _read(path)
+            if not text:
+                missing += 1
+            elif text != body and host.written_by_edify(path):
+                outdated += 1
+    stale = host.stale(ctx.layout, entries)
+    dirs = ", ".join(sorted({d for t in targets for d in (t.skills, t.agents) if d}))
+    problems = []
+    if missing:
+        problems.append(f"{missing} of {expected} not mirrored")
+    if outdated:
+        problems.append(f"{outdated} out of date")
+    if stale:
+        problems.append(f"{len(stale)} stale ({ctx.layout.rel(stale[0])})")
+    if problems:
+        return Check("skill mirror", AMBER, " · ".join(problems) + f" in {dirs} — run `edify skills sync`")
+    return Check("skill mirror", GREEN, f"{expected} pointers in {dirs} · each current")
+
+
+def _mcp_json(ctx: Context) -> Check:
+    """A server in the project's `.mcp.json` loads into every session, which undoes
+    the scoping the registry exists for."""
+    path = ctx.layout.root / ".mcp.json"
+    if not path.is_file():
+        return Check(".mcp.json", GREEN, "none in the project — no server loads into every session")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        servers = data.get("mcpServers") or data.get("servers") or {}
+    except (OSError, UnicodeDecodeError, ValueError, AttributeError):
+        return Check(".mcp.json", AMBER, "not a readable JSON object — the runtime will reject it too")
+    if not isinstance(servers, dict):
+        servers = {}
+    registry = mcp_format.parse(ctx.layout.mcp)
+    scoped = []
+    for name in servers:
+        entry = registry.get(name)
+        if entry is not None and not ("any" in entry.roles and "any" in entry.phases):
+            scoped.append(name)
+    if scoped:
+        return Check(
+            ".mcp.json",
+            AMBER,
+            f"loads {', '.join(scoped)} into every session though the registry scopes "
+            + ("it" if len(scoped) == 1 else "them")
+            + " — move the definitions to .edify/mcp.pool.json and spawn with `edify mcp config <role> <phase>`",
+        )
+    return Check(".mcp.json", GREEN, f"{len(servers)} server(s), none of them scoped by the registry")
+
+
+def _run_ignored(ctx: Context, vcs: _Vcs) -> Check | None:
+    """`.edify/run/` holds leases and per-spawn MCP configs: machine state, never history."""
+    ignored = vcs.ignored(".edify/run/probe")
+    if ignored is None:
+        return None
+    if ignored:
+        return Check(".edify/run", GREEN, "ignored by the repository")
+    if not (ctx.layout.edify / "run").is_dir():
+        return Check(".edify/run", GREEN, "not created yet — add `.edify/run/` to .gitignore before it is")
+    return Check(
+        ".edify/run", AMBER,
+        "not ignored — leases and spawn configs would be committed; add `.edify/run/` to .gitignore",
+    )
 
 
 def _governance(ctx: Context) -> Check:
@@ -191,16 +311,54 @@ def _license(ctx: Context) -> Check:
     return Check("license", GREEN, "public edition · uncapped")
 
 
-def _head(ctx: Context) -> str:
+def _read(path: Path) -> str:
+    try:
+        return path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return ""
+
+
+@dataclass
+class _Vcs:
+    """What doctor needs from version control, asked once. `hooks is None`: no repository."""
+
+    root: Path
+    head: str = ""
+    hooks: Path | None = None
+
+    @classmethod
+    def probe(cls, root: Path) -> _Vcs:
+        # One call for both. With no commits yet `HEAD` fails the whole call, so the
+        # hooks path is asked again alone — the rare case pays for the second spawn.
+        lines = _vcs(root, "rev-parse", "--git-path", "hooks", "HEAD")
+        if lines is None:
+            lines = _vcs(root, "rev-parse", "--git-path", "hooks")
+            if lines is None:
+                return cls(root)
+        hooks = (root / lines[0]).resolve() if lines and lines[0] else None
+        return cls(root, head=lines[1] if len(lines) > 1 else "", hooks=hooks)
+
+    def ignored(self, rel: str) -> bool | None:
+        if self.hooks is None:
+            return None
+        try:
+            out = subprocess.run(
+                [_BIN, "check-ignore", "-q", rel], cwd=str(self.root),
+                capture_output=True, timeout=10, check=False,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return {0: True, 1: False}.get(out.returncode)
+
+
+_BIN = "git"
+
+
+def _vcs(root: Path, *args: str) -> list[str] | None:
     try:
         out = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=str(ctx.layout.root),
-            capture_output=True,
-            text=True,
-            timeout=10,
-            check=False,
+            [_BIN, *args], cwd=str(root), capture_output=True, text=True, timeout=10, check=False,
         )
     except (OSError, subprocess.SubprocessError):
-        return ""
-    return out.stdout.strip() if out.returncode == 0 else ""
+        return None
+    return out.stdout.strip().splitlines() if out.returncode == 0 else None

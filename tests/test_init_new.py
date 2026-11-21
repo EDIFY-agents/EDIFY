@@ -103,7 +103,7 @@ def test_every_runtime_gets_its_commands_in_the_shape_it_parses(folder: Path) ->
         if not target.commands:
             continue
         found = sorted(p.name for p in (folder / target.commands).glob(f"*{target.command_suffix}"))
-        assert len(found) == 5, f"{target.id} has {found}"
+        assert len(found) == 4, f"{target.id} has {found}"
         pointer = (folder / target.commands / f"spec{target.command_suffix}").read_text(encoding="utf-8")
         assert agents.MARKER_TEXT in pointer, f"{target.id}'s pointer is not marked as ours"
         assert ".edify/commands/spec.md" in pointer, "the contract has to stay in one place"

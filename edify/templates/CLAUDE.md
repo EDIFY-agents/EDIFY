@@ -1,18 +1,19 @@
 # {{repo}}
 Stack: {{stack}}  ·  Tests: {{test}}
 
-## Commands
-/spec   — write the spec before anything else
-/plan   — technology decisions and milestones, for work that needs them
-/tasks  — turn an approved spec into the phased build plan
-/build  — execute an approved plan, start to finish
-/verify — re-run everything and produce the evidence
+## Commands — .edify/commands/<name>.md
+/spec   — what and why; unknowns marked [NEEDS CLARIFICATION]
+/plan   — binding decisions, only when the work needs them
+/tasks  — leaseable tasks, then build them: one agent or a swarm
+/verify — fresh session; real runs on every tier, evidence not claims
 
-## The codebase map
-.edify/graph/ — every symbol, route, and table, with the edges between them.
-  edify graph where <name>        → file:line and signature
-  edify graph dependents <symbol> → everything that breaks if it changes
-Search the graph before reading files. Never guess a path.
+## The codebase map — query before reading files, never guess a path
+  edify graph map                 → .edify/graph/MAP.md: subsystems, hubs, bridges
+  edify graph context "<task>"    → the files and ranges this task needs
+  edify graph where|explain <x>   → file:line · edges · who depends on it
+  edify graph dependents <x>      → everything that breaks if it changes
 
-## Where things live
-Features: specs/<feature>/   Skills: .edify/skills/   Servers: .edify/mcp.md
+## Load only what the task needs
+Skills: `edify skills resolve <role> <phase>` → one file. Servers: `edify mcp config
+<role> <phase>` → only those. Parallel work: `edify swarm claim|prompt|done`.
+Features: specs/<feature>/   Conventions: .edify/conventions.md

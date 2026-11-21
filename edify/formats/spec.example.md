@@ -1,483 +1,125 @@
-# IRA7 BIOMECH
-
-> **This is the worked example for `spec.format.md`, and it calibrates *tone and
-> completeness* rather than section layout.** It is a real specification for a real
-> product, not an invented illustration, which is why it is worth reading: it says
-> *why* before *what*, it names the user before the features, it makes the platform
-> constraints explicit, and it ends with hard product rules that bound everything
-> above them. A spec that opens with a component list has already lost the thread.
->
-> It is longer than most specs need to be because the product is large. **The shape
-> is what to copy, not the length**, and the section contract — `## Brief`,
-> `## Intent`, `## Constraints`, `## Requirements`, `## Assertions`,
-> `## What this entails`, `## Open questions`, `## Non-goals` — is stated once in
-> `spec.format.md`. Write that structure, in this voice.
-
-## Product Vision
-
-IRA7 BIOMECH is a completely offline Android application designed to analyze the biomechanics, physical development, and performance trends of a single football athlete over time.
-
-The app acts as a long-term biomechanical coaching system that learns from the athlete's historical data, identifies trends, highlights risks, and provides actionable coaching insights based entirely on:
-
-- The athlete's physical profile
-- Recorded training sessions
-- Biomechanical measurements
-- Longitudinal performance data
-- Left-vs-right asymmetry trends
-- Historical progression and regression patterns
-
-The app does not use cloud services, accounts, subscriptions, telemetry, or external servers. All processing, storage, and analysis occur locally on the coach's Android device.
-
+---
+feature: team-invitations
+status: approved
+date: 2026-08-04
+supersedes: —
+brief-source: —
 ---
 
-# Core Philosophy
+# spec — team invitations
+
+> **Worked example for `spec.format.md`.** One feature carried through every file:
+> this spec, `plan.example.md`, `research.example.md`, `data-model.example.md`,
+> `contracts.example.md`, `quickstart.example.md`, `tasks.example.md`. The shape
+> is what to copy, not the length; the ids here are the ones the task list discharges.
+
+## Brief
+
+"Admins should be able to invite people to their workspace by email. The person clicks the
+link and they're in."
+
+## User stories
+
+### US1 — Invite and join (P1, the MVP)
+An admin enters an email and a role; the invitee gets a link, sees who invited them, and
+joins in one click. **Independent test:** invite → open link → accept → the invitee is a
+member, with no other story built.
+1. **Given** an admin of workspace W, **When** they invite `a@x.io` as member, **Then** a
+   pending invitation exists and one email with the link is queued.
+2. **Given** a valid link, **When** the invitee opens it signed out, **Then** they see the
+   workspace name, inviter role and expiry — and nothing else.
+3. **Given** a valid link, **When** it is accepted, **Then** exactly one membership exists.
+
+### US2 — Revoke (P2)
+**Independent test:** invite → revoke → the link reports revoked.
+1. **Given** a pending invitation, **When** an admin revokes it, **Then** its link says so.
+
+### US3 — Links that explain themselves (P3)
+**Independent test:** each dead link shows its own message.
+1. **Given** an expired, used, revoked or unknown link, **When** opened, **Then** the page
+   names which, and offers the next step.
+
+## Intent
+
+1. Growing a workspace takes one action by an admin and one by the invitee.
+2. A link is the credential: whoever holds it can join, once, before it expires.
+3. A dead link never leaves the invitee guessing why.
+
+## Constraints
+
+- TypeScript 5.4, Node 20 LTS, Postgres 15, React 18 — as in `package.json:1-40`.
+- `npm test`, `npm run test:e2e`, `npm run typecheck`, `npm run lint` (CI: `.github/workflows/ci.yml:20-58`).
+- Mail goes through the existing queue (`src/email/mailer.ts:12-48`); never sent inline.
+- Roles are `admin` and `member` (`src/db/schema.ts:96-117`).
+
+## Requirements
+
+| id | requirement | assertions |
+|---|---|---|
+| REQ-1 | An admin can invite someone by email | A-1, A-2, A-7, A-12, A-13 |
+| REQ-2 | The invitee sees who invited them before accepting | A-14, A-17 |
+| REQ-3 | Accepting the link creates the membership | A-3, A-4, A-15 |
+| REQ-4 | An admin can revoke a pending invitation | A-5, A-10, A-11 |
+| REQ-5 | The invitee receives an email with the link | A-9 |
+| REQ-6 | Expired, used, and revoked links each say what happened | A-6, A-8, A-16 |
+
+## Assertions
+
+| id | assertion | verification | citation |
+|---|---|---|---|
+| A-1 | Creating an invitation stores it pending, expiring `ttlHours` (72) later | example | new |
+| A-2 | Inviting an existing member returns `INVITE_ALREADY_MEMBER` | example | src/services/members.ts:40-66 |
+| A-3 | Accepting a valid token creates one membership with the invited role | example | src/services/members.ts:20-39 |
+| A-4 | A second accept of the same token returns `INVITE_ALREADY_ACCEPTED` | example | new |
+| A-5 | A revoked token returns `INVITE_REVOKED` | example | new |
+| A-6 | A token past `expires_at` returns `INVITE_EXPIRED` | example | new |
+| A-7 | Tokens are 32 chars of base32 and never repeat across 1,000 draws | property | src/auth/tokens.ts:14-38 |
+| A-8 | An unknown token returns `INVITE_NOT_FOUND` | example | new |
+| A-9 | Creating an invitation enqueues exactly one email whose link is `/invite/<token>` | example | src/email/mailer.ts:12-48 |
+| A-10 | Create, accept and revoke each write one audit event | example | src/audit/log.ts:8-30 |
+| A-11 | Revoking an accepted invitation changes nothing and returns `INVITE_ALREADY_ACCEPTED` | example | new |
+| A-12 | An admin's POST returns 201 + `Location`; the 21st in an hour returns 429 `INVITE_RATE_LIMITED` | example | src/api/routes/members.add.ts:18-77 |
+| A-13 | A non-admin's POST returns 403 | example | src/api/middleware/auth.ts:40-52 |
+| A-14 | The signed-out preview returns exactly `workspaceName, email, role, expiresAt` | example | new |
+| A-15 | Two concurrent accepts of one token create one membership | example | new |
+| A-16 | The accept page shows a distinct message for each of the four error codes | example | new |
+| A-17 | The accept page works by keyboard alone and with a screen reader (surface: browser) | observation | new |
+
+## Key entities
+
+- **Invitation** — a pending offer of a role in a workspace to an email; single-use, expiring.
+- **Membership** — existing (`src/db/schema.ts:96-117`); created by an accepted invitation.
+Fields and states: `data-model.md`.
+
+## Success criteria
+
+- **SC-1** — An invitee goes from email to member in under 30 seconds (quickstart step 4).
+- **SC-2** — Zero support tickets of the form "my link doesn't work" with no stated reason.
+- **SC-3** — No invitation token appears in logs or analytics events.
+
+## What this entails
+
+| id | what it entails | status |
+|---|---|---|
+| CL-1 | The feature is behind a flag | REQ-1 — `INVITE_ENABLED` |
+| CL-2 | Tokens are unguessable and single-use | REQ-1, REQ-3 — A-4, A-7 |
+| CL-3 | Invitation creation is rate-limited | REQ-1 — A-12 — adversary-found |
+| CL-4 | The migration has a rollback | REQ-3 |
+| CL-5 | Lifecycle events are audit-logged | REQ-4 — A-10 — adversary-found |
+| CL-6 | Personal data has a retention rule | waived — the only datum is an email the admin already holds |
+| CL-7 | The accept page is accessible | REQ-2 — A-17 |
 
-The purpose of IRA7 BIOMECH is not simply to collect numbers.
+## Assumptions
 
-Its purpose is to answer the coach's most important questions:
+- The workspace already has at least one admin (`src/services/workspaces.ts:30-52`).
+- Invitees may already have an account; signing up is the existing flow, not new work.
 
-1. Is the athlete improving?
-2. Is the athlete becoming more efficient?
-3. Is the athlete becoming more resilient?
-4. Is the athlete showing signs of fatigue or injury risk?
-5. What should the coach focus on next?
-6. What are the key suggestions we could give soely based on the data? No external tools
+## Open questions
 
-All recommendations generated by the app are based on the individual athlete's own profile and historical trends rather than generic population averages.
+| # | question | readings | adopted | who resolves |
+|---|---|---|---|---|
+| Q-1 | Must the accepting user's email match the invited one? | match required · link is the credential | link is the credential (intent 2) | product — accepted at gate |
 
----
+## Non-goals
 
-# Target Athlete
-
-The system is built around a developing football athlete with:
-
-- Significant growth potential
-- Active growth plates
-- Long-limb biomechanics
-- High acceleration demands
-- High deceleration demands
-- Frequent unilateral actions
-- Strong reliance on a primary plant leg
-
-Because of this profile, the app places special emphasis on:
-
-- Acceleration efficiency
-- Deceleration quality
-- Elastic/reactive performance
-- Movement asymmetries
-- Injury-risk indicators
-- Development trends over time
-
----
-
-# Primary User
-
-## Coach/Player
-
-The coach/player is the sole operator of the application.
-
-The coach or the player:
-
-- Records training sessions 
-- Reviews the data collected can be unexperiences so it reads the recommendations
-- Tracks longitudinal development
-- Uses coaching recommendations
-- Makes training decisions based on the recomendations
-
-The system must translate complex biomechanical data into clear coaching language.
-
----
-
-# Athlete Profile System
-
-The athlete profile acts as the foundation of all analysis.
-
-Stored information includes:
-
-- Name
-- Date of birth
-- Height
-- Weight
-- Leg length
-- Shank length
-- Dominant foot
-- Preferred position
-- Growth status
-- Injury history
-- Training history
-
-The profile evolves over time as new measurements are added.
-
-All future analyses use the most current athlete profile unless historical values are required.
-
----
-
-# Training Analysis
-
-The application analyzes training sessions using smartphone video capture.
-
-Supported analysis categories include:
-
-## Sprint Performance
-
-Measures:
-
-- Trunk lean
-- Shin angle
-- Step length
-- Step frequency
-- Ground contact time
-- Flight time
-- Knee drive
-- COM velocity
-- COM acceleration
-- Sprint efficiency
-
-Purpose:
-
-- Monitor acceleration ability
-- Detect over-striding
-- Evaluate force application quality
-
----
-
-## Elastic and Plyometric Performance
-
-Measures:
-
-- Reactive Strength Index (RSI)
-- Jump height
-- Takeoff velocity
-- Leg stiffness
-- Vertical stiffness
-- Ankle stiffness
-- Contact quality
-
-Purpose:
-
-- Monitor explosive ability
-- Track fatigue
-- Evaluate elastic development
-
----
-
-## Deceleration Performance
-
-Measures:
-
-- Braking capacity
-- Deceleration magnitude
-- Approach velocity
-- Exit velocity
-- Stop distance
-- Braking-leg performance
-
-Purpose:
-
-- Monitor the athlete's most important protective and performance skill
-- Identify declining braking ability
-- Detect increased injury risk
-
----
-
-## Change of Direction Performance
-
-Measures:
-
-- Plant mechanics
-- Knee valgus
-- Foot plant position
-- Trunk control
-- Direction-change efficiency
-- Movement initiation
-
-Purpose:
-
-- Evaluate cutting performance
-- Identify risk factors
-- Improve movement efficiency
-
----
-
-# Longitudinal Intelligence
-
-The most important feature of the system is trend analysis.
-
-The app continuously compares current performance against:
-
-- Personal bests
-- Recent training blocks
-- Seasonal averages
-- Growth-period baselines
-- Fatigue markers
-- Recovery markers
-
-The app should answer questions such as:
-
-- Is acceleration improving?
-- Is braking capacity improving?
-- Is RSI trending upward?
-- Is ground contact time increasing?
-- Is asymmetry becoming worse?
-- Is the athlete adapting positively?
-- Is performance declining?
-
-No recommendation should rely solely on a single session.
-
-Recommendations should prioritize multi-session trends and historical context.
-
----
-
-# Coaching Engine
-
-The coaching engine is entirely athlete-specific.
-
-Recommendations are generated using:
-
-- Athlete profile
-- Historical metrics
-- Session outcomes
-- Development trends
-- Fatigue indicators
-- Asymmetry data
-- Injury-risk markers
-- Suggestions for the player. Specific based on their weeknesses and how to improve them.
-
-Examples:
-
-- “Left-leg braking performance has declined over the last 3 sessions.”
-- “Ground contact time is increasing while sprint performance is stable, suggesting fatigue.”
-- “RSI has improved consistently across the last training block.”
-- “Knee valgus during left-leg cuts is trending upward and should be monitored.”
-- “Acceleration performance has plateaued. Horizontal force development may need additional emphasis.”
-
-The system should prioritize actionable coaching insights over raw metrics.
-
----
-
-# Left-versus-Right Monitoring
-
-Every unilateral metric must be tracked independently.
-
-Examples:
-
-- Ground contact time
-- Step length
-- Shin angle
-- Braking performance
-- Jump performance
-- RSI
-- Stiffness
-- Knee mechanics
-
-The application must continuously calculate Limb Symmetry Index (LSI) and identify:
-
-- Improving symmetry
-- Stable symmetry
-- Worsening symmetry
-- Injury-risk thresholds
-
----
-
-# Analysis Interface
-
-The coach should be able to:
-
-- Select either match or training mode (differnt model and UI for each based on the need of each, mathc=analyze the team and the individual movements, training more in detail data)
-- Select or conect multiple phones select if 2d analyzis or 3 phones for 3d analysis. 3d should be connected using a qr code or a all phones conect to the same network using a phones mobile hotspot.
-- Watch video playback
-- Use an opensource best model for detecting the player and the needed points and joints for the analysis
-- View skeleton overlays
-- View center-of-mass tracking
-- View metric graphs
-- Compare sessions
-- Review trend reports
-- Scrub frame-by-frame
-- Correct detected events manually
-
-Video and data visualizations must remain synchronized at all times.
-
----
-
-# Session History
-
-The application stores:
-
-- Videos
-- Metrics
-- Athlete measurements
-- Trend data
-- Coaching notes
-- Drill history
-
-The coach should be able to compare:
-
-- Today's session
-- All time bests
-- Last session
-- Previous week
-- Current block
-- Personal best performances
-
----
-
-# Reporting
-
-The app should generate:
-
-- Session summaries
-- Performance trend reports
-- Asymmetry reports
-- Fatigue reports
-- Development reports
-- Suggestions for improvement
-
-Exports are available only through an explicit user action.
-
-Supported formats:
-
-- CSV
-- JSON
-
----
-
-# Privacy and Offline Requirements
-
-The application must be completely offline.
-
-Requirements:
-
-- No internet connection required
-- No cloud services
-- No user accounts
-- No telemetry
-- No analytics SDKs
-- No remote processing
-- No automatic uploads
-- No automatic backups
-- No external APIs
-
-All videos, metrics, reports, and athlete data remain stored locally on the Android device.
-
----
-
-# Core Product Rules
-
-1. Android application only.
-2. Completely offline operation.
-3. Athlete data never leaves the device unless explicitly exported.
-4. Every unilateral metric must be tracked left vs right.
-5. Invalid measurements must be blocked rather than estimated.
-6. Historical trends are more important than single-session results.
-7. Coaching recommendations must be based on the athlete's own data and development history.
-8. The app exists to support long-term athlete development, performance improvement, and injury-risk reduction.
-# Intelligence Layer
-
-The value of IRA7 BIOMECH is not in collecting biomechanical data. The value is in transforming complex biomechanical information into simple, useful, and actionable insights that any coach, parent, or player can understand.
-
-Most users are not biomechanists, sports scientists, or data analysts. They should never need to interpret raw angles, force curves, stiffness values, or time-series charts to understand what is happening.
-
-The application should function as a personal biomechanical intelligence system.
-
-Its responsibility is to:
-
-- Collect data. Camera + Computer Vision
-- Analyze data. 
-- Identify patterns.
-- Detect trends.
-- Explain findings in plain language.
-- Recommend practical actions.
-
-The system should answer questions such as:
-
-- What improved?
-- What declined?
-- What should we focus on next?
-- Is the athlete showing fatigue?
-- Is injury risk increasing?
-- Is the athlete developing as expected?
-- Which qualities are progressing fastest?
-- Which qualities are stagnating?
-
-The objective is that an inexperienced coach or player can open the app and immediately understand the athlete's current situation without needing any biomechanics knowledge.
-
----
-
-# Athlete Knowledge Engine
-
-The application should continuously build an understanding of the athlete by combining:
-
-- Athlete profile information
-- Body measurements
-- Growth data
-- Historical training sessions
-- Sprint tests
-- Jump tests
-- Deceleration tests
-- Change-of-direction tests
-- Match data
-- Previous coaching observations
-- Injury history
-- Recovery trends
-- Left-versus-right asymmetry trends
-
-The more data collected over time, the more personalized and accurate the recommendations become.
-
-The athlete should never be compared primarily against generic population averages.
-
-The system should prioritize:
-
-1. The athlete's own historical performance.
-2. The athlete's growth and development trajectory.
-3. The athlete's position-specific demands.
-4. The athlete's movement tendencies.
-5. The athlete's current physical state.
-
----
-
-# Device Data Integration
-
-The application should be capable of using data available on the Android device, with the coach's permission, to improve contextual understanding and athlete monitoring.
-
-Potential data sources include:
-
-- Captured videos
-- Photos
-- Training recordings
-- Wearable-device exports
-- Health-related files
-- Session notes
-- Exported GPS files
-- Performance spreadsheets
-- Previous reports stored on the device
-
-All accessed data must remain local to the device.
-
-No data may be uploaded, transmitted, shared, or processed externally.
-
-Any access to files or device data must be transparent and explicitly authorized by the user.
-
----
-
-# Coach-Friendly Outputs
-
-Every analysis should ultimately be translated into:
-
-### What Happened
-A plain-language summary of performance.
-
-### Why It Happened
-The most likely biomechanical explanation.
-
-### Risk Assessment
-Potential injury-risk or fatigue indicators.
-
-### Recommended Actions
-Specific training recommendations.
-
-### Long-Term Trend
-How the result compares to previous weeks, months, and seasons.
-
-The coach should spend most of their time reading insights and recommendations, not interpreting raw numbers.
-
-Raw biomechanics exist to support the coaching decisions, not to become the coaching experience itself.
+- Bulk or CSV invitations. Invitation links shared in chat (no email). SSO-provisioned members.

@@ -1,67 +1,47 @@
 ---
 name: verify
-description: The code becomes evidence.
-model: strong, and never a session that wrote code
+description: The code becomes evidence — on every surface it will really run on.
+model: strong, and never a session that wrote the code
 ends-at: a report anyone can read
 ---
 
 # /verify
 
-Re-run everything yourself and write down what actually came out. This command runs
-things. It does not decide things, and it never edits code.
+Run things; decide nothing; never edit code. **In:** the repo, spec, tasks, plan.
+**Out:** `specs/<feature>/verification.md`. Method: skill `verifier`.
 
-## What you read
+## Passes
+1. **Re-run** suite, types, lint exactly as the spec's constraints say. Raw output with
+   real exit codes (`set -o pipefail`; a piped status is not evidence).
+2. **Order**: from `git log`, each assertion's test landed before its code.
+3. **Exercise for real**: replay `quickstart.md` step by step if there is one, then every
+   tier the spec's assertions declare:
 
-The repository, `spec.md`, `tasks.md`, and `plan.md` if there is one.
+| tier | how | evidence |
+|---|---|---|
+| service | start it; real requests (`curl`, client) | request/response transcript |
+| browser | Playwright headless; drive the user path | screenshots + console log |
+| device | emulator/simulator (`emulator -avd`, `xcrun simctl`, `adb`) or a real device on an attached machine | logs, screenshots, exit codes |
+| live API | sandbox keys from env/secret store, never pasted; record endpoint and version | redacted responses |
+| connector | the MCP server or connector the feature integrates with, via `edify mcp config verifier 7` | tool call + result |
+| data | fixtures or a disposable DB; migrations up and down | row counts, diffs |
 
-## What you write
+   A tier that cannot run here (no device, key, network) is **blocked: needs X** —
+   never skipped silently, never faked with a mock.
+4. **Coverage**: every row satisfied (evidence) · waived (reason) · blocked (what). A
+   declared kind silently downgraded (property → example) fails.
+5. **Plan gates**, if there is a plan.
+6. **One design**: duplicated helpers, two error styles, vocabulary drift — name them.
+   `edify graph dependents` shows what a change reached.
 
-`specs/<feature>/verification.md` — four sections, readable by someone who was not
-in the room.
-
-## The passes
-
-1. **Re-run everything.** The full suite, the type check, the lint, invoked exactly
-   as the spec's constraints say to invoke them. Capture the raw output. A summary
-   of a test run is a claim about a test run, and the entire reason this runs in a
-   fresh session is that claims about one's own work carry no information.
-2. **Confirm the ordering.** Read `git log` and confirm the tests for each
-   assertion landed before the code that satisfies them. A suite written afterwards
-   encodes the behaviour the code has rather than the behaviour the spec asked for,
-   and this is the only mechanical way to know which happened.
-3. **Exercise it for real.** Where an acceptance scenario can be run — start the
-   service and make real calls, drive the interface, run the job against fixtures —
-   do that and paste the transcript. This is where the class of failure that passes
-   every unit test surfaces.
-4. **Walk the coverage table.** Every row marked satisfied with its evidence,
-   waived with its reason, or blocked with what is missing. Check each assertion
-   against the verification kind the spec declared: a property test that became an
-   example test is a silent downgrade, and it is reported, not accepted.
-5. **Check the plan's gates**, if there is a plan. Milestone gates are separate
-   from spec assertions and are otherwise never checked by anything.
-6. **Read the diff as one design.** The one judgment call: is there one way of
-   doing each thing here, or several? Name specifics — a second helper duplicating
-   an existing one, two error-handling styles, inconsistent vocabulary between
-   modules. Write down what was checked; never assert it was clean.
-
-## The report
-
+## Report
 ```
-## Ran        every command, its exact invocation, and its raw output
-## Ordering   per assertion: test commit → code commit, or a note that it was not
-## Coverage   every row: satisfied (evidence) | waived (reason) | blocked (what)
-## One design what was checked for duplication and drift, and what was found
+## Ran        command · exact invocation · raw output
+## Ordering   assertion → test commit → code commit
+## Tiers      tier · how · evidence | blocked: needs X
+## Coverage   row · satisfied | waived | blocked
+## One design what was checked, what was found
 ```
-
-## What this command refuses
-
-Editing code. Running in a session that wrote code. A summary where raw output
-belongs. Marking a row satisfied without evidence. Passing an assertion whose
-declared verification kind was silently downgraded.
-
-## Where it runs
-
-Phase 7 of every build, in a fresh agent. In CI on every push, where passes 1 and 4
-are the mechanical half. By hand, whenever anyone wants it. This is also where a
-team that needs a hard block puts one: `/verify` in CI with a non-zero exit is the
-enforcement EDIFY itself does not ship, owned by the people it protects.
+**Corrections become checks**: each defect a human had to point out is proposed as a
+lint rule or test, never as more prose in CLAUDE.md.
+In CI, passes 1 and 4 are the mechanical half; a non-zero exit is the team's block.

@@ -84,11 +84,11 @@ output and carries its own checksums.
 three lines:
 
 ```markdown
-## The codebase map
-.edify/graph/ — every symbol, route, and table, with the edges between them.
-  edify graph where <name>        → file:line and signature
-  edify graph dependents <symbol> → everything that breaks if it changes
-Search the graph before reading files. Never guess a path.
+## The codebase map — query before reading files, never guess a path
+  edify graph map                 → .edify/graph/MAP.md: subsystems, hubs, bridges
+  edify graph context "<task>"    → the files and ranges this task needs
+  edify graph where|explain <x>   → file:line · edges · who depends on it
+  edify graph dependents <x>      → everything that breaks if it changes
 ```
 
 That is the whole integration. The agent runs a command and gets a location
@@ -99,4 +99,10 @@ instead of burning context rediscovering the repository.
 There is no size limit. Below roughly a 200–300k-line repository a frontier model
 in auto mode is already good and EDIFY is genuinely optional; above it is where the
 map starts to pay for itself.
+
+No agent reads a million-line graph, so the graph summarises itself: `edify graph map`
+writes `MAP.md` (communities by label propagation, the hubs everything flows through,
+and the bridges where parallel tasks collide), and `edify graph context "<task>"` hands
+one task its slice — files with line ranges and one hop of edges — under a token
+budget. `edify swarm claim` reads the same communities to keep two live leases apart.
 

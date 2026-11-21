@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass, field
+from typing import NamedTuple
 
 NODE_KINDS = ("file", "module", "symbol", "route", "table", "package", "doc-section")
 EDGE_KINDS = ("defines", "references", "imports", "exposes", "documents", "migrates")
@@ -40,8 +41,9 @@ def fingerprint(signature: str) -> str:
     return hashlib.sha256(normalised.encode("utf-8")).hexdigest()[:12]
 
 
-@dataclass(frozen=True)
-class Node:
+class Node(NamedTuple):
+    """One indexed thing. A tuple: cheap to build half a million of, immutable, hashable."""
+
     id: str
     kind: str
     file: str
@@ -68,8 +70,7 @@ class Node:
         return f"{self.file}:{self.line}" if self.line else self.file
 
 
-@dataclass(frozen=True)
-class Edge:
+class Edge(NamedTuple):
     src: str
     relation: str
     dst: str

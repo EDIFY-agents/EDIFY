@@ -20,8 +20,8 @@ anyone can watch instead of a claim anyone has to trust.
 
 ```
 /spec     assertions written down, in a human's words
-/tasks    each assertion becomes a task with a done-check
-/build    phase 2: those become failing tests
+/tasks    each assertion becomes a task with a done-check;
+          run, phase 2: those become failing tests
           phase 3+: make them pass
 /verify   a session that wrote no code re-runs everything
 ```

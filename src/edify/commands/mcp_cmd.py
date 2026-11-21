@@ -12,14 +12,7 @@ import subprocess
 from pathlib import Path
 
 from ..context import Context
-from ..errors import TierRequired
 from ..formats import mcp as mcp_format
-from ..licensing import tier
-
-
-def _licence_hint() -> str:
-    """The one licence sentence, taken from the refusal rather than retyped."""
-    return TierRequired(tier.FEATURE_NAMES["mcp.multi"]).hint
 
 
 def list_(ctx: Context) -> int:
@@ -29,7 +22,6 @@ def list_(ctx: Context) -> int:
         ctx.out.line("the registry is empty — everything works with it empty")
         return 0
 
-    cap = ctx.entitlement.mcp_cap
     ctx.out.data(
         [
             {
@@ -40,9 +32,10 @@ def list_(ctx: Context) -> int:
                 "phases": s.phases,
                 "network": s.network,
                 "source": s.source,
-                "needs_licence": cap is not None and i >= cap,
+                # Always false: every server loads on every plan. Kept for `--json` readers.
+                "needs_licence": False,
             }
-            for i, s in enumerate(registry.servers)
+            for s in registry.servers
         ]
     )
     ctx.out.table(
@@ -52,12 +45,6 @@ def list_(ctx: Context) -> int:
             for s in registry.servers
         ],
     )
-    if cap is not None and len(registry.servers) > cap:
-        ctx.out.warn(
-            f"{len(registry.servers)} servers declared; the public edition loads the first {cap}."
-            " The rest stay on disk and load once a team or partner licence is present."
-        )
-        ctx.out.note(_licence_hint())
     return 0
 
 
@@ -65,18 +52,6 @@ def for_(ctx: Context) -> int:
     ctx.layout.require_installed()
     registry = mcp_format.parse(ctx.layout.mcp)
     servers = registry.for_spawn(ctx.args.role, ctx.args.phase)
-
-    cap = ctx.entitlement.mcp_cap
-    if cap is not None:
-        allowed = {s.name for s in registry.servers[:cap]}
-        withheld = [s for s in servers if s.name not in allowed]
-        servers = [s for s in servers if s.name in allowed]
-        for server in withheld:
-            ctx.out.warn(
-                f"`{server.name}` needs a team or partner licence (more than {cap} server) and was not loaded"
-            )
-        if withheld:
-            ctx.out.note(_licence_hint())
 
     ctx.out.data([{"server": s.name, "version": s.version, "network": s.network} for s in servers])
     if not servers:
@@ -127,6 +102,8 @@ def _configured_servers(root: Path) -> dict[str, dict]:
                 data = json.loads(candidate.read_text(encoding="utf-8"))
             except json.JSONDecodeError:
                 continue
+            if not isinstance(data, dict):
+                continue
             servers = data.get("mcpServers") or data.get("servers") or {}
             if isinstance(servers, dict):
                 return servers
@@ -157,3 +134,39 @@ def _probe(server: mcp_format.Server, configured: dict[str, dict]) -> tuple[str,
     if server.version and server.version in reported:
         return "ok", reported[:60]
     return "drifted", f"reports `{reported[:40]}`, registry pins `{server.version}`"
+
+
+def config(ctx: Context) -> int:
+    """Write an MCP config holding only the servers this role and phase may load.
+
+    Server definitions come from `.edify/mcp.pool.json` — a file no runtime reads on
+    its own, so nothing connects globally — falling back to the host's `.mcp.json`.
+    Launch the spawn with it, e.g. `claude --mcp-config <file> --strict-mcp-config`.
+    """
+    ctx.layout.require_installed()
+    registry = mcp_format.parse(ctx.layout.mcp)
+    scoped = registry.for_spawn(ctx.args.role, ctx.args.phase)
+
+    pool: dict[str, dict] = {}
+    pool_file = ctx.layout.edify / "mcp.pool.json"
+    if pool_file.is_file():
+        try:
+            data = json.loads(pool_file.read_text(encoding="utf-8"))
+            found = (data.get("mcpServers") or data.get("servers") or {}) if isinstance(data, dict) else {}
+            pool = found if isinstance(found, dict) else {}
+        except json.JSONDecodeError:
+            ctx.out.warn(f"{ctx.layout.rel(pool_file)} is not valid JSON — ignored")
+    pool = {**_configured_servers(ctx.layout.root), **pool}
+
+    chosen = {s.name: pool[s.name] for s in scoped if s.name in pool}
+    undefined = [s.name for s in scoped if s.name not in pool]
+    out_path = Path(ctx.args.out) if ctx.args.out else (
+        ctx.layout.ensure_run_dir() / f"mcp-{ctx.args.role}-{ctx.args.phase}.json"
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps({"mcpServers": chosen}, indent=2) + "\n", encoding="utf-8")
+    ctx.out.data({"path": str(out_path), "servers": sorted(chosen), "undefined": undefined})
+    ctx.out.line(f"{out_path}  ({', '.join(sorted(chosen)) or 'no servers'})")
+    for name in undefined:
+        ctx.out.warn(f"`{name}` is scoped here but has no definition in .edify/mcp.pool.json or .mcp.json")
+    return 0

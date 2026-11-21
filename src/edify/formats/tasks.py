@@ -37,7 +37,7 @@ _DISCHARGES = re.compile(r"^\s*Discharges\s+(?P<ids>.+)$", re.IGNORECASE)
 _VERIFICATION = re.compile(r"^\s*Verification\s+(?P<kinds>.+)$", re.IGNORECASE)
 _DEPENDS = re.compile(r"^\s*Depends on\s+(?P<ids>.*?)(?:·|$)", re.IGNORECASE)
 _PARALLEL = re.compile(r"Parallel with\s+(?P<ids>.+)$", re.IGNORECASE)
-#: `Status — **done** 2026-09-28`, written by /build when a task's done-check passes.
+#: `Status — **done** 2026-09-28`, written by `edify swarm done` when a task's done-check passes.
 _STATUS = re.compile(r"^\s*Status\s*[—:-]+\s*[*_`]*(?P<status>[A-Za-z-]+)", re.IGNORECASE)
 _RANGE = re.compile(r"^(?P<start>\d+)\s*[-–]\s*(?P<end>\d+)$")
 
@@ -83,7 +83,7 @@ class Task:
     steps: list[str] = field(default_factory=list)
     done_when: list[str] = field(default_factory=list)
     files_table_line: int = 0
-    #: Empty until /build records one; `done` once the task's done-check passed.
+    #: Empty until `edify swarm done` records one; `done` once the task's done-check passed.
     status: str = ""
 
     @property

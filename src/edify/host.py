@@ -15,7 +15,7 @@ install is adding a row rather than a branch here.
 Which of the three an entry gets is `kind`, and it is not cosmetic. The runtime
 *matches* a skill against what the session is doing and *spawns* an agent by name, so
 a `kind: agent` entry mirrored into `.claude/skills/` is loadable and unspawnable —
-`/build` resolves it, asks for a subagent by that name, and gets nothing. That was
+`/tasks` (run) resolves it, asks for a subagent by that name, and gets nothing. That was
 the state until this module learned the difference: `kind` had two legal values in
 the skill format and one destination on disk.
 
@@ -93,7 +93,7 @@ def _sync_commands(layout: Layout, target: Target) -> list[Written]:
     """Thin pointers so `/spec` resolves in the runtime.
 
     Written from the shipped set rather than from `.edify/commands/`, so a repository
-    that has not run `init` yet still gets the full five.
+    that has not run `init` yet still gets the full set.
     """
     if not target.commands:
         return []
@@ -135,26 +135,41 @@ def _sync_library(layout: Layout, target: Target) -> list[Written]:
     runtime matches on when it decides whether a skill is relevant and what it reads
     when it decides which subagent to spawn, so a pointer whose description said "see
     the other file" would never be chosen. The coordinates go in beside it because
-    `role · phase · tech` is what `/build` resolves on, and a person reading `.claude/`
+    `role · phase · tech` is what `/tasks` resolves on, and a person reading `.claude/`
     should be able to see why this entry exists without opening two files.
 
     A runtime with no skill directory of its own — most of them — gets nothing here,
     and that is correct rather than a gap: its instruction file names `.edify/skills/`
     and `edify skills resolve`, which is the whole library through one door.
     """
+    return [
+        _write(path, body, kind, name, target.id)
+        for path, body, kind, name in library_pointers(layout, target)
+    ]
+
+
+def library_pointers(
+    layout: Layout, target: Target, entries: list[skill_format.Skill] | None = None
+) -> list[tuple[Path, str, str, str]]:
+    """`(path, body, kind, name)` for every pointer this runtime's mirror should hold.
+
+    What `sync` writes and what `doctor` checks is the same list, so the two cannot
+    disagree about what "mirrored" means.
+    """
     if not (target.skills or target.agents):
         return []
-    entries = skill_format.load_all(layout.skills_dir, layout.root)
-    out: list[Written] = []
+    if entries is None:
+        entries = skill_format.load_all(layout.skills_dir, layout.root)
+    out: list[tuple[Path, str, str, str]] = []
     for entry in entries:
         if not entry.name:
             continue  # an invalid file is not indexed, so it is not mirrored either
         if entry.kind == "agent" and target.agents:
             path = layout.root / target.agents / f"{entry.name}.md"
-            out.append(_write(path, _agent_pointer(entry), "agent", entry.name, target.id))
+            out.append((path, _agent_pointer(entry), "agent", entry.name))
         elif target.skills:
             path = layout.root / target.skills / entry.name / target.skill_file
-            out.append(_write(path, _skill_pointer(entry), "skill", entry.name, target.id))
+            out.append((path, _skill_pointer(entry), "skill", entry.name))
     return out
 
 
@@ -236,7 +251,7 @@ def _text(path: Path) -> str:
         return ""
 
 
-def stale(layout: Layout) -> list[Path]:
+def stale(layout: Layout, entries: list[skill_format.Skill] | None = None) -> list[Path]:
     """Generated skill and agent pointers whose entry is no longer installed.
 
     An entry removed from `.edify/skills/` leaves a pointer behind, and a pointer to a
@@ -247,7 +262,9 @@ def stale(layout: Layout) -> list[Path]:
 
     Only ever our own files, and only ever reported — deleting is the caller's call.
     """
-    entries = [s for s in skill_format.load_all(layout.skills_dir, layout.root) if s.name]
+    if entries is None:
+        entries = skill_format.load_all(layout.skills_dir, layout.root)
+    entries = [s for s in entries if s.name]
     installed = {s.name for s in entries}
     agents = {s.name for s in entries if s.kind == "agent"}
     out: list[Path] = []

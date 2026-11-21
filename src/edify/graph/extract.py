@@ -73,35 +73,47 @@ def build(
         extraction.extend(ctags.extract_tree(root, files))
         result.backend = "ctags"
 
+    # Decide every file's fate first, then parse the ones that need it — in parallel
+    # on a large tree. Results are folded back in file order, so a parallel build is
+    # byte-identical to a serial one.
+    plan: list[tuple[str, str | None, bool]] = []  # (rel, language, parse it)
     for rel in files:
-        path = root / rel
-        language = language_for(path)
-        file_node = Node(node_id("file", rel, "."), "file", rel, 1, rel)
-        extraction.nodes.append(file_node)
-
+        language = language_for(root / rel)
+        parse = False
         if language is None:
-            continue
-        if method_for(language) == "none":
+            pass
+        elif method_for(language) == "none":
             result.uncovered[language] = result.uncovered.get(language, 0) + 1
-            continue
-        if backend == "ctags" and language != "markdown":
+        elif backend == "ctags" and language not in ("markdown", "sql"):
             # The external extractor already covered code. Markdown sections and
             # SQL tables are ours either way — it does not emit them.
-            if language != "sql":
-                result.languages[language] = result.languages.get(language, 0) + 1
-                continue
+            result.languages[language] = result.languages.get(language, 0) + 1
+        else:
+            parse = True
+        plan.append((rel, language, parse))
 
-        try:
-            source = path.read_text(encoding="utf-8", errors="replace")
-        except OSError:
+    parsed = _parse_all(root, [(rel, lang) for rel, lang, parse in plan if parse])
+    for rel, language, parse in plan:
+        extraction.nodes.append(Node(node_id("file", rel, "."), "file", rel, 1, rel))
+        if not parse:
+            continue
+        got = parsed.get(rel)
+        if got is None:
             result.skipped += 1
             continue
-
-        extraction.extend(extract_file(rel, source, language))
+        extraction.extend(got)
         result.languages[language] = result.languages.get(language, 0) + 1
 
     _resolve_packages(root, extraction)
-    edges = _resolve_refs(extraction)
+    store = GraphStore(layout)
+    # A scoped update still resolves against everything outside its directories,
+    # or every reference out of them would silently vanish.
+    outside: list[Node] = []
+    if subdirs and store.exists():
+        prefixes = _prefixes(scan_roots, root)
+        if "" not in prefixes:
+            outside = [n for n in store.nodes if not n.file.startswith(prefixes)]
+    edges = _resolve_refs(extraction, outside)
 
     nodes = extraction.nodes
     if node_cap is not None and len(nodes) > node_cap:
@@ -110,7 +122,6 @@ def build(
         nodes = [n for n in nodes if n.id in keep]
         edges = [e for e in edges if e.src in keep and e.dst in keep]
 
-    store = GraphStore(layout)
     if subdirs:
         nodes, edges = _merge_with_existing(store, nodes, edges, scan_roots, root)
 
@@ -124,6 +135,53 @@ def build(
 # ---------------------------------------------------------------------------
 # the walk
 # ---------------------------------------------------------------------------
+
+
+#: Below this many files a process pool costs more than it saves.
+PARALLEL_MIN_FILES = 1500
+_CHUNK = 200
+
+
+def _jobs() -> int:
+    """Worker count: `EDIFY_JOBS` if set (1 = serial), else the CPUs available."""
+    raw = os.environ.get("EDIFY_JOBS", "")
+    if raw.isdigit() and int(raw) > 0:
+        return int(raw)
+    try:
+        return max(1, len(os.sched_getaffinity(0)))  # type: ignore[attr-defined]
+    except (AttributeError, OSError):
+        return max(1, os.cpu_count() or 1)
+
+
+def _parse_chunk(root: str, items: list[tuple[str, str]]) -> list[tuple[str, Extraction | None]]:
+    """Read and extract a batch of files. Top-level so a worker process can run it."""
+    out: list[tuple[str, Extraction | None]] = []
+    base = Path(root)
+    for rel, language in items:
+        try:
+            source = (base / rel).read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            out.append((rel, None))
+            continue
+        out.append((rel, extract_file(rel, source, language)))
+    return out
+
+
+def _parse_all(root: Path, items: list[tuple[str, str]]) -> dict[str, Extraction | None]:
+    jobs = _jobs()
+    if jobs > 1 and len(items) >= PARALLEL_MIN_FILES:
+        chunks = [items[i : i + _CHUNK] for i in range(0, len(items), _CHUNK)]
+        try:
+            from concurrent.futures import ProcessPoolExecutor
+
+            with ProcessPoolExecutor(max_workers=min(jobs, len(chunks))) as pool:
+                done: dict[str, Extraction | None] = {}
+                for batch in pool.map(_parse_chunk, [str(root)] * len(chunks), chunks):
+                    done.update(batch)
+                return done
+        except (OSError, ImportError, RuntimeError, NotImplementedError):
+            pass  # no process support here (sandbox, frozen binary): parse serially
+    return dict(_parse_chunk(str(root), items))
 
 
 def _scan_roots(root: Path, subdirs: list[str] | None) -> list[Path]:
@@ -171,7 +229,7 @@ def _walk(root: Path, scan_roots: list[Path], rules: IgnoreRules) -> list[str]:
 # ---------------------------------------------------------------------------
 
 
-def _resolve_refs(extraction: Extraction) -> list[Edge]:
+def _resolve_refs(extraction: Extraction, outside: list[Node] | None = None) -> list[Edge]:
     """Turn pending name references into edges, or drop them.
 
     A reference that does not resolve inside the repository is an external one,
@@ -180,7 +238,7 @@ def _resolve_refs(extraction: Extraction) -> list[Edge]:
     """
     by_name: dict[str, list[str]] = {}
     by_module_path: dict[str, str] = {}
-    for node in extraction.nodes:
+    for node in [*extraction.nodes, *(outside or [])]:
         by_name.setdefault(node.name, []).append(node.id)
         tail = node.name.rsplit(".", 1)[-1]
         if tail != node.name:
@@ -199,8 +257,11 @@ def _resolve_refs(extraction: Extraction) -> list[Edge]:
             by_suffix.setdefault("/".join(parts[i:]), []).append(node_ref)
 
     edges = list(extraction.edges)
+    memo: dict[str, list[str]] = {}  # the same name is referenced from thousands of places
     for src, target, relation in extraction.pending_refs:
-        resolved = _lookup(target, by_name, by_module_path, by_suffix)
+        resolved = memo.get(target)
+        if resolved is None:
+            resolved = memo[target] = _lookup(target, by_name, by_module_path, by_suffix)
         if not resolved:
             continue
         for dst in resolved:
@@ -277,9 +338,7 @@ def _merge_with_existing(
     """A directory update replaces that directory's nodes and keeps the rest."""
     if not store.exists():
         return nodes, edges
-    prefixes = tuple(
-        (r.relative_to(root).as_posix().rstrip("/") + "/") if r != root else "" for r in scan_roots
-    )
+    prefixes = _prefixes(scan_roots, root)
     if "" in prefixes:
         return nodes, edges
 
@@ -289,6 +348,54 @@ def _merge_with_existing(
         e for e in store.edges if e.src in kept_ids and e.dst in kept_ids and _outside(e, store, prefixes)
     ]
     return kept_nodes + nodes, kept_edges + edges
+
+
+def _prefixes(scan_roots: list[Path], root: Path) -> tuple[str, ...]:
+    return tuple(
+        (r.relative_to(root).as_posix().rstrip("/") + "/") if r != root else "" for r in scan_roots
+    )
+
+
+def changed_dirs(root: Path, since: str) -> list[str] | None:
+    """The directories to re-extract since `since`, or None when git cannot say.
+
+    Changed, added, deleted and untracked files each name their nearest existing
+    directory, collapsed so no directory is listed under another one. An empty
+    list means nothing changed. A root-level change returns `["."]`.
+    """
+    if since in ("", "-"):
+        return None
+    paths: set[str] = set()
+    for args in (
+        ["git", "diff", "--name-only", since, "--"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
+    ):
+        try:
+            out = subprocess.run(args, cwd=str(root), capture_output=True, text=True, timeout=60, check=False)
+        except (OSError, subprocess.SubprocessError):
+            return None
+        if out.returncode != 0:
+            return None
+        paths.update(line.strip() for line in out.stdout.splitlines() if line.strip())
+    rules = IgnoreRules(root)
+
+    def ignored(p: str) -> bool:
+        parts = p.split("/")
+        return any(rules.skip_dir(parts[i], "/".join(parts[: i + 1])) for i in range(len(parts) - 1)) or \
+            rules.skip_file(parts[-1], p, 0)
+
+    dirs: set[str] = set()
+    for p in paths:
+        if p.startswith(".edify/") or ignored(p):
+            continue
+        d = Path(p).parent
+        while d.as_posix() not in (".", "") and not (root / d).is_dir():
+            d = d.parent
+        dirs.add(d.as_posix() or ".")
+    if "." in dirs:
+        return ["."]
+    ordered = sorted(dirs)
+    return [d for d in ordered if not any(d.startswith(o + "/") for o in ordered if o != d)]
 
 
 def _outside(edge: Edge, store: GraphStore, prefixes: tuple[str, ...]) -> bool:

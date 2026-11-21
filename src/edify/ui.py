@@ -2,11 +2,22 @@
 
 Every command writes through here. Machine output goes to stdout as JSON when
 `--json` is set; human notes and warnings go to stderr so a pipe stays clean.
+
+Three audiences, decided here and nowhere else:
+
+* a person at a terminal — colour, the site's marks, animation, a question if one
+  is needed;
+* a pipe or a CI log — the same words, plain: no colour on a stream that is not a
+  terminal, no animation, never a question (`_colour_stream`, `animated`,
+  `interactive`);
+* an agent (`agent_mode`) — terse: no colour on either stream, no banner, no
+  animation, no notes, no invitation, never a question; warnings and errors as
+  `warning: …` / `error: …` with the hint on a `hint:` line. `--json` is still the
+  caller's explicit choice, not implied.
 """
 
 from __future__ import annotations
 
-import json
 import os
 import sys
 from typing import Any
@@ -151,12 +162,32 @@ def _colour_stream(stream: Any) -> bool:
     return tty and os.environ.get("NO_COLOR") is None and os.environ.get("TERM") != "dumb"
 
 
+#: What agent runtimes set in the environment of the commands they run. `EDIFY_AGENT`
+#: is EDIFY's own (the swarm also reads it as the lease holder's name) and overrides
+#: the rest, so `EDIFY_AGENT=0` gives a person inside one of these the human output.
+_AGENT_ENV = ("CLAUDECODE", "GEMINI_CLI")
+_FALSE = ("", "0", "false", "no", "off")
+
+
+def agent_mode() -> bool:
+    """Whether a model, not a person, is reading this invocation's output."""
+    own = os.environ.get("EDIFY_AGENT")
+    if own is not None:
+        return own.strip().lower() not in _FALSE
+    return any(os.environ.get(name, "").strip().lower() not in _FALSE for name in _AGENT_ENV)
+
+
 def _has_terminal() -> bool:
     """A person at both ends of this invocation. The one place that is decided."""
     try:
         return bool(sys.stdin.isatty()) and bool(sys.stderr.isatty())
     except (AttributeError, ValueError):  # a replaced stdin, a closed stream
         return False
+
+
+def _one_line(text: str) -> str:
+    """Collapse a message onto one line, for readers that split on newlines."""
+    return " ".join(str(text).split())
 
 
 class Out:
@@ -168,12 +199,17 @@ class Out:
         color: bool | None = None,
         quiet: bool = False,
         anim: bool = True,
+        agent: bool | None = None,
     ):
         self.json_mode = json_mode
         self.quiet = quiet
+        self.agent = agent_mode() if agent is None else agent
+        if self.agent:
+            color = False
+            anim = False
         # `--no-anim`. Kept as its own attribute rather than folded into `animated`
         # so `anim.banner` — which survives a pipe and a CI log, and so cannot ask
-        # `animated` — has something to read.
+        # `animated` — has something to read. An agent gets no banner either.
         self.no_anim = not anim
         # stderr is asked separately: the wordmark and the infinity paint there, and
         # `edify init > log.txt` has a terminal on stderr that should still get ink.
@@ -222,18 +258,35 @@ class Out:
         _emit(text)
 
     def note(self, text: str) -> None:
-        """Context for a human. Never part of the answer, so it goes to stderr."""
-        if self.quiet:
+        """Context for a human. Never part of the answer, so it goes to stderr —
+        and an agent, which pays for every line it reads, does not get it."""
+        if self.quiet or self.agent:
             return
         _emit(self.c(text, "dim"), sys.stderr)
 
     def warn(self, text: str) -> None:
+        if self.agent:
+            _emit(f"warning: {_one_line(text)}", sys.stderr)
+            return
         _emit(f"{self.state('warning', 'advisory')} {text}", sys.stderr)
 
     def error(self, text: str, hint: str | None = None) -> None:
+        """One line saying what is wrong, and at most one saying what to do."""
+        if self.agent:
+            _emit(f"error: {_one_line(text)}", sys.stderr)
+            if hint:
+                _emit(f"hint: {_one_line(hint)}", sys.stderr)
+            return
         _emit(f"{self.state('error', 'blocked')} {text}", sys.stderr)
         if hint:
             _emit(f"        {self.c(hint, 'dim')}", sys.stderr)
+
+    def fail(self, text: str, hint: str | None = None, code: int = 1) -> None:
+        """An error the command could not get past: the line on stderr and, under
+        `--json`, the same thing on stdout, so a caller parsing stdout is told why
+        rather than handed nothing."""
+        self.data({"error": _one_line(text), "hint": hint or "", "exit_code": code})
+        self.error(text, hint)
 
     def ok(self, text: str) -> None:
         if self.quiet:
@@ -252,6 +305,8 @@ class Out:
         """The machine-readable form of the answer. Only emitted in JSON mode."""
         if not self.json_mode:
             return
+        import json  # only `--json` pays for it
+
         _emit(json.dumps(payload, indent=2, sort_keys=True, default=str))
 
     # -- asking ----------------------------------------------------------
@@ -265,7 +320,7 @@ class Out:
         output, and nothing in the environment saying otherwise. Every caller has a
         defined answer for when this is false — a question is never load-bearing.
         """
-        if self.json_mode or self.quiet:
+        if self.json_mode or self.quiet or self.agent:
             return False
         if os.environ.get("EDIFY_ASSUME_YES") or os.environ.get("EDIFY_NO_PROMPT") or os.environ.get("CI"):
             return False

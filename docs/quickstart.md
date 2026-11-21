@@ -86,14 +86,13 @@ Open your agent in this repository and type:
 /spec
 ```
 
-Then `/plan` (only if the feature needs one), `/tasks`, `/build`, `/verify`.
+Then `/plan` (only if the feature needs one), `/tasks` (write, approve, run), `/verify`.
 
 | command | what it does | ends at |
 |---|---|---|
 | `/spec` | a brief becomes a specification | a human |
 | `/plan` | spec → technology decisions and milestones | a human |
-| `/tasks` | spec + plan + graph → a phased task list | a human |
-| `/build` | task list → working software | a diff and a green suite |
+| `/tasks` | spec + plan + graph → leaseable tasks, then builds them (one agent or a swarm) | a green suite |
 | `/verify` | the code → evidence | a report anyone can read |
 
 The first three are slow and end at a human reading them. That is the point:

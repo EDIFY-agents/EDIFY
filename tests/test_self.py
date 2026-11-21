@@ -274,6 +274,5 @@ def test_update_does_not_touch_any_repository(
 def test_self_with_no_subcommand_prints_the_family_help(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    with pytest.raises(SystemExit):
-        main(["self"])
+    assert main(["self"]) == 2
     assert "update" in capsys.readouterr().out

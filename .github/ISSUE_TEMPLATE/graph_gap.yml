@@ -1,0 +1,35 @@
+name: Graph gap
+description: The graph missed or mis-located a symbol, route or table it should have found.
+title: "graph gap: <language> — <name>"
+labels: ["graph-gap"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: edify version
+      description: Output of `edify version`.
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: Language and extractor
+      description: The language, and `builtin` or `ctags` (`edify graph stat` says which).
+    validations:
+      required: true
+  - type: textarea
+    id: declaration
+    attributes:
+      label: The declaration, verbatim
+      description: Paste the exact lines the graph should have found, with the file path.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: query
+    attributes:
+      label: What you ran and what it printed
+      description: For example `edify graph where <name>` and its output.
+      render: text
+    validations:
+      required: true

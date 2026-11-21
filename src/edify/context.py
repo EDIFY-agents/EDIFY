@@ -12,13 +12,15 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import TYPE_CHECKING
 
-from .graph.store import GraphStore
-from .licensing.tier import Entitlement, current
 from .paths import Layout, layout
 from .ui import Out
 
-if TYPE_CHECKING:  # the interview is only ever loaded by the command that runs it
+# Each of these is loaded by the first command that asks for it, not by every command:
+# `edify version` has no use for the graph, and `edify graph where` none for a licence.
+if TYPE_CHECKING:
+    from .graph.store import GraphStore
     from .interview import Profile
+    from .licensing.tier import Entitlement
 
 
 @dataclass
@@ -33,10 +35,14 @@ class Context:
 
     @cached_property
     def entitlement(self) -> Entitlement:
+        from .licensing.tier import current
+
         return current()
 
     @cached_property
     def store(self) -> GraphStore:
+        from .graph.store import GraphStore
+
         return GraphStore(self.layout)
 
     @property

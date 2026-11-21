@@ -24,6 +24,11 @@ Exactly two commands, both by explicit user action:
 | `edify upgrade` | a newer curated skill library | `--from ARCHIVE` installs from a local file; air-gapped path documented |
 | `edify self update` | a newer release, via uv / pipx / pip | `--offline` refuses outright |
 
+One more reaches the network only through `git`, and only when asked: `edify swarm
+--git` fetches and pushes the `edify-swarm` branch of your own remote, with your git
+credentials, so people on other machines can share task leases. Without `--git`,
+leases stay in the local git directory.
+
 **Everything else is a pure function over files.** Every other command reads
 files and writes files. None holds state, and none opens a socket while doing
 your work — including `edify license activate`, which verifies an Ed25519

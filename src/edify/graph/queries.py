@@ -11,7 +11,7 @@ import fnmatch
 from dataclasses import dataclass
 
 from .model import Node
-from .store import GraphStore
+from .store import CODE_RELATIONS, GraphStore
 
 
 @dataclass(frozen=True)
@@ -95,15 +95,7 @@ def dependent_files(store: GraphStore, files: list[str], depth: int = 1) -> set[
     the same thing.
     """
     normalised = {f.replace("\\", "/").lstrip("./") for f in files}
-    incoming: dict[str, set[str]] = {}
-    for edge in store.edges:
-        if edge.relation not in ("references", "imports", "exposes"):
-            continue
-        src = store.by_id.get(edge.src)
-        dst = store.by_id.get(edge.dst)
-        if src is None or dst is None or src.file == dst.file:
-            continue
-        incoming.setdefault(dst.file, set()).add(src.file)
+    incoming = incoming_files(store)
 
     out = set(normalised)
     frontier = set(normalised)
@@ -114,6 +106,18 @@ def dependent_files(store: GraphStore, files: list[str], depth: int = 1) -> set[
         out |= nxt
         frontier = nxt
     return out
+
+
+def incoming_files(store: GraphStore) -> dict[str, set[str]]:
+    """file → the files whose code edges land in it. Built once per store."""
+
+    def build() -> dict[str, set[str]]:
+        incoming: dict[str, set[str]] = {}
+        for src, dst, _ in store.file_edges:
+            incoming.setdefault(dst, set()).add(src)
+        return incoming
+
+    return store.cached("incoming_files", build)
 
 
 def references(store: GraphStore, name: str) -> list[Node]:
@@ -156,8 +160,8 @@ def resolve_ref(store: GraphStore, ref: str) -> Node | None:
 def line_range_for(store: GraphStore, file: str, name: str) -> tuple[int, int] | None:
     """The line range of a named symbol in a file — what `check --fix` writes.
 
-    The end is the line before the next symbol in the same file, which is exact
-    enough to open the right code and never wrong in a way that hides something.
+    The end is the line before the next symbol in the same file. The last symbol
+    gets forty lines, clamped to the file's last non-blank line when it is readable.
     """
     target = file.replace("\\", "/").lstrip("./")
     in_file = sorted(
@@ -166,7 +170,13 @@ def line_range_for(store: GraphStore, file: str, name: str) -> tuple[int, int] |
     )
     for i, node in enumerate(in_file):
         if node.name == name or node.name.rsplit(".", 1)[-1] == name:
-            end = in_file[i + 1].line - 1 if i + 1 < len(in_file) else node.line + 40
+            if i + 1 < len(in_file):
+                end = in_file[i + 1].line - 1
+            else:
+                end = node.line + 40
+                last = store.line_count(target)
+                if last is not None:
+                    end = min(end, last)
             return node.line, max(node.line, end)
     return None
 
@@ -174,27 +184,59 @@ def line_range_for(store: GraphStore, file: str, name: str) -> tuple[int, int] |
 # ---------------------------------------------------------------------------
 
 
+def _incoming_ids(store: GraphStore) -> dict[str, set[str]]:
+    def build() -> dict[str, set[str]]:
+        incoming: dict[str, set[str]] = {}
+        for src, relation, dst in store.edges:
+            if relation in CODE_RELATIONS:
+                incoming.setdefault(dst, set()).add(src)
+
+        # An import may land on a file node or on its module node depending on the
+        # language. They are the same place, so the walk treats them as one.
+        for nodes in store.by_file.values():
+            pair = [n.id for n in nodes if n.kind in ("file", "module")]
+            if len(pair) < 2:
+                continue
+            for node_id in pair:
+                for sibling in pair:
+                    if sibling != node_id:
+                        incoming.setdefault(node_id, set()).update(incoming.get(sibling, set()))
+        return incoming
+
+    return store.cached("incoming_ids", build)
+
+
+def _sources(store: GraphStore):
+    """id → the ids that reach it, as `_incoming_ids` defines them.
+
+    With the edges already in memory that is the cached index; otherwise each
+    asked-about node is a point lookup on the sorted edge files, so `dependents`
+    on a huge graph reads a handful of rows instead of every edge.
+    """
+    if store._edges is not None or "incoming_ids" in store._memo:
+        incoming = _incoming_ids(store)
+        return lambda nid: incoming.get(nid, ())
+
+    by_id = store.by_id
+
+    def lookup(nid: str) -> set[str]:
+        ids = [nid]
+        node = by_id.get(nid)
+        if node is not None and node.kind in ("file", "module"):
+            ids += [n.id for n in store.by_file.get(node.file, ()) if n.kind in ("file", "module") and n.id != nid]
+        return {src for i in ids for r, src in store.edges_in(i) if r in CODE_RELATIONS}
+
+    return lookup
+
+
 def _reverse_closure(store: GraphStore, seeds: set[str], depth: int) -> list[Node]:
-    incoming: dict[str, set[str]] = {}
-    for edge in store.edges:
-        if edge.relation in ("references", "imports", "exposes"):
-            incoming.setdefault(edge.dst, set()).add(edge.src)
-
-    # An import may land on a file node or on its module node depending on the
-    # language. They are the same place, so the walk treats them as one.
-    for nodes in store.by_file.values():
-        pair = [n.id for n in nodes if n.kind in ("file", "module")]
-        for node_id in pair:
-            for sibling in pair:
-                if sibling != node_id:
-                    incoming.setdefault(node_id, set()).update(incoming.get(sibling, set()))
-
+    sources = _sources(store)
     seen: set[str] = set()
     frontier = set(seeds)
     for _ in range(max(1, depth)):
         nxt: set[str] = set()
         for node_id in frontier:
-            for src in incoming.get(node_id, ()):
+            for src in sources(node_id):
                 if src not in seen and src not in seeds:
                     seen.add(src)
                     nxt.add(src)

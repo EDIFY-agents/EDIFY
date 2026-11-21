@@ -1,0 +1,76 @@
+name: guard
+
+# The two promises docs/privacy.md makes, checked on every push rather than claimed:
+#
+#   1. Only `edify upgrade` opens a socket in EDIFY's own code (`edify self update`
+#      reaches the network through the installer it runs, `swarm --git` through git).
+#      A network call site anywhere else in src/ fails the build.
+#   2. `[project] dependencies` is empty, and nothing in src/ imports a module that
+#      is not the standard library — so there is no dependency tree to compromise.
+#
+# Seconds, on one runner: no install, no build, the standard library only.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: network call sites only where the docs say
+        run: |
+          # The grep docs/privacy.md tells a reader to run, plus two more ways to dial out.
+          # (`socket.gethostname` — the swarm's lease holder name — is not a call out.)
+          PATTERN='(urlopen|urlretrieve|requests\.|httpx\.|socket\.socket|socket\.create_connection|http\.client)'
+          ALLOWED='^src/edify/commands/upgrade_cmd\.py:'
+          hits=$(grep -rnE "$PATTERN" src/ --include='*.py' || true)
+          echo "$hits"
+          stray=$(printf '%s\n' "$hits" | grep -vE "$ALLOWED" | grep -v '^$' || true)
+          if [ -n "$stray" ]; then
+            echo "::error::a network call outside \`edify upgrade\` — see docs/privacy.md" >&2
+            printf '%s\n' "$stray" >&2
+            exit 1
+          fi
+
+      - name: no runtime dependencies, and only the standard library imported
+        shell: python
+        run: |
+          import ast
+          import pathlib
+          import sys
+          import tomllib
+
+          deps = tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"].get("dependencies", [])
+          if deps:
+              sys.exit(f"[project] dependencies must stay empty, found {deps}")
+
+          stdlib = set(sys.stdlib_module_names) | {"__future__", "edify"}
+          # Optional extras are imported inside a try and degrade cleanly when absent.
+          optional = {"tree_sitter", "tree_sitter_language_pack", "tomli"}
+          bad = []
+          for path in sorted(pathlib.Path("src/edify").rglob("*.py")):
+              for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"), str(path))):
+                  if isinstance(node, ast.Import):
+                      names = [alias.name for alias in node.names]
+                  elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                      names = [node.module]
+                  else:
+                      continue
+                  for name in names:
+                      top = name.split(".")[0]
+                      if top not in stdlib and top not in optional:
+                          bad.append(f"{path}:{node.lineno} imports {name}")
+          if bad:
+              sys.exit("not the standard library:\n" + "\n".join(bad))
+          print("standard library only")

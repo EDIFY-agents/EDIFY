@@ -1,0 +1,31 @@
+name: Benchmark reproduction
+description: You re-ran a published benchmark and got a different result.
+title: "benchmark: <task> — <what differed>"
+labels: ["benchmark"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: edify version
+      description: Output of `edify version`.
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Model, agent runtime and repository commit
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: The published result you compared against
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What you got, with raw output or a transcript
+      render: text
+    validations:
+      required: true

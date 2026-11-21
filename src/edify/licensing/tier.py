@@ -1,15 +1,13 @@
-"""Plans, entitlements, and the one limit the public edition keeps.
+"""Plans and entitlements. The public edition has no limits.
 
 The public edition is the whole working system, on a repository of any size, in as
-many repositories as a person likes, with no account. It has no caps except one:
-the MCP registry scopes a single server into spawns. Every query, every check,
-every command, `--json`, `--exit-code`, `edify upgrade` and the whole methodology
-tree are free, forever.
+many repositories as a person likes, with no account and no caps. Every query,
+every check, every command, the full MCP registry, `--json`, `--exit-code`,
+`edify upgrade` and the whole methodology tree are free, forever.
 
-Two licensed plans exist, and both add the same two things:
+Two licensed plans exist, and both add the same one thing:
 
-    mcp.multi   more than one server in the registry
-    team        the team edition
+    team        the team edition (a separate package; nothing in this CLI is gated)
 
 `team` licences are issued on request; `partner` licences are issued free and
 custom per client. Nothing is sold and no price is written anywhere in this
@@ -33,8 +31,6 @@ from ..paths import user_config_dir
 from . import revocation
 from .token import License, Verdict, parse
 
-FREE_MCP_ENTRIES = 1
-
 #: How far ahead `status` and `doctor` warn that a licence is ending (Q-15).
 EXPIRY_WARNING_DAYS = 30
 
@@ -45,7 +41,7 @@ PLANS = ("free", "team", "partner")
 RETIRED_PLANS = ("pro", "enterprise")
 
 # plan → the entitlements it carries.
-_LICENSED = frozenset({"mcp.multi", "team"})
+_LICENSED = frozenset({"team"})
 
 ENTITLEMENTS: dict[str, frozenset[str]] = {
     "free": frozenset(),
@@ -54,7 +50,6 @@ ENTITLEMENTS: dict[str, frozenset[str]] = {
 }
 
 FEATURE_NAMES = {
-    "mcp.multi": f"more than {FREE_MCP_ENTRIES} server in the registry",
     "team": "the team edition",
 }
 
@@ -101,7 +96,9 @@ class Entitlement:
 
     @property
     def mcp_cap(self) -> int | None:
-        return None if self.allows("mcp.multi") else FREE_MCP_ENTRIES
+        """Always `None`: every plan loads the whole registry. Kept so that `--json`
+        readers get `null`, never a `KeyError`."""
+        return None
 
     @property
     def project_cap(self) -> int | None:

@@ -173,3 +173,50 @@ def test_the_infinity_in_ink_is_the_same_frame(monkeypatch: pytest.MonkeyPatch) 
 def test_every_frame_has_a_tone_for_its_head() -> None:
     assert len(anim.TONES) == anim.FRAMES
     assert all(0 in ages.values() for ages in anim.TONES)
+
+
+# -- agent mode -------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("env", "expected"),
+    [
+        ({}, False),
+        ({"EDIFY_AGENT": "builder-1"}, True),
+        ({"EDIFY_AGENT": "0"}, False),
+        ({"CLAUDECODE": "1"}, True),
+        ({"GEMINI_CLI": "1"}, True),
+        ({"CLAUDECODE": "1", "EDIFY_AGENT": "0"}, False),  # EDIFY's own word wins
+    ],
+)
+def test_agent_mode_is_read_from_the_environment(
+    monkeypatch: pytest.MonkeyPatch, env: dict, expected: bool
+) -> None:
+    for name, value in env.items():
+        monkeypatch.setenv(name, value)
+    assert ui.agent_mode() is expected
+
+
+def test_an_agent_at_a_terminal_still_gets_plain_terse_output(monkeypatch: pytest.MonkeyPatch) -> None:
+    out, err = _terminal(monkeypatch)
+    monkeypatch.setenv("EDIFY_AGENT", "1")
+    o = Out()
+    assert o.agent and not o.color and not o.color_err
+    assert not o.animated and not o.interactive and o.no_anim
+    o.note("context nobody asked for")
+    o.line("the answer")
+    o.warn("degraded\nacross two lines")
+    o.error("it broke", "run `edify graph build`")
+    anim.banner(o)
+    assert out.getvalue() == "the answer\n"
+    assert err.getvalue() == "warning: degraded across two lines\nerror: it broke\nhint: run `edify graph build`\n"
+    assert not ESC.search(err.getvalue())
+
+
+def test_fail_puts_the_error_on_stdout_under_json(capsys: pytest.CaptureFixture[str]) -> None:
+    import json
+
+    Out(json_mode=True, agent=False).fail("no graph on disk", "run `edify graph build`", 4)
+    captured = capsys.readouterr()
+    assert json.loads(captured.out) == {"error": "no graph on disk", "hint": "run `edify graph build`", "exit_code": 4}
+    assert "no graph on disk" in captured.err

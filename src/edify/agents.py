@@ -25,7 +25,7 @@ the rest of `AGENTS.md` on purpose.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from typing import NamedTuple
 
 # The block EDIFY owns inside somebody else's instruction file.
 BLOCK_BEGIN = "<!-- edify:begin -->"
@@ -43,8 +43,10 @@ MARKER_TOML = f"# {MARKER_TEXT} — this file is a pointer; edit the file it nam
 LEGACY_MARKERS = ("That file is the contract; this one only points at it.",)
 
 
-@dataclass(frozen=True)
-class Instructions:
+# Rows are `NamedTuple`s rather than frozen dataclasses: the same immutability,
+# equality and hashing, at a fifth of the import cost — and every `edify` invocation
+# reads this table to build its help text.
+class Instructions(NamedTuple):
     """One instruction file a runtime reads at the start of every session.
 
     `style` is the wrapper the runtime needs around the block, not the block itself:
@@ -56,8 +58,7 @@ class Instructions:
     style: str = "plain"  # plain | mdc
 
 
-@dataclass(frozen=True)
-class Target:
+class Target(NamedTuple):
     """One agent runtime: what it reads, and where it discovers commands."""
 
     id: str

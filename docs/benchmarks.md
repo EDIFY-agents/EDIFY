@@ -32,7 +32,7 @@ that people actually use.
   doing today.
 - **[Spec Kit](https://github.com/github/spec-kit)** — the closest free
   alternative in the same shape.
-- **EDIFY** — `/spec → /plan → /tasks → /build → /verify` with the graph.
+- **EDIFY** — `/spec → /plan → /tasks (write, then run) → /verify` with the graph.
 
 If EDIFY does not beat the agent alone, the product does not have a reason to
 exist, and the benchmark should say so.

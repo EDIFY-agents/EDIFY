@@ -1,6 +1,6 @@
 """The skill index and the resolution lookup.
 
-`resolve` is what `/build` performs before every spawn: a lookup over a sorted TSV
+`resolve` is what a `/tasks` run performs before every spawn: a lookup over a sorted TSV
 keyed on `role · phase · tech`, one line of output, no model involved. Not because
 a model's judgment is bad — because a lookup is free, deterministic, and gives the
 same answer on Tuesday.

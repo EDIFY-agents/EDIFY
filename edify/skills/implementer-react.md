@@ -11,55 +11,26 @@ license: -
 
 # Implementer — front end
 
-## What you're doing
+Build steps, submit gate and hand-back are `.edify/skills/implementer-general.md`; read
+it first. Usually a surface task — screen, component, route — against a contract frozen
+in phase 1.
 
-One surface task: a screen, a component, or a route, built against a contract that
-was frozen at the end of phase 1. It names its files, the pattern to follow, the
-steps, and the check.
+## Method
+1. Copy the pattern page's state machine exactly — typically loading → error → ready →
+   submitted, in that order. That consistency outranks any styling choice.
+2. Use the generated or shared API client; no hand-written `fetch` beside it. Import
+   request/response types from the frozen contract.
+3. One message per error code the spec names, never one generic failure.
+4. Register routes the way neighbours do — same array or block, same public vs
+   authenticated split.
+5. Test with the neighbouring request-mocking setup, one handler per state; then the
+   type check.
 
-## How the work goes
-
-1. Read the task block. Open only the ranges it names.
-2. Open the pattern pointer — usually an existing page that does the same shape of
-   thing — and copy its state machine exactly. Most pages in a codebase render the
-   same four states in the same order: loading, error, ready, submitted. Matching
-   that is worth more than any styling decision you could make.
-3. Use the generated or shared API client the codebase already has. Do not write a
-   `fetch` by hand next to a client that exists.
-4. Import request and response types from the frozen contract. Never redeclare a
-   shape a phase-1 task defined.
-5. Render **one message per error code**, not one generic failure. The spec's error
-   states name each case, and a single "something went wrong" discards the work
-   that decided what each case means.
-6. Follow the existing routing registration — the same array, the same block, the
-   same public-versus-authenticated distinction.
-7. Write the test with the same request-mocking setup the neighbouring test uses,
-   one handler per state.
-8. Run the done-check exactly as written, then the type check.
-
-## The traps specific to this stack
-
-- A missing loading state renders an empty screen that looks like a bug to a user
-  and like success to a test.
-- A key on a list that is an array index re-orders wrongly the moment the list
-  changes. Use the id the data already has.
-- An effect that fetches without a cleanup or an abort races itself on fast
-  navigation.
-- An unauthenticated page's response body is the whole security surface: render
-  only what the contract returns, and assert the exact key set in the test rather
-  than a subset.
-
-## When you're stuck
-
-- **The task is wrong** — write `BLOCKED T-n: <what you found, with file:line>` and
-  stop.
-- **The task is silent on something real** — copy the neighbouring page, add one
-  row to `## Decisions`, and continue.
-
-Do not restyle components the task did not name. Do not introduce a state library
-the plan did not decide on.
-
-## What you hand back
-
-The task id, the files you changed, the done-check output verbatim, and `done`,
-`blocked: <reason>`, or `decided: <the row>`.
+## Traps
+- No loading state: an empty screen that looks like a bug to users and success to tests.
+- Array-index `key` on a list reorders wrongly when the list changes; use the data's id.
+- An effect that fetches without cleanup/abort races itself on fast navigation.
+- Next.js: a server component cannot use hooks or browser APIs; `"use client"` marks the
+  boundary, and anything passed across it must be serializable.
+- An unauthenticated page renders only what the contract returns; test the exact key set.
+- No restyling of untouched components, no state library the plan did not decide on.

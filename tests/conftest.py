@@ -126,6 +126,11 @@ def isolated_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         # GitHub Actions sets CI=true, which turns animation and prompts off; the
         # tests that want either set it themselves, so CI and a laptop agree.
         "CI",
+        # An agent runtime running the suite (Claude Code sets CLAUDECODE=1 in its
+        # shell) would otherwise turn on agent mode and change every stderr line.
+        "EDIFY_AGENT",
+        "CLAUDECODE",
+        "GEMINI_CLI",
     ):
         monkeypatch.delenv(name, raising=False)
     return home

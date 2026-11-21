@@ -22,7 +22,7 @@ COMMANDS = sorted(assets.subtree("commands").glob("*.md"))
 
 def test_the_library_is_not_empty() -> None:
     assert len(SKILLS) >= 10
-    assert {p.stem for p in COMMANDS} == {"spec", "plan", "tasks", "build", "verify"}
+    assert {p.stem for p in COMMANDS} == {"spec", "plan", "tasks", "verify"}
 
 
 @pytest.mark.parametrize("path", SKILLS, ids=lambda p: p.stem)
@@ -53,21 +53,39 @@ def test_every_role_has_at_least_one_entry() -> None:
     assert set(skill_format.ROLES) <= roles
 
 
-def test_the_worked_spec_example_calibrates_tone_and_says_so(tmp_path) -> None:
-    """This exemplar teaches voice, not section layout, and has to admit it.
+def test_the_worked_spec_example_is_a_clean_instance_of_its_format(tmp_path) -> None:
+    """The spec example is the same feature as the tasks example, and checks clean.
 
-    A reader who takes it for a format instance will write a product vision where a
-    spec belongs, so the shipped copy carries a framing note pointing at
-    `spec.format.md` for the contract.
+    It carries spec-kit's sections (user stories with Given/When/Then, key entities,
+    success criteria, assumptions) on top of the five `edify check` requires, and every
+    id the task list discharges exists in it.
     """
+    from edify.formats import check as check_format
+    from edify.formats import spec as spec_format
+
     source = assets.subtree("formats") / "spec.example.md"
     text = source.read_text(encoding="utf-8")
-    assert "worked example for `spec.format.md`" in text
-    assert "The shape\n> is what to copy, not the length" in text
+    assert "worked example for `spec.format.md`" in text.lower()
+    spec = spec_format.parse(source, source.name)
+    assert [f for f in check_format.check_spec(spec) if f.level.name == "ERROR"] == []
+    for section in ("User stories", "Key entities", "Success criteria", "Assumptions"):
+        assert spec.doc.section(section) is not None, section
+    assert "**Given**" in text and "**Then**" in text
 
-    doc = parse_document(source)
-    assert len(doc.sections) > 20
-    assert doc.section("Core Product Rules") is not None
+    tasks = tasks_format.parse(assets.subtree("formats") / "tasks.example.md")
+    known = spec.requirement_ids() | spec.assertion_ids() | spec.checklist_ids()
+    for task in tasks.tasks:
+        assert set(task.discharges) <= known, (task.id, set(task.discharges) - known)
+
+
+def test_every_design_file_has_a_worked_example() -> None:
+    formats = assets.subtree("formats")
+    for name in ("research", "data-model", "contracts", "quickstart"):
+        example = formats / f"{name}.example.md"
+        assert example.is_file(), name
+        assert "design.format.md" in example.read_text(encoding="utf-8"), name
+    assert (formats / "constitution.format.md").is_file()
+    assert (formats / "README.md").is_file()
 
 
 def test_the_worked_tasks_example_parses_completely() -> None:
@@ -96,6 +114,20 @@ def test_the_worked_tasks_example_has_no_whole_file_edits() -> None:
     for task in parsed.tasks:
         for ref in task.edits:
             assert ref.has_range, f"{task.id} edits {ref.path} with no line range"
+
+
+def test_the_worked_plan_example_obeys_its_format() -> None:
+    from edify.formats import plan as plan_format
+
+    parsed = plan_format.parse(assets.subtree("formats") / "plan.example.md")
+    keys = {s.key for s in parsed.doc.sections}
+    for name in plan_format.EXPECTED_SECTIONS:
+        assert any(k.startswith(name) for k in keys), f"no `## {name}` section"
+    assert parsed.milestones and parsed.decisions and parsed.seeds
+    for decision in parsed.decisions:
+        assert decision.version[:1].isdigit(), f"{decision.id} has no exact version"
+    assert all(seed.has_range for seed in parsed.seeds)
+    assert parsed.verification_budget
 
 
 def test_the_default_registry_is_scoped() -> None:

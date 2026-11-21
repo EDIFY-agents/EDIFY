@@ -28,6 +28,8 @@ ASCII it has always been, so a script that reads it keeps working.
 | `EDIFY_THEME=day` | the palette for a light terminal (`night` is the default) |
 | `COLORFGBG` | read if set: a light background picks `day` on its own |
 | `COLORTERM=truecolor` | exact brand colours; otherwise the nearest of 256, or the basic 16 |
+| `EDIFY_AGENT=1` | agent mode: terse output, one-line errors with a hint, no prompts (also on under `CLAUDECODE` / `GEMINI_CLI`; `EDIFY_AGENT=0` turns it off) |
+| `EDIFY_JOBS=N` | worker processes for `graph build` on trees of 1,500+ files; `1` forces a serial build (same bytes either way) |
 
 ---
 
@@ -62,12 +64,30 @@ checkout installs into the parent. `setup` pins the root where you point it.
 | `edify graph references NAME` | who calls or imports this |
 | `edify graph overlap "a.ts b.ts" "c.ts"` | can these two tasks run at once |
 | `edify graph stat` | nodes, edges, files, languages, coverage |
+| `edify graph map` | `.edify/graph/MAP.md`: subsystems, hubs, and the bridges parallel work collides on |
+| `edify graph context "<task>"` | the files and line ranges one task needs, under a token budget |
+| `edify graph explain NAME` · `path A B` | every edge of one node, or how two connect |
+| `edify graph update --changed` · `hook` | re-extract what git says changed; hooks keep it current |
 
 ···  `edify graph where` · `dependents` · `defines`
 
 <img src="../assets/graph-where.svg" alt="edify graph queries" width="100%">
 
 See [graph.md](graph.md) for what is covered and what is not.
+
+## The build loop
+
+`/tasks` writes the task list and then builds it with these. One agent runs them in a
+loop; a swarm runs them in N worktrees at once; people on different machines add
+`--git`, and the remote's `edify-swarm` branch becomes the lock.
+
+| command | what it does |
+|---|---|
+| `edify swarm board` | every task and its state |
+| `edify swarm claim` | lease the next ready task whose files overlap no live lease |
+| `edify swarm prompt T-7` | the spawn payload: skill, task, decisions, graph slice, scoped servers |
+| `edify swarm done T-7` | record the done-check passed and release the lease |
+| `edify swarm release` · `renew` · `block` | give back, extend, or block a lease |
 
 ## The documents
 
@@ -96,6 +116,7 @@ CI, owned by you.
 | `edify skills sync` | rewrite the per-runtime mirror after a hand edit |
 | `edify mcp list` | the server registry |
 | `edify mcp for implementer 4` | what servers that spawn would load |
+| `edify mcp config implementer 4` | write only those servers to an MCP config |
 
 ## Governance
 

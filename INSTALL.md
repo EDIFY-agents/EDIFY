@@ -16,7 +16,7 @@ it installs one command, `edify`.
 ```bash
 pip install edify-agents-cli
 
-edify version            # edify 0.2.1
+edify version            # edify 0.3.2
 ```
 
 `pip` installs into whichever Python environment it belongs to. Inside a virtual
@@ -141,40 +141,11 @@ sudo apt install universal-ctags      # Debian/Ubuntu
 edify graph build --extractor ctags
 ```
 
-## What `init` asks
+## What `init` asks, and installing for every agent
 
-One question: which entries from the agent library to install. They become trusted
-instruction in every matching session, so you see the list before any of it lands.
-
-With no terminal — CI, a pipe, a model calling the binary — nothing is asked and the
-whole stack-matched set is installed. To state the answer up front:
-
-```bash
-edify init --yes                       # the whole matched set, no question
-edify init --skills none               # none of it; add entries later
-edify init --skills planner,verifier   # exactly these
-```
-
-## Setting a folder up from zero, for every agent
-
-`edify init` writes `CLAUDE.md` and `.claude/`. If your team also has Codex, Cursor,
-Gemini, Copilot, or Windsurf open, that install is invisible to them. `edify init new`
-pins the root where you point it, creates the folder if it is missing, clears EDIFY's
-own files first, installs every library entry, and writes the instruction file and
-command pointers each runtime actually reads.
-
-```bash
-edify init new ./service               # ask, then install for every runtime
-edify init new . --agents claude,cursor
-edify init new . --yes                 # ask nothing, install everything
-```
-
-It asks eight short questions before installing anything — which runtimes, what stack
-detection missed, who you are, your role, what is being built, what done looks like, how
-much an agent should explain, and what it must never do here. Enter skips any of them.
-The answers land in `.edify/profile.md`, which every instruction file points at and
-which is yours to edit; a re-run offers them back as the defaults. With no terminal
-nothing is asked and no profile is written.
+`init` asks one question, which library entries to install; `edify init new` asks eight
+skippable ones and installs for every agent runtime. With no terminal, neither asks
+anything. The flags and the runtime table are in the [README](README.md#install).
 
 ## Installing from a checkout
 
@@ -222,17 +193,10 @@ shell rather than reporting a success it did not have.
 `self update` never touches `.edify/` in any repository. Reinstalling the harness into a
 checkout is `edify setup . --fresh`.
 
-## The public edition, and what a licence adds
+## Licences
 
-Nothing here needs an account. The public edition, `edify-agents-cli`, is MIT-licensed
-and free: every command, every query, every check, the whole methodology tree, on a
-repository of any size, in as many repositories as you like. It has no caps except one —
-the MCP registry scopes a single server into spawns.
-
-The team edition, `edify-agents-teams`, is by licence. A team or partner licence adds the
-team commands and lifts the one-server rule. `partner` plans are free for University of
-Toronto design teams and researchers. There is no payment and no price anywhere; a
-licence is issued on request.
+The public edition needs no account and no licence; the [README](README.md#editions-privacy-and-what-edify-does-not-do)
+says what a team licence adds.
 
 ```bash
 edify license status                   # which edition this machine runs, and what a licence adds

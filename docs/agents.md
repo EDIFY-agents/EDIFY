@@ -3,7 +3,7 @@
 **EDIFY is not another coding agent. It makes your existing one more reliable.**
 
 It does not wrap the agent runtime, host a model, or route between providers. The
-five commands are Markdown files installed where your tool already looks for
+four commands are Markdown files installed where your tool already looks for
 commands, and the graph is a CLI your agent shells out to. That is the whole
 integration surface, which is why adding a runtime is a day rather than a
 quarter.
@@ -66,7 +66,7 @@ rather than updating `CLAUDE.md` and leaving the other five stale.
 
 ## One methodology, many front doors
 
-The five commands are installed once, to `.edify/commands/`, with thin pointers
+The four commands are installed once, to `.edify/commands/`, with thin pointers
 under each runtime's own command directory. `/spec` resolves in whichever tool
 you are typing into while the methodology stays in exactly one place.
 
@@ -90,8 +90,7 @@ Stack: python · Tests: pytest
 ## Commands
 /spec   — write the spec before anything else
 /plan   — technology decisions and milestones, for work that needs them
-/tasks  — turn an approved spec into the phased build plan
-/build  — execute an approved plan, start to finish
+/tasks  — leaseable tasks, then build them: one agent or a swarm
 /verify — re-run everything and produce the evidence
 
 ## The codebase map

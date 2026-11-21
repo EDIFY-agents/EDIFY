@@ -57,6 +57,7 @@ def run(ctx: Context) -> int:
     out.field("manager", f"{stack.package_manager} · test runner {stack.test_runner}")
 
     ctx.layout.edify.mkdir(parents=True, exist_ok=True)
+    ctx.layout.ensure_run_dir()
 
     _write_stack(ctx, stack)
 

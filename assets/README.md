@@ -2,7 +2,7 @@
 
 ## `infinity.svg`
 
-The animation under "The binary" on the README, in the same ink as the CLI. It is not drawn by hand: the lattice of dots
+The animation in the README's graph section, in the same ink as the CLI. It is not drawn by hand: the lattice of dots
 is exactly the grid cells `edify init`'s own animation lights up, imported from
 `src/edify/anim.py`, so the curve in the README and the curve in the terminal are
 the same curve. Regenerate after any change to `anim`'s geometry:
